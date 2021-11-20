@@ -1,0 +1,37 @@
+package NoneTerminal;
+
+import ParcelType.MyDataType;
+import Table.DataType;
+import WordAnalyse.IdentifySymbol;
+import WordAnalyse.RegKey;
+import WordAnalyse.Symbol;
+
+public class FuncType {
+    public static String name = "<FuncType>";
+
+    private RegKey regKey;
+    public FuncType(RegKey regKey){
+        this.regKey = regKey;
+    }
+
+    public RegKey getRegKey(){
+        return this.regKey;
+    }
+
+    public static FuncType analyse(IdentifySymbol identifySymbol, MyDataType dataType) {
+        Symbol sym = identifySymbol.getCurSym();
+        boolean judge = true;
+        FuncType funcType = new FuncType(sym.getRegKey());
+        judge &= (sym.getRegKey() == RegKey.VOIDTK || sym.getRegKey() == RegKey.INTTK);
+        if (judge) {
+            dataType.dataType = DataType.DT_VOID;
+            if (sym.getRegKey() == RegKey.INTTK) dataType.dataType = DataType.DT_INT;
+            identifySymbol.getASymbol();
+        }
+
+        if (judge) {
+            identifySymbol.addStr(name);
+        }
+        return funcType;
+    }
+}
