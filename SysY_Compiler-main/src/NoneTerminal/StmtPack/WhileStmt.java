@@ -6,7 +6,6 @@ import Tables.Code;
 import Tables.CodeType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class WhileStmt extends Stmt {
     private Cond cond;
@@ -18,7 +17,7 @@ public class WhileStmt extends Stmt {
         int JMCAdr;
         int whileBeginAdr = -1;
         int whileEndAdr = -1;
-        whileBeginAdr = Code.getNextFreeRoom();
+        whileBeginAdr = Code.get_NextFreeRoom();
         cond.genCode();
         JMCAdr = Code.addCode(CodeType.JMC, -1);
 
@@ -30,9 +29,9 @@ public class WhileStmt extends Stmt {
         blocksOverBreak.remove(blocksOverBreak.size() - 1);
 
         Code.addCode(CodeType.JMP, whileBeginAdr);
-        whileEndAdr = Code.getNextFreeRoom();
+        whileEndAdr = Code.get_NextFreeRoom();
 
-        Code.modifyY(JMCAdr, whileEndAdr);
+        Code.modify_Y(JMCAdr, whileEndAdr);
 
         BreakStmt.modifyAllBreakY(whileEndAdr);
         ContinueStmt.modifyAllBreakY(whileBeginAdr);

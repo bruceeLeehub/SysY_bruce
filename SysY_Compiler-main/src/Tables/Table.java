@@ -32,7 +32,7 @@ public class Table {
         int curPtr = table.size() - 1;
         if(obj.equals(Obj.OBJ_VAR))
             adr = preSize;
-        table.get(curPtr).getRightTable(isFunc).put(
+        table.get(curPtr).getTheRightTable(isFunc).put(
                 name, new TableEntry(obj, typ, dims, ref, lev, adr)
         );
         if(!obj.equals(Obj.OBJ_CONST))
@@ -46,7 +46,7 @@ public class Table {
         int curPtr = table.size() - 1;
         if(obj.equals(Obj.OBJ_VAR))
             adr = preSize;
-        table.get(curPtr).getRightTable(isFunc).put(
+        table.get(curPtr).getTheRightTable(isFunc).put(
                 name, new TableEntry(obj, typ, dims, ref, lev, adr, isPara)
         );
         if(!obj.equals(Obj.OBJ_CONST))
@@ -55,7 +55,7 @@ public class Table {
 
     public static void addFuncTeToCurTab(String name, TableEntry te){
         int curPtr = table.size() - 1;
-        table.get(curPtr).getRightTable(true).put(name, te);
+        table.get(curPtr).getTheRightTable(true).put(name, te);
     }
 
     public static int getCurLayer(){
@@ -66,7 +66,7 @@ public class Table {
         TableEntry te = null;
         int tempPtr = getCurLayer();
         while(te == null && tempPtr >= 0){
-            te = table.get(tempPtr).getRightTable(isFunc).get(name);
+            te = table.get(tempPtr).getTheRightTable(isFunc).get(name);
             tempPtr--;
         }
         return te;

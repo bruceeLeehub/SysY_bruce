@@ -31,7 +31,7 @@ public class LOrExp {
             short_cuts.add(Code.addCode(CodeType.JMT, -1));  // short-cut
         }
         for(int adr : short_cuts)
-            Code.modifyY(adr, Code.getNextFreeRoom());
+            Code.modify_Y(adr, Code.get_NextFreeRoom());
     }
 
     public static LOrExp analyse(IdentifySymbol identifySymbol){

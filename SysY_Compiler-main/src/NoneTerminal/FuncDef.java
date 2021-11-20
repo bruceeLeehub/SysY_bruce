@@ -55,7 +55,7 @@ public class FuncDef {
             typ = Typ.TYP_VOID;
 
         Table.addTeToCurTab(ident.getIdentName(), Obj.OBJ_FUNC, typ, 0,
-                funcRef, Table.getCurLayer(), Code.getNextFreeRoom());
+                funcRef, Table.getCurLayer(), Code.get_NextFreeRoom());
         Table.createNewLayer();
         for (FuncFParam para : funcFParamList) {
             para.genCode();

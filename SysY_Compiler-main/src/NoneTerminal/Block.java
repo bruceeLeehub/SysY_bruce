@@ -83,7 +83,7 @@ public class Block {
             if (MainFuncDef.mainIsChecking && identifySymbol.isEndLine()) identifySymbol.addTimes(1);
             identifySymbol.addStr(name);
         }
-        // pop current table stack of this block
+        // popOutdata current table stack of this block
         SymTable.removeOuterTable();
         blockLayer--;
         return block;

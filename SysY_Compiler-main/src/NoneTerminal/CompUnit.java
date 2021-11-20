@@ -47,7 +47,7 @@ public class CompUnit {
         mainJumpInsAdr = Code.addCode(CodeType.JMP, -1); // TODO: modify adr later, you need to jump to main
         for(FuncDef funcDef : funcDefList)
             funcDef.genCode();
-        Code.modifyY(mainJumpInsAdr, Code.addCode(CodeType.MAI));
+        Code.modify_Y(mainJumpInsAdr, Code.addCode(CodeType.MAI));
         mainFuncDef.genCode();
     }
 

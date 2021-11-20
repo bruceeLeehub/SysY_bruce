@@ -206,7 +206,7 @@ public class Stmt implements BlockItemInter {
                     Error.addErrorOutPut(errorSym.getRow_Idx() + " l");
             }
 
-            stmt = new PrintStmt(ConStrTable.addConStr(formatString), expList);
+            stmt = new PrintStmt(ConStrTable.addConString(formatString), expList);
 
             // ERROR -- j: ')' needed
             if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)

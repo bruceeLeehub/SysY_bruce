@@ -22,7 +22,7 @@ public class ContinueStmt extends Stmt {
             ArrayList<Integer> thisBreakList = continueStmtList.get(continueStmtList.size() - 1);
             if (thisBreakList != null) {
                 for (int adr : thisBreakList) {
-                    Code.modifyY(adr, beginPc);
+                    Code.modify_Y(adr, beginPc);
                 }
             }
             // continueStmtList.remove(continueStmtList.size() - 1);

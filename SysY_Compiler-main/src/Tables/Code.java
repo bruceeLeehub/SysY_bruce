@@ -26,19 +26,19 @@ public class Code {
         return s.toString();
     }
 
-    public static int getX(int pc) {
+    public static int get_X(int pc) {
         return xList.get(pc);
     }
 
-    public static int getY(int pc) {
+    public static int get_Y(int pc) {
         return yList.get(pc);
     }
 
-    public static int getNextFreeRoom() {
+    public static int get_NextFreeRoom() {
         return codeTypeList.size();
     }
 
-    public static void modifyY(int codePtr, int modify) {
+    public static void modify_Y(int codePtr, int modify) {
         yList.set(codePtr, modify);
     }
 
@@ -71,7 +71,7 @@ public class Code {
         return codeTypeList.size();
     }
 
-    public static CodeType getCodeType(int pc) {
+    public static CodeType get_CodeType(int pc) {
         return codeTypeList.get(pc);
     }
 }

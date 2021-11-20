@@ -3,9 +3,20 @@ package Tables;
 import java.util.ArrayList;
 
 public class MemoryStack {
-    private static ArrayList<Integer> memoryStack = new ArrayList<>();
+    private static final ArrayList<Integer> memoryStack = new ArrayList<>();
 
-    public static void addDataToTop(int data) {
+    public static int popOutdata() {
+        int value = memoryStack.get(memoryStack.size() - 1);
+        memoryStack.remove(memoryStack.size() - 1);
+        return value;
+    }
+
+    public static int get_CurPtr(){
+        int size = memoryStack.size();
+        return size - 1;
+    }
+
+    public static void add_DataToTop(int data) {
         memoryStack.add(data);
     }
 
@@ -13,11 +24,6 @@ public class MemoryStack {
         return memoryStack.get(adr);
     }
 
-    public static int pop() {
-        int value = memoryStack.get(memoryStack.size() - 1);
-        memoryStack.remove(memoryStack.size() - 1);
-        return value;
-    }
 
     public static void saveDataToAdr(int adr, int value) {
         memoryStack.set(adr, value);
@@ -29,7 +35,4 @@ public class MemoryStack {
         }
     }
 
-    public static int getCurPtr(){
-        return memoryStack.size() - 1;
-    }
 }

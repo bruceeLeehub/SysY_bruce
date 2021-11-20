@@ -24,10 +24,10 @@ public class IfStmt extends Stmt {
         ifJumpInsAdr = Code.addCode(CodeType.JMC, -1); // TODO: modify adr later
         ifStmt.genCode();
         jmpAdr_2 = Code.addCode(CodeType.JMP, -1);
-        Code.modifyY(ifJumpInsAdr, Code.getNextFreeRoom());
+        Code.modify_Y(ifJumpInsAdr, Code.get_NextFreeRoom());
         if(elseStmt != null){
             elseStmt.genCode();
         }
-        Code.modifyY(jmpAdr_2, Code.getNextFreeRoom());
+        Code.modify_Y(jmpAdr_2, Code.get_NextFreeRoom());
     }
 }

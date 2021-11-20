@@ -22,7 +22,7 @@ public class BreakStmt extends Stmt {
             ArrayList<Integer> thisBreakList = breakStmtList.get(breakStmtList.size() - 1);
             if (thisBreakList != null) {
                 for (int adr : thisBreakList) {
-                    Code.modifyY(adr, endPC);
+                    Code.modify_Y(adr, endPC);
                 }
             }
             // breakStmtList.remove(breakStmtList.size() - 1);

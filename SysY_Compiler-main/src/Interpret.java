@@ -18,7 +18,7 @@ public class Interpret {
         System.out.println("gonna run code");
         System.out.println("==================");
         while (pc < Code.codeSize() && pc >= 0) {
-            runCode(Code.getCodeType(pc), Code.getX(pc), Code.getY(pc));
+            runCode(Code.get_CodeType(pc), Code.get_X(pc), Code.get_Y(pc));
             System.out.println(pc + "has runned");
         }
     }
@@ -122,15 +122,15 @@ public class Interpret {
     public static void runningINI() {
         pc += 1;
         int retValue = 0;
-        MemoryStack.addDataToTop(retValue);    // return value
+        MemoryStack.add_DataToTop(retValue);    // return value
         int RA = -1;
-        MemoryStack.addDataToTop(RA);    // RA
+        MemoryStack.add_DataToTop(RA);    // RA
         int lev = 0;
-        MemoryStack.addDataToTop(lev);    // lev
+        MemoryStack.add_DataToTop(lev);    // lev
         int DL = -1;
-        MemoryStack.addDataToTop(DL);    // DL
+        MemoryStack.add_DataToTop(DL);    // DL
         int func_in_table = -1;
-        MemoryStack.addDataToTop(func_in_table);// func in tab
+        MemoryStack.add_DataToTop(func_in_table);// func in tab
         level += 1;
         display.put(level, 0);
         basePtr = 0;
@@ -139,16 +139,16 @@ public class Interpret {
     public static void runningMAIN() {
         pc += 1;
         int retValue = 0;
-        MemoryStack.addDataToTop(retValue);        // return value
+        MemoryStack.add_DataToTop(retValue);        // return value
         int RA = -1;
-        MemoryStack.addDataToTop(RA);       // RA
+        MemoryStack.add_DataToTop(RA);       // RA
         int lev = 1;
-        MemoryStack.addDataToTop(lev);        // lev
+        MemoryStack.add_DataToTop(lev);        // lev
         int DL = basePtr;
-        MemoryStack.addDataToTop(DL);  // DL
+        MemoryStack.add_DataToTop(DL);  // DL
         int func_in_tab = -1;
-        MemoryStack.addDataToTop(func_in_tab);       // func in tab
-        basePtr = MemoryStack.getCurPtr() - 4;
+        MemoryStack.add_DataToTop(func_in_tab);       // func in tab
+        basePtr = MemoryStack.get_CurPtr() - 4;
         level++;
         display.put(level, basePtr);
     }
@@ -156,16 +156,16 @@ public class Interpret {
     public static void runningBKI() {
         pc += 1;
         int retValue = -1;
-        MemoryStack.addDataToTop(retValue);        // return value
+        MemoryStack.add_DataToTop(retValue);        // return value
         int RA = -1;
-        MemoryStack.addDataToTop(RA);       // RA
+        MemoryStack.add_DataToTop(RA);       // RA
         int lev = level;
-        MemoryStack.addDataToTop(lev);        // lev
+        MemoryStack.add_DataToTop(lev);        // lev
         int DL = basePtr;
-        MemoryStack.addDataToTop(DL);  // DL
+        MemoryStack.add_DataToTop(DL);  // DL
         int func_in_tab = -1;
-        MemoryStack.addDataToTop(func_in_tab);       // func in tab
-        basePtr = MemoryStack.getCurPtr() - 4;
+        MemoryStack.add_DataToTop(func_in_tab);       // func in tab
+        basePtr = MemoryStack.get_CurPtr() - 4;
         level++;
         boolean isNull = (display.get(level) == null);
         if (!isNull) {   // it says that there is a value
@@ -192,14 +192,14 @@ public class Interpret {
     public static void runningLDA(int x, int y) {
         pc += 1;
         int data = display.get(x) + y + 5;
-        MemoryStack.addDataToTop(data);
+        MemoryStack.add_DataToTop(data);
     }
 
     public static void runningLOD(int x, int y) {
         pc += 1;
         int addr = display.get(x) + y + 5;
         int value = MemoryStack.getDataFromAdr(addr);
-        MemoryStack.addDataToTop(value);
+        MemoryStack.add_DataToTop(value);
     }
 
     public static void runningBRK(int x, int y) {
@@ -220,27 +220,27 @@ public class Interpret {
 
     public static void runningLDC(int y) {
         pc += 1;
-        MemoryStack.addDataToTop(y);
+        MemoryStack.add_DataToTop(y);
     }
 
     public static void runningJMC(int dest) {
         pc += 1;
-        if (MemoryStack.pop() == 0)
+        if (MemoryStack.popOutdata() == 0)
             pc = dest;
     }
 
     public static void runningJMT(int dest){
         pc += 1;
-        int value = MemoryStack.pop();
-        MemoryStack.addDataToTop(value);
+        int value = MemoryStack.popOutdata();
+        MemoryStack.add_DataToTop(value);
         if (value != 0)
             pc = dest;
     }
 
     public static void runningJMF(int dest){
         pc += 1;
-        int value = MemoryStack.pop();
-        MemoryStack.addDataToTop(value);
+        int value = MemoryStack.popOutdata();
+        MemoryStack.add_DataToTop(value);
         if (value == 0)
             pc = dest;
     }
@@ -248,16 +248,16 @@ public class Interpret {
     public static void runningMKS(int y) {
         pc += 1;
         int retValue = 0;
-        MemoryStack.addDataToTop(retValue);    // r e t u r n v a l u e
+        MemoryStack.add_DataToTop(retValue);    // r e t u r n v a l u e
         int RA = 0;
-        MemoryStack.addDataToTop(RA);    // R A
+        MemoryStack.add_DataToTop(RA);    // R A
         int lev = level;
-        MemoryStack.addDataToTop(lev);    // l e v
+        MemoryStack.add_DataToTop(lev);    // l e v
         int DL = basePtr;
-        MemoryStack.addDataToTop(DL);    // D L
+        MemoryStack.add_DataToTop(DL);    // D L
 
-        MemoryStack.addDataToTop(y);    // f u n c  i n  t a b
-        basePtr = MemoryStack.getCurPtr();
+        MemoryStack.add_DataToTop(y);    // f u n c  i n  t a b
+        basePtr = MemoryStack.get_CurPtr();
         basePtr -= 4;
     }
 
@@ -265,149 +265,149 @@ public class Interpret {
     public static void runningADD() {
         pc += 1;
         int result;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
         result = a1 + a2;
-        MemoryStack.addDataToTop(result);
+        MemoryStack.add_DataToTop(result);
     }
 
     public static void runningSUB() {
         pc += 1;
         int result;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
         result = a1 - a2;
-        MemoryStack.addDataToTop(result);
+        MemoryStack.add_DataToTop(result);
     }
 
     public static void runningMUL() {
         pc += 1;
         int result;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
         result = a1 * a2;
-        MemoryStack.addDataToTop(result);
+        MemoryStack.add_DataToTop(result);
     }
 
     public static void runningDIV() {
         pc += 1;
         int result;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
         result = a1 / a2;
-        MemoryStack.addDataToTop(result);
+        MemoryStack.add_DataToTop(result);
     }
 
     public static void runningMOD() {
         pc += 1;
         int result;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
         result = a1 % a2;
-        MemoryStack.addDataToTop(result);
+        MemoryStack.add_DataToTop(result);
     }
 
     public static void runningMUS() {
         pc += 1;
-        MemoryStack.addDataToTop(-1 * MemoryStack.pop());
+        MemoryStack.add_DataToTop(-1 * MemoryStack.popOutdata());
     }
 
     public static void runningNOT() {
         pc += 1;
-        MemoryStack.addDataToTop((MemoryStack.pop() == 0) ? 1 : 0);
+        MemoryStack.add_DataToTop((MemoryStack.popOutdata() == 0) ? 1 : 0);
     }
 
     public static void runningORR() {
         pc += 1;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
-        MemoryStack.addDataToTop((a1 == 0 && a2 == 0) ? 0 : 1);
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
+        MemoryStack.add_DataToTop((a1 == 0 && a2 == 0) ? 0 : 1);
     }
 
     public static void runningAND() {
         pc += 1;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
-        MemoryStack.addDataToTop((a1 == 0 || a2 == 0) ? 0 : 1);
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
+        MemoryStack.add_DataToTop((a1 == 0 || a2 == 0) ? 0 : 1);
     }
 
     public static void runningEQL() {
         pc += 1;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
-        MemoryStack.addDataToTop((a1 == a2) ? 1 : 0);
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
+        MemoryStack.add_DataToTop((a1 == a2) ? 1 : 0);
     }
 
     public static void runningNEQ() {
         pc += 1;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
-        MemoryStack.addDataToTop((a1 != a2) ? 1 : 0);
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
+        MemoryStack.add_DataToTop((a1 != a2) ? 1 : 0);
     }
 
     public static void runningLSS() {
         pc += 1;
-        int a2 = MemoryStack.pop(); // a2
-        int a1 = MemoryStack.pop(); // a1
-        MemoryStack.addDataToTop((a1 < a2) ? 1 : 0);
+        int a2 = MemoryStack.popOutdata(); // a2
+        int a1 = MemoryStack.popOutdata(); // a1
+        MemoryStack.add_DataToTop((a1 < a2) ? 1 : 0);
     }
 
     public static void runningLEQ() {
         pc += 1;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
-        MemoryStack.addDataToTop((a1 <= a2) ? 1 : 0);
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
+        MemoryStack.add_DataToTop((a1 <= a2) ? 1 : 0);
     }
 
     public static void runningGRT() {
         pc += 1;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
-        MemoryStack.addDataToTop((a1 > a2) ? 1 : 0);
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
+        MemoryStack.add_DataToTop((a1 > a2) ? 1 : 0);
     }
 
     public static void runningGEQ() {
         pc += 1;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
-        MemoryStack.addDataToTop((a1 >= a2) ? 1 : 0);
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
+        MemoryStack.add_DataToTop((a1 >= a2) ? 1 : 0);
     }
 
     public static void runningSWP() {
         pc += 1;
-        int a2 = MemoryStack.pop();
-        int a1 = MemoryStack.pop();
-        MemoryStack.addDataToTop(a2);
-        MemoryStack.addDataToTop(a1);
+        int a2 = MemoryStack.popOutdata();
+        int a1 = MemoryStack.popOutdata();
+        MemoryStack.add_DataToTop(a2);
+        MemoryStack.add_DataToTop(a1);
     }
 
     public static void runningLAV() {
         pc += 1;
-        int diff = MemoryStack.pop();
-        int adr = MemoryStack.pop();
+        int diff = MemoryStack.popOutdata();
+        int adr = MemoryStack.popOutdata();
         //adr = MemoryStack.getDataFromAdr(adr);
         int dest = adr + diff;
         int data = MemoryStack.getDataFromAdr(dest);
-        MemoryStack.addDataToTop(data);
+        MemoryStack.add_DataToTop(data);
     }
 
     public static void runningLCA() {
         pc += 1;
-        int offset = MemoryStack.pop();
-        int adr = MemoryStack.pop();
+        int offset = MemoryStack.popOutdata();
+        int adr = MemoryStack.popOutdata();
         int value = ArrTable.getArrTable().get(adr).getConst_Array().get(offset);
-        MemoryStack.addDataToTop(value);
+        MemoryStack.add_DataToTop(value);
     }
 
     public static void runningSTO() {
         pc += 1;
-        int value = MemoryStack.pop();
-        int adr = MemoryStack.pop();
+        int value = MemoryStack.popOutdata();
+        int adr = MemoryStack.popOutdata();
         MemoryStack.saveDataToAdr(adr, value);
     }
 
     public static void runningVRE(int y) {
-        int retVal = MemoryStack.pop();
+        int retVal = MemoryStack.popOutdata();
         for (int i = 0; i < y; i++) {
             runningDBK();
         }
@@ -447,7 +447,7 @@ public class Interpret {
     public static void runningEAT(int y) {
         pc += 1;
         for (int i = 0;i < y;i++) {
-            MemoryStack.pop();
+            MemoryStack.popOutdata();
         }
     }
 
@@ -489,10 +489,10 @@ public class Interpret {
     public static void runningWRF(int y) {
         pc += 1;
         ArrayList<Integer> expValues = new ArrayList<>();
-        String[] stringContents = ConStrTable.getStr(y).split("%d");
+        String[] stringContents = ConStrTable.getString(y).split("%d");
         int length = stringContents.length;
         for (int i = 0; i < length - 1; i++) {
-            expValues.add(MemoryStack.pop());
+            expValues.add(MemoryStack.popOutdata());
         }
         String outString = stringContents[0];
         int size = expValues.size();
@@ -509,7 +509,7 @@ public class Interpret {
     public static void runningGETINT() {
         int value = scanner.nextInt();
         pc += 1;
-        int adr = MemoryStack.pop();
+        int adr = MemoryStack.popOutdata();
         MemoryStack.saveDataToAdr(adr, value);
     }
 }
