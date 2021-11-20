@@ -70,7 +70,7 @@ public class UnaryExp {
             if (primaryExp != null)
                 primaryExp.genCode(null);
             else if (ident != null) {    // func call
-                Code.addCode(CodeType.MKS, Table.getFuncTe(ident.getIdentName()).getRef());
+                Code.addCode(CodeType.MKS, Table.getFuncTableEntry(ident.getIdentName()).getRef());
                 for (Exp exp : funcRParamList) {
                     exp.genCode(null);
                 }

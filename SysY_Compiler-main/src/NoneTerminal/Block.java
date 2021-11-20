@@ -31,10 +31,10 @@ public class Block {
         int recPreSize = 0;
         if (funcTe != null /* is func */ &&
                 !name.equals("main") /* is not main */)     // enter from a func def
-            Table.addFuncTeToCurTab(name, funcTe);
+            Table.add_FuncTentryToCurTable(name, funcTe);
         else {                   // enter from others
-            recPreSize = Table.getCurPreSize();
-            Table.createNewLayer();
+            recPreSize = Table.get_CurrentPreSize();
+            Table.createANewLayer();
         }
 
         if(name == null)
@@ -43,8 +43,8 @@ public class Block {
         for(BlockItemInter blockItemInter : blockItemInters)
             blockItemInter.genCode();
 
-        Table.comeOutFromLayer();
-        Table.setCurPreSize(recPreSize);
+        Table.getOutFromLayer();
+        Table.setCurrentPreSize(recPreSize);
 
         if(name == null)
             Code.addCode(CodeType.DBK);

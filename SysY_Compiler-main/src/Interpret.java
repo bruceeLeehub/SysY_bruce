@@ -432,8 +432,8 @@ public class Interpret {
     public static void runningCAL() {
         int adr = MemoryStack.get_DataFromAdr(basePtr + 4);
         ProgTableEntry progTableEntry = ProgTable.getProg_Entry(adr);
-        String proName = progTableEntry.getProName();
-        TableEntry tableEntry = Table.getFuncTe(proName);
+        String proName = progTableEntry.getProgName();
+        TableEntry tableEntry = Table.getFuncTableEntry(proName);
         level = tableEntry.getLev() + 1;
         boolean have_value = (display.get(level) != null);
         if (have_value) {   // it says that there is a value

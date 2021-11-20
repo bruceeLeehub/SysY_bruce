@@ -54,13 +54,13 @@ public class FuncDef {
         if (this.funcType.getRegKey().equals(RegKey.VOIDTK))
             typ = Typ.TYP_VOID;
 
-        Table.addTeToCurTab(ident.getIdentName(), Obj.FUNC_OBJ, typ, 0,
+        Table.addTeToCurrentTable(ident.getIdentName(), Obj.FUNC_OBJ, typ, 0,
                 funcRef, Table.getCurLayer(), Code.get_NextFreeRoom());
-        Table.createNewLayer();
+        Table.createANewLayer();
         for (FuncFParam para : funcFParamList) {
             para.genCode();
         }
-        this.block.genCode(ident.getIdentName(), Table.getFuncTe(ident.getIdentName()));
+        this.block.genCode(ident.getIdentName(), Table.getFuncTableEntry(ident.getIdentName()));
     }
 
     public static FuncDef analyse(IdentifySymbol identifySymbol) {

@@ -39,7 +39,7 @@ public class CompUnit {
 
     public void genCode(){
         int mainJumpInsAdr = -1;
-        Table.createNewLayer();
+        Table.createANewLayer();
         ArrTable.createArrTable();
         Code.addCode(CodeType.INI);
         for(Decl decl : declList)

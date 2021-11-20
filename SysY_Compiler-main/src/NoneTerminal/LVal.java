@@ -42,10 +42,10 @@ public class LVal {
                 }
                 value.myInt = Table.getConstArrayValue(ident, dimValue);
             } else {
-                value.myInt = Table.getConstIdentValue(ident);
+                value.myInt = Table.get_ConstIdentValue(ident);
             }
         } else {          // not a const you need to get it when running program
-            Tables.TableEntry te = Table.getAttrTe(ident.getIdentName());
+            Tables.TableEntry te = Table.getAttrTableEntry(ident.getIdentName());
             int lenOfExpList = expList.size();
             int lenOfDims = te.getDims();
             boolean isArray = lenOfExpList < lenOfDims;
@@ -58,14 +58,14 @@ public class LVal {
                     exp.genCode(null);
                 }
                 if (expList.size() > 1 && /* dims are same refer to a value or addr*/
-                        expList.size() == Table.getAttrTe(ident.getIdentName()).getDims()) {
+                        expList.size() == Table.getAttrTableEntry(ident.getIdentName()).getDims()) {
                     Code.addCode(CodeType.SWP);
-                    ArrayList<Integer> dims = Table.getArrayDims(ident);
+                    ArrayList<Integer> dims = Table.get_ArrayDims(ident);
                     Code.addCode(CodeType.LDC, dims.get(dims.size() - 1));
                     Code.addCode(CodeType.MUL);
                     Code.addCode(CodeType.ADD);
-                } else if (expList.size() != 0 && expList.size() != Table.getAttrTe(ident.getIdentName()).getDims()) { // dims not equal, send a sub-array
-                    int lastDim = ArrTable.getArrTable().get(Table.getAttrTe(ident.getIdentName()).getRef()).getUpper_Bounds().get(1);
+                } else if (expList.size() != 0 && expList.size() != Table.getAttrTableEntry(ident.getIdentName()).getDims()) { // dims not equal, send a sub-array
+                    int lastDim = ArrTable.getArrTable().get(Table.getAttrTableEntry(ident.getIdentName()).getRef()).getUpper_Bounds().get(1);
                     Code.addCode(CodeType.LDC, lastDim);
                     Code.addCode(CodeType.MUL);
                     isLeftValue = true;
@@ -89,9 +89,9 @@ public class LVal {
                     }
 
                     if (expList.size() > 1 && /* dims are same refer to a value or addr*/
-                            expList.size() == Table.getAttrTe(ident.getIdentName()).getDims()) {
+                            expList.size() == Table.getAttrTableEntry(ident.getIdentName()).getDims()) {
                         Code.addCode(CodeType.SWP);
-                        ArrayList<Integer> dims = Table.getArrayDims(ident);
+                        ArrayList<Integer> dims = Table.get_ArrayDims(ident);
                         Code.addCode(CodeType.LDC, dims.get(dims.size() - 1));
                         Code.addCode(CodeType.MUL);
                         Code.addCode(CodeType.ADD);

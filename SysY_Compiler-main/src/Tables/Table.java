@@ -3,85 +3,25 @@ package Tables;
 import NoneTerminal.Ident;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class Table {
-    private static ArrayList<ColTable> table = new ArrayList<>();
-    private static int preSize = -1;
+    private static final ArrayList<ColTable> table = new ArrayList<>();
+    private static int pre_size = -1;
 
-    public static void createNewLayer() {
-        ColTable colTable = new ColTable();
-        table.add(colTable);
-        preSize = 0;
-    }
-
-    public static void comeOutFromLayer(){
-        table.remove(table.size() - 1);
-    }
-
-    public static int getCurPreSize(){
-        return preSize;
-    }
-
-    public static void setCurPreSize(int setPreSize){
-        preSize = setPreSize;
-    }
-
-    public static void addTeToCurTab(String name, Obj obj, Typ typ, int dims, int ref, int lev, int adr){
-        boolean isFunc = obj.equals(Obj.FUNC_OBJ);
-        int curSize = adr;
-        int curPtr = table.size() - 1;
-        if(obj.equals(Obj.VAR_OBJ))
-            adr = preSize;
-        table.get(curPtr).getTheRightTable(isFunc).put(
-                name, new TableEntry(obj, typ, dims, ref, lev, adr)
-        );
-        if(!obj.equals(Obj.CONST_OBJ))
-            preSize += curSize;
-    }
-
-    public static void addTeToCurTab(String name, Obj obj, Typ typ, int dims, int ref, int lev, int adr,
-                                     boolean isPara){
-        boolean isFunc = obj.equals(Obj.FUNC_OBJ);
-        int curSize = adr;
-        int curPtr = table.size() - 1;
-        if(obj.equals(Obj.VAR_OBJ))
-            adr = preSize;
-        table.get(curPtr).getTheRightTable(isFunc).put(
-                name, new TableEntry(obj, typ, dims, ref, lev, adr, isPara)
-        );
-        if(!obj.equals(Obj.CONST_OBJ))
-            preSize += curSize;
-    }
-
-    public static void addFuncTeToCurTab(String name, TableEntry te){
-        int curPtr = table.size() - 1;
-        table.get(curPtr).getTheRightTable(true).put(name, te);
-    }
-
-    public static int getCurLayer(){
-        return table.size() - 1;
-    }
-
-    public static TableEntry getIdentTe(boolean isFunc, String name){
-        TableEntry te = null;
+    public static TableEntry getIdentTabEntry(boolean isFunc, String name){
         int tempPtr = getCurLayer();
-        while(te == null && tempPtr >= 0){
-            te = table.get(tempPtr).getTheRightTable(isFunc).get(name);
-            tempPtr--;
+        TableEntry tableEntry = null;
+        while(tableEntry == null && tempPtr >= 0) {
+            TreeMap<String,TableEntry> theTable = table.get(tempPtr).getTheRightTable(isFunc);
+            tableEntry = theTable.get(name);
+            tempPtr = tempPtr - 1;
         }
-        return te;
-    }
-
-    public static TableEntry getAttrTe(String name){
-        return getIdentTe(false, name);
-    }
-
-    public static TableEntry getFuncTe(String name) {
-        return getIdentTe(true, name);
+        return tableEntry;
     }
 
     public static int getConstArrayValue(Ident ident, ArrayList<Integer> dimValue) {
-        TableEntry te = getAttrTe(ident.getIdentName());
+        TableEntry te = getAttrTableEntry(ident.getIdentName());
         ArrTableEntry arrTableEntry = ArrTable.getArrTable().get(te.getRef());
         int diff = dimValue.get(dimValue.size() - 1);
         for(int i = dimValue.size() - 2; i >=0 ;i--){
@@ -90,28 +30,104 @@ public class Table {
         return arrTableEntry.getConst_Array().get(diff);
     }
 
-    public static int getConstIdentValue(Ident ident) {
-        TableEntry te = getAttrTe(ident.getIdentName());
-        return te.getAdr();
+    public static int getAttrLev(Ident ident) {
+        String name = ident.getIdentName();
+        TableEntry tableEntry = getAttrTableEntry(name);
+        int level = tableEntry.getLev();
+        return level;
+    }
+
+    public static ArrayList<Integer> get_ArrayDims(Ident ident) {
+        String name = ident.getIdentName();
+        TableEntry tableEntry = getAttrTableEntry(name);
+        int ref = tableEntry.getRef();
+        ArrayList<ArrTableEntry> arrTable = ArrTable.getArrTable();
+        ArrTableEntry arrTableEntry = arrTable.get(ref);
+        ArrayList<Integer> arrayDims = arrTableEntry.getUpper_Bounds();
+        return arrayDims;
+    }
+
+    public static void getOutFromLayer(){
+        int size = table.size();
+        table.remove(size - 1);
+    }
+
+    public static void setCurrentPreSize(int PreSize){
+        pre_size = PreSize;
+    }
+
+    public static int getCurLayer(){
+        int size = table.size();
+        return size - 1;
     }
 
 
+    public static void addTeToCurrentTable(String name, Obj obj, Typ type, int dims, int ref, int level, int addr,
+                                           boolean isPara){
+        int curPtr = table.size() - 1;
+        int curSize = addr;
+        boolean isVar = obj.equals(Obj.VAR_OBJ);
+        boolean isConst = obj.equals(Obj.CONST_OBJ);
+        if(isVar) {
+            addr = pre_size;
+        }
+        TableEntry tableEntry = new TableEntry(obj, type, dims, ref, level, addr, isPara);
+        table.get(curPtr).getTheRightTable(obj.equals(Obj.FUNC_OBJ)).put(name, tableEntry);
+        if(!isConst) {
+            pre_size = pre_size + curSize;
+        }
+    }
 
-    public static ArrayList<Integer> getArrayDims(Ident ident) {
-        TableEntry te = getAttrTe(ident.getIdentName());
-        ArrTableEntry arrTableEntry = ArrTable.getArrTable().get(te.getRef());
-        return arrTableEntry.getUpper_Bounds();
+    public static void addTeToCurrentTable(String name, Obj obj, Typ type, int dims, int ref, int level, int addr){
+        int curPtr = table.size() - 1;
+        int curSize = addr;
+        boolean isVar = obj.equals(Obj.VAR_OBJ);
+        boolean isConst = obj.equals(Obj.CONST_OBJ);
+        if(isVar) {
+            addr = pre_size;
+        }
+        TableEntry tableEntry = new TableEntry(obj, type, dims, ref, level, addr);
+        table.get(curPtr).getTheRightTable(obj.equals(Obj.FUNC_OBJ)).put(name, tableEntry);
+        if(!isConst) {
+            pre_size = pre_size + curSize;
+        }
+    }
+
+
+    public static TableEntry getAttrTableEntry(String name){
+        TableEntry tableEntry = getIdentTabEntry(false, name);
+        return tableEntry;
+    }
+
+    public static TableEntry getFuncTableEntry(String name) {
+        TableEntry tableEntry = getIdentTabEntry(true,name);
+        return tableEntry;
+    }
+
+    public static int get_ConstIdentValue(Ident ident) {
+        String name = ident.getIdentName();
+        TableEntry tableEntry = getAttrTableEntry(name);
+        int identValue = tableEntry.getAdr();
+        return identValue;
     }
 
     public static int getArrayAdr(Ident ident) {
-        TableEntry te = getAttrTe(ident.getIdentName());
-        return te.getAdr();
+        String name = ident.getIdentName();
+        TableEntry tableEntry = getAttrTableEntry(name);
+        int adr = tableEntry.getAdr();
+        return adr;
     }
 
-    public static int getAttrLev(Ident ident) {
-        TableEntry te = getAttrTe(ident.getIdentName());
-        return te.getLev();
+    public static void createANewLayer() {
+        pre_size = 0;
+        table.add(new ColTable());
     }
 
+    public static int get_CurrentPreSize(){
+        return pre_size;
+    }
 
+    public static void add_FuncTentryToCurTable(String name, TableEntry tableEntry){
+        table.get(table.size() - 1).getTheRightTable(true).put(name, tableEntry);
+    }
 }

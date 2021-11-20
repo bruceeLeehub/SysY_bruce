@@ -47,7 +47,7 @@ public class FuncFParam {
 
     public void genCode() {
         if (constExpList == null) {       // var param
-            Table.addTeToCurTab(ident.getIdentName(), Obj.VAR_OBJ, Typ.TYP_INT, 0,
+            Table.addTeToCurrentTable(ident.getIdentName(), Obj.VAR_OBJ, Typ.TYP_INT, 0,
                     0, Table.getCurLayer(), 1, true);
         } else {      // array param
 
@@ -60,7 +60,7 @@ public class FuncFParam {
             }
 
             // array param ref need to be done until running time
-            Table.addTeToCurTab(ident.getIdentName(), Obj.VAR_OBJ, Typ.TYP_INT,
+            Table.addTeToCurrentTable(ident.getIdentName(), Obj.VAR_OBJ, Typ.TYP_INT,
                     dimList.size(), ArrTable.createAnEntry(dimList), Table.getCurLayer(), 1, true);
         }
 
