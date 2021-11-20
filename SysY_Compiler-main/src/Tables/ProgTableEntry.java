@@ -1,8 +1,8 @@
 package Tables;
 
 public class ProgTableEntry {
-    private String name;
-    private int paraSize;
+    private final int paraSize;
+    private final String name;
 
     public ProgTableEntry(String name, int paraSize){
         this.name = name;

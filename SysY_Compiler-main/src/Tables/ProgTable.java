@@ -3,14 +3,17 @@ package Tables;
 import java.util.ArrayList;
 
 public class ProgTable {
-    private static ArrayList<ProgTableEntry> progTable = new ArrayList<>();
+    private static final ArrayList<ProgTableEntry> prog_Table = new ArrayList<>();
 
-    public static int insPE(String name, int paraSize){
-        progTable.add(new ProgTableEntry(name, paraSize));
-        return progTable.size() - 1;
+    public static ProgTableEntry getProg_Entry(int adr){
+        return prog_Table.get(adr);
     }
 
-    public static ProgTableEntry getPE(int adr){
-        return progTable.get(adr);
+    public static int insertProg_Entry(String name, int paraSize){
+        ProgTableEntry progTableEntry = new ProgTableEntry(name,paraSize);
+        prog_Table.add(progTableEntry);
+        int size = prog_Table.size();
+        return size - 1;
     }
+
 }

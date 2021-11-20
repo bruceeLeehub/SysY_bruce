@@ -50,11 +50,11 @@ public class FuncDef {
 
     public void genCode() {
         Typ typ = Typ.TYP_INT;
-        int funcRef = ProgTable.insPE(ident.getIdentName(), funcFParamList.size());
+        int funcRef = ProgTable.insertProg_Entry(ident.getIdentName(), funcFParamList.size());
         if (this.funcType.getRegKey().equals(RegKey.VOIDTK))
             typ = Typ.TYP_VOID;
 
-        Table.addTeToCurTab(ident.getIdentName(), Obj.OBJ_FUNC, typ, 0,
+        Table.addTeToCurTab(ident.getIdentName(), Obj.FUNC_OBJ, typ, 0,
                 funcRef, Table.getCurLayer(), Code.get_NextFreeRoom());
         Table.createNewLayer();
         for (FuncFParam para : funcFParamList) {

@@ -52,10 +52,10 @@ public class ConstDef {
 
         this.constInitVal.genCode(constIniValue);
         if(constExpList.size() != 0){       // this is an array
-            Table.addTeToCurTab(ident.getIdentName(), Obj.OBJ_CONST, Typ.TYP_INT, dimList.size(),
+            Table.addTeToCurTab(ident.getIdentName(), Obj.CONST_OBJ, Typ.TYP_INT, dimList.size(),
                     ArrTable.createAnEntry(dimList, constIniValue), Table.getCurLayer(), 0);
         }else{      // a normal const variable
-            Table.addTeToCurTab(ident.getIdentName(), Obj.OBJ_CONST, Typ.TYP_INT, 0,
+            Table.addTeToCurTab(ident.getIdentName(), Obj.CONST_OBJ, Typ.TYP_INT, 0,
                     0, Table.getCurLayer(), constIniValue.get(0));
         }
     }

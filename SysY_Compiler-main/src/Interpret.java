@@ -182,10 +182,10 @@ public class Interpret {
         else
             display.put(level, popValBeforeSwp(level));
 
-        level = MemoryStack.getDataFromAdr(basePtr + 2);
+        level = MemoryStack.get_DataFromAdr(basePtr + 2);
         int preBase = basePtr;   // no need to leave a return value;
-        basePtr = MemoryStack.getDataFromAdr(basePtr + 3);
-        MemoryStack.movePtr(preBase - 1);
+        basePtr = MemoryStack.get_DataFromAdr(basePtr + 3);
+        MemoryStack.move_Ptr(preBase - 1);
     }
 
 
@@ -198,7 +198,7 @@ public class Interpret {
     public static void runningLOD(int x, int y) {
         pc += 1;
         int addr = display.get(x) + y + 5;
-        int value = MemoryStack.getDataFromAdr(addr);
+        int value = MemoryStack.get_DataFromAdr(addr);
         MemoryStack.add_DataToTop(value);
     }
 
@@ -385,9 +385,9 @@ public class Interpret {
         pc += 1;
         int diff = MemoryStack.popOutdata();
         int adr = MemoryStack.popOutdata();
-        //adr = MemoryStack.getDataFromAdr(adr);
+        //adr = MemoryStack.get_DataFromAdr(adr);
         int dest = adr + diff;
-        int data = MemoryStack.getDataFromAdr(dest);
+        int data = MemoryStack.get_DataFromAdr(dest);
         MemoryStack.add_DataToTop(data);
     }
 
@@ -415,23 +415,23 @@ public class Interpret {
         MemoryStack.saveDataToAdr(adr, retVal);
 
         // consider whether move return value or not
-        pc = MemoryStack.getDataFromAdr(basePtr + 1);
+        pc = MemoryStack.get_DataFromAdr(basePtr + 1);
         boolean swapped = swapped(level);
-        int preBase = MemoryStack.getDataFromAdr(basePtr + 3);
+        int preBase = MemoryStack.get_DataFromAdr(basePtr + 3);
         if (!swapped) {
             display.remove(level);
         } else
             display.put(level, popValBeforeSwp(level));
 
-        level = MemoryStack.getDataFromAdr(basePtr + 2);
-        MemoryStack.movePtr(basePtr);
+        level = MemoryStack.get_DataFromAdr(basePtr + 2);
+        MemoryStack.move_Ptr(basePtr);
         // basePtr = display.get(lev);
         basePtr = preBase;
     }
 
     public static void runningCAL() {
-        int adr = MemoryStack.getDataFromAdr(basePtr + 4);
-        ProgTableEntry progTableEntry = ProgTable.getPE(adr);
+        int adr = MemoryStack.get_DataFromAdr(basePtr + 4);
+        ProgTableEntry progTableEntry = ProgTable.getProg_Entry(adr);
         String proName = progTableEntry.getProName();
         TableEntry tableEntry = Table.getFuncTe(proName);
         level = tableEntry.getLev() + 1;
@@ -456,32 +456,32 @@ public class Interpret {
             runningDBK();
         }
         // consider whether move return value or not
-        pc = MemoryStack.getDataFromAdr(basePtr + 1);
+        pc = MemoryStack.get_DataFromAdr(basePtr + 1);
         boolean swapped = swapped(level);
-        int preBase = MemoryStack.getDataFromAdr(basePtr + 3);
+        int preBase = MemoryStack.get_DataFromAdr(basePtr + 3);
         if (!swapped) {
             display.remove(level);
         } else
             display.put(level, popValBeforeSwp(level));
 
-        level = MemoryStack.getDataFromAdr(basePtr + 2);
-        MemoryStack.movePtr(basePtr - 1);
+        level = MemoryStack.get_DataFromAdr(basePtr + 2);
+        MemoryStack.move_Ptr(basePtr - 1);
         // basePtr = display.get(lev);
         basePtr = preBase;
     }
 
 //    public static void VRE() {
 //        // consider whether move return value or not
-//        pc = MemoryStack.getDataFromAdr(basePtr + 1);
-//        int preBase = MemoryStack.getDataFromAdr(basePtr + 3);
+//        pc = MemoryStack.get_DataFromAdr(basePtr + 1);
+//        int preBase = MemoryStack.get_DataFromAdr(basePtr + 3);
 //        if (swapped(level)) {
 //            int val = popValBeforeSwp(level);
 //            display.put(level, val);
 //        } else
 //            display.remove(level);
 //
-//        level = MemoryStack.getDataFromAdr(basePtr + 2);
-//        MemoryStack.movePtr(basePtr);
+//        level = MemoryStack.get_DataFromAdr(basePtr + 2);
+//        MemoryStack.move_Ptr(basePtr);
 //        // basePtr = display.get(lev);
 //        basePtr = preBase;
 //    }

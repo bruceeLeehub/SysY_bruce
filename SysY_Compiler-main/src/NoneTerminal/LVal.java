@@ -78,7 +78,7 @@ public class LVal {
                     Code.addCode(CodeType.LAV);
             } else {
                 if (lenOfDims != 0) { // elements of array
-                    if (te.getObj().equals(Obj.OBJ_CONST))
+                    if (te.getObj().equals(Obj.CONST_OBJ))
                         Code.addCode(CodeType.LDC, te.getAdr());
                     else if (te.isPara())    // for array para, its value is adr, so LOD
                         Code.addCode(CodeType.LOD, Table.getAttrLev(ident), Table.getArrayAdr(ident));
@@ -100,7 +100,7 @@ public class LVal {
                     if (isLeftValue)
                         Code.addCode(CodeType.ADD);
                     else {
-                        if (te.getObj().equals(Obj.OBJ_CONST))
+                        if (te.getObj().equals(Obj.CONST_OBJ))
                             Code.addCode(CodeType.LCA);
                         else
                             Code.addCode(CodeType.LAV);
@@ -110,7 +110,7 @@ public class LVal {
                     if (isLeftValue)
                         Code.addCode(CodeType.LDA, Table.getAttrLev(ident), te.getAdr());
                     else {
-                        if (te.getObj().equals(Obj.OBJ_CONST))
+                        if (te.getObj().equals(Obj.CONST_OBJ))
                             Code.addCode(CodeType.LDC, te.getAdr());
                         else
                             Code.addCode(CodeType.LOD, te.getLev(), te.getAdr());

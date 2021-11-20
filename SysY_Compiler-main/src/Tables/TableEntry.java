@@ -56,7 +56,7 @@ public class TableEntry {
     }
 
     public int getAdr() {
-        if(this.obj.equals(Obj.OBJ_CONST) && this.dims != 0)
+        if(this.obj.equals(Obj.CONST_OBJ) && this.dims != 0)
             return this.ref;
         return adr;
     }

@@ -1,5 +1,5 @@
 package Tables;
 
 public enum Obj {
-    OBJ_CONST, OBJ_VAR, OBJ_FUNC
+    CONST_OBJ, VAR_OBJ, FUNC_OBJ
 }

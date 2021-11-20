@@ -27,29 +27,29 @@ public class Table {
     }
 
     public static void addTeToCurTab(String name, Obj obj, Typ typ, int dims, int ref, int lev, int adr){
-        boolean isFunc = obj.equals(Obj.OBJ_FUNC);
+        boolean isFunc = obj.equals(Obj.FUNC_OBJ);
         int curSize = adr;
         int curPtr = table.size() - 1;
-        if(obj.equals(Obj.OBJ_VAR))
+        if(obj.equals(Obj.VAR_OBJ))
             adr = preSize;
         table.get(curPtr).getTheRightTable(isFunc).put(
                 name, new TableEntry(obj, typ, dims, ref, lev, adr)
         );
-        if(!obj.equals(Obj.OBJ_CONST))
+        if(!obj.equals(Obj.CONST_OBJ))
             preSize += curSize;
     }
 
     public static void addTeToCurTab(String name, Obj obj, Typ typ, int dims, int ref, int lev, int adr,
                                      boolean isPara){
-        boolean isFunc = obj.equals(Obj.OBJ_FUNC);
+        boolean isFunc = obj.equals(Obj.FUNC_OBJ);
         int curSize = adr;
         int curPtr = table.size() - 1;
-        if(obj.equals(Obj.OBJ_VAR))
+        if(obj.equals(Obj.VAR_OBJ))
             adr = preSize;
         table.get(curPtr).getTheRightTable(isFunc).put(
                 name, new TableEntry(obj, typ, dims, ref, lev, adr, isPara)
         );
-        if(!obj.equals(Obj.OBJ_CONST))
+        if(!obj.equals(Obj.CONST_OBJ))
             preSize += curSize;
     }
 
