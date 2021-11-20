@@ -213,7 +213,7 @@ public class IdentifySymbol {
                         symbol = extraSingle(code);
                     }
                 } catch (Wrong e) {
-                    int row = e.getRow();
+                    int row = e.wrongRow();
                     System.out.println("error in line " + row);
                 }
             }

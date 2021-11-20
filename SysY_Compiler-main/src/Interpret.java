@@ -395,7 +395,7 @@ public class Interpret {
         pc += 1;
         int offset = MemoryStack.pop();
         int adr = MemoryStack.pop();
-        int value = ArrTable.getArrTable().get(adr).getConstArray().get(offset);
+        int value = ArrTable.getArrTable().get(adr).getConst_Array().get(offset);
         MemoryStack.addDataToTop(value);
     }
 

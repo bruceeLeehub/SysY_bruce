@@ -85,9 +85,9 @@ public class Table {
         ArrTableEntry arrTableEntry = ArrTable.getArrTable().get(te.getRef());
         int diff = dimValue.get(dimValue.size() - 1);
         for(int i = dimValue.size() - 2; i >=0 ;i--){
-            diff += dimValue.get(i) * arrTableEntry.getUpperBounds().get(i);
+            diff += dimValue.get(i) * arrTableEntry.getUpper_Bounds().get(i);
         }
-        return arrTableEntry.getConstArray().get(diff);
+        return arrTableEntry.getConst_Array().get(diff);
     }
 
     public static int getConstIdentValue(Ident ident) {
@@ -100,7 +100,7 @@ public class Table {
     public static ArrayList<Integer> getArrayDims(Ident ident) {
         TableEntry te = getAttrTe(ident.getIdentName());
         ArrTableEntry arrTableEntry = ArrTable.getArrTable().get(te.getRef());
-        return arrTableEntry.getUpperBounds();
+        return arrTableEntry.getUpper_Bounds();
     }
 
     public static int getArrayAdr(Ident ident) {

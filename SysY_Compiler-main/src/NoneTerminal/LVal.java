@@ -65,7 +65,7 @@ public class LVal {
                     Code.addCode(CodeType.MUL);
                     Code.addCode(CodeType.ADD);
                 } else if (expList.size() != 0 && expList.size() != Table.getAttrTe(ident.getIdentName()).getDims()) { // dims not equal, send a sub-array
-                    int lastDim = ArrTable.getArrTable().get(Table.getAttrTe(ident.getIdentName()).getRef()).getUpperBounds().get(1);
+                    int lastDim = ArrTable.getArrTable().get(Table.getAttrTe(ident.getIdentName()).getRef()).getUpper_Bounds().get(1);
                     Code.addCode(CodeType.LDC, lastDim);
                     Code.addCode(CodeType.MUL);
                     isLeftValue = true;

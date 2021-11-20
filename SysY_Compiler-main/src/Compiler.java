@@ -8,7 +8,7 @@ import NoneTerminal.CompUnit;
 import WordAnalyse.IdentifySymbol;
 import WordAnalyse.SourceCode;
 import WordAnalyse.Symbol;
-
+import Tables.Code;
 
 
 public class Compiler {
@@ -33,7 +33,7 @@ public class Compiler {
 
         compUnit_astRoot = CompUnit.analyse(identifySymbol);
         compUnit_astRoot.genCode();
-        //System.out.println(Code.seeCode());//将代码输出到屏幕上
+        System.out.println(Code.seeCode());//将代码输出到屏幕上
         Interpret.runInterpreter();
 
 

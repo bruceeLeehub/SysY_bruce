@@ -1,12 +1,11 @@
 package WordAnalyse;
 
 public class Wrong extends Exception{
-    private int row;
+    private final int row;
+    public int wrongRow(){
+        return this.row;
+    }
     public Wrong(int row){
         this.row = row;
-    }
-
-    public int getRow(){
-        return row;
     }
 }
