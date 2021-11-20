@@ -97,7 +97,7 @@ public class VarDef {
             varDef.addConstExp(ConstExp.analyse(identifySymbol));
             // ERROR -- k: ']' needed
             if (identifySymbol.getCurSym().getRegKey() != RegKey.RBRACK)
-                Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " k");
+                Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " k");
             else identifySymbol.getASymbol();
 
         }

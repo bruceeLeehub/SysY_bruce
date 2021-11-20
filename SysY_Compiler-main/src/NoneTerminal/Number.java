@@ -25,7 +25,7 @@ public class Number {
 
     public static Number analyse(IdentifySymbol identifySymbol) {
         boolean judge = true;
-        Number number = new Number(Integer.valueOf(identifySymbol.getCurSym().getIdentName()));
+        Number number = new Number(Integer.valueOf(identifySymbol.getCurSym().get_IdentName()));
         judge &= identifySymbol.getCurSym().getRegKey() == RegKey.INTCON;
 
         if (judge) {

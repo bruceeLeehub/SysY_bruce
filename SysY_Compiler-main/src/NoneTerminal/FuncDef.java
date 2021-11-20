@@ -93,7 +93,7 @@ public class FuncDef {
                     if (sym.getRegKey() == RegKey.LBRACE) {
                         // ERROR -- j: ')' needed
                         if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)
-                            Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " j");
+                            Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " j");
                     } else {
                         identifySymbol.getASymbol();
                     }
@@ -104,12 +104,12 @@ public class FuncDef {
                     funcDef.setBlock(Block.analyse(identifySymbol));
                     // ERROR -- g: func have return value don't have return stmt in the end
                     if (FuncDef.haveRetVal == true && Block.haveRetStmt == false)
-                        Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " g");
+                        Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " g");
                 } else {
                     judge &= FuncFParams.analyse(identifySymbol, paramList, funcDef);
                     // ERROR -- j: ')' needed
                     if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)
-                        Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " j");
+                        Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " j");
                     else identifySymbol.getASymbol();
                     // insert funcDef into previous stmTable
                     if (CompUnit.isNameDupDef == false)
@@ -118,7 +118,7 @@ public class FuncDef {
                     funcDef.setBlock(Block.analyse(identifySymbol));
                     // ERROR -- g: func have return value don't have return stmt in the end
                     if (FuncDef.haveRetVal == true && Block.haveRetStmt == false)
-                        Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " g");
+                        Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " g");
 
                 }
 

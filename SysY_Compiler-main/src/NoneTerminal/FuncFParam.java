@@ -87,7 +87,7 @@ public class FuncFParam {
                 funcFParam.newConstExp();
                 // ERROR -- k: ']' needed
                 if (identifySymbol.getCurSym().getRegKey() != RegKey.RBRACK)
-                    Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " k");
+                    Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " k");
                 else identifySymbol.getASymbol();
                 while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.LBRACK) {
                     dims++; // dims++
@@ -95,7 +95,7 @@ public class FuncFParam {
                     funcFParam.addConstExp(ConstExp.analyse(identifySymbol));
                     // ERROR -- k: ']' needed
                     if (identifySymbol.getCurSym().getRegKey() != RegKey.RBRACK)
-                        Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " k");
+                        Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " k");
                     else identifySymbol.getASymbol();
 
                 }

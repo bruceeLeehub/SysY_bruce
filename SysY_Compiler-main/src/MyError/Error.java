@@ -14,7 +14,7 @@ public class Error {
     }
 
     public static boolean checkFormatStr(Symbol sym, MyInt numOfExpExpected) {
-        char str[] = sym.getIdentName().toCharArray();
+        char str[] = sym.get_IdentName().toCharArray();
         boolean ret = true;
         numOfExpExpected.myInt = 0;
         for (int i = 0; i < str.length && ret; i++) {
@@ -37,26 +37,26 @@ public class Error {
                 ret = false;
             }
         }
-        if(!ret) errorPrintList.add(sym.getRowIdx() + " a");
+        if(!ret) errorPrintList.add(sym.getRow_Idx() + " a");
         return ret;
     }
 
     public static void checkIfDupDef(boolean isFunc, Symbol sym){
-        CompUnit.isNameDupDef = SymTable.curTabContainsName(isFunc, sym.getIdentName());
+        CompUnit.isNameDupDef = SymTable.curTabContainsName(isFunc, sym.get_IdentName());
         if (CompUnit.isNameDupDef)
-            Error.addErrorOutPut(sym.getRowIdx() + " b");
+            Error.addErrorOutPut(sym.getRow_Idx() + " b");
     }
 
     public static void checkNameUndefined(boolean isFunc, Symbol sym){
-        boolean isDefined = SymTable.allTabContainsName(isFunc, sym.getIdentName());
+        boolean isDefined = SymTable.allTabContainsName(isFunc, sym.get_IdentName());
         if(isDefined == false)
-            Error.addErrorOutPut(sym.getRowIdx() + " c");
+            Error.addErrorOutPut(sym.getRow_Idx() + " c");
     }
 
     public static void checkParamNumMatched(Symbol sym, Integer numOfParamsActually){
-        int numOfParamsExpected = SymTable.getParamsExpected(sym.getIdentName());
+        int numOfParamsExpected = SymTable.getParamsExpected(sym.get_IdentName());
         if(numOfParamsExpected != numOfParamsActually)
-            Error.addErrorOutPut(sym.getRowIdx() + " d");
+            Error.addErrorOutPut(sym.getRow_Idx() + " d");
     }
 
     public static void checkRParamsMatched(TableEntry funcTE, TableEntry actuallyTE, Symbol sym, int paramSeq){
@@ -68,13 +68,13 @@ public class Error {
         isMatched &= expectedTE.getDType() == actuallyTE.getDType();
         isMatched &= expectedTE.getDims() == actuallyTE.getDims();
         if(isMatched == false)
-            Error.addErrorOutPut(sym.getRowIdx() + " e");
+            Error.addErrorOutPut(sym.getRow_Idx() + " e");
     }
 
     public static void checkAssignValueToConst(Symbol sym){
-        TableEntry te = SymTable.getSymByNameFromAllTab(false, sym.getIdentName());
+        TableEntry te = SymTable.getSymByNameFromAllTab(false, sym.get_IdentName());
         if(te != null && te.isConst())
-            Error.addErrorOutPut(sym.getRowIdx() + " h");
+            Error.addErrorOutPut(sym.getRow_Idx() + " h");
     }
 
     public static void addErrorOutPut(String str){

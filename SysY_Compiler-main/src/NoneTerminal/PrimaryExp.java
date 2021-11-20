@@ -59,7 +59,7 @@ public class PrimaryExp {
             primaryExp.setExp(Exp.analyse(identifySymbol));
             if (judge) {
                 if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)
-                    Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " j");
+                    Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " j");
                 else
                     identifySymbol.getASymbol();
             }

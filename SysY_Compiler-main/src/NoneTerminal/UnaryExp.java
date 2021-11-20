@@ -103,12 +103,12 @@ public class UnaryExp {
             sym = identifySymbol.getASymbol();
 
             if (sym.getRegKey() == RegKey.LPARENT) { // Ident '(' [ FuncRParams ] ')'
-                unaryExp.setIdent(new Ident(identSym.getIdentName()));
+                unaryExp.setIdent(new Ident(identSym.get_IdentName()));
                 MyInt numOfParamsActually = new MyInt();
                 // ERROR: check name undefined -- type c
                 Error.checkNameUndefined(true, identSym);
                 // checking RParams type
-                tmpEntry = SymTable.getSymByNameFromAllTab(true, identSym.getIdentName());
+                tmpEntry = SymTable.getSymByNameFromAllTab(true, identSym.get_IdentName());
                 if (FuncRParams.checkingType) {
                     FuncRParams.tbEntryModel.add(SymTable.createTbEntryModel(tmpEntry, 0));
                     if (LVal.inDims == 0)
@@ -119,7 +119,7 @@ public class UnaryExp {
                     if (judge) {
                         // ERROR -- j: ')' needed
                         if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)
-                            Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " j");
+                            Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " j");
                         else identifySymbol.getASymbol();
                     }
                 } else {

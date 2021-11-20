@@ -42,7 +42,7 @@ public class MainFuncDef {
             sym = identifySymbol.getASymbol();
             // ERROR -- j: ')' needed
             if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)
-                Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " j");
+                Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " j");
             else
                 identifySymbol.getASymbol();
         }
@@ -51,7 +51,7 @@ public class MainFuncDef {
             mainFuncDef.setBlock(Block.analyse(identifySymbol));
             // ERROR -- g: func have return value don't have return stmt in the end
             if (Block.haveRetStmt == false)
-                Error.addErrorOutPut(identifySymbol.getCurSym().getRowIdx() + " g");
+                Error.addErrorOutPut(identifySymbol.getCurSym().getRow_Idx() + " g");
         }
 
         if(judge){

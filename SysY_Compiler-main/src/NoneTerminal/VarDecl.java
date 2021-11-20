@@ -50,7 +50,7 @@ public class VarDecl extends Decl {
             varDecl.addVarDef(VarDef.analyse(identifySymbol));
         }
         if (judge && identifySymbol.getCurSym().getRegKey() == RegKey.SEMICN) identifySymbol.getASymbol();
-        else Error.addErrorOutPut(identifySymbol.getPreSym().getRowIdx() + " i"); // ERROR -- i: ';' needed
+        else Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " i"); // ERROR -- i: ';' needed
 
 
         if (judge) {

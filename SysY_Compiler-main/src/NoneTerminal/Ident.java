@@ -29,7 +29,7 @@ public class Ident {
         Symbol sym = identifySymbol.getCurSym();
         Ident ident = new Ident();
         if(sym.getRegKey() == RegKey.IDENFR){
-            name.string = sym.getIdentName();
+            name.string = sym.get_IdentName();
             ident.setIdentName(name.string);
             identifySymbol.getASymbol();
             return ident;
