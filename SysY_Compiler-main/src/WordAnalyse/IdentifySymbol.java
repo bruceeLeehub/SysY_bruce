@@ -46,7 +46,7 @@ public class IdentifySymbol {
         StringBuilder stringValue = new StringBuilder();
         char cur_Char;
         while (!code.isEnd()) {
-            cur_Char = code.getNextChar();
+            cur_Char = code.getNext_Char();
             boolean isIdOrKey = (Character.isDigit(cur_Char) || Character.isAlphabetic(cur_Char) || cur_Char == '_');
             if (isIdOrKey) {
                 stringValue.append(cur_Char);
@@ -56,8 +56,8 @@ public class IdentifySymbol {
             }
         }
         String s = stringValue.toString();
-        code.backWard();
-        return new Symbol(s, code.getRowIdx());
+        code.back_Ward();
+        return new Symbol(s, code.get_RowIdx());
     }
 
 
@@ -81,49 +81,49 @@ public class IdentifySymbol {
 
 
     private Symbol extraSingle(SourceCode code) throws Wrong {
-        char curCode = code.getNextChar();
+        char curCode = code.getNext_Char();
         boolean isSingle = (curCode == '+' || curCode == '-' || curCode == '*' ||
                 curCode == '%' || curCode == ';' || curCode == ',' || curCode == '(' ||
                 curCode == ')' || curCode == '[' || curCode == ']' || curCode == '{' || curCode == '}');
         if (!isSingle) {
-            throw new Wrong(code.getRowIdx());
+            throw new Wrong(code.get_RowIdx());
         } else {
             String s = String.valueOf(curCode);
-            return new Symbol(s, code.getRowIdx());
+            return new Symbol(s, code.get_RowIdx());
         }
     }
 
     private Symbol extraEven(SourceCode code) throws Wrong {
-        char curCode = code.getNextChar();
+        char curCode = code.getNext_Char();
         StringBuilder stringValue = new StringBuilder();
         stringValue.append(curCode);
 
         if (code.isEnd()) {
             if (curCode == '&' || curCode == '|') {////////////////////////////////////////
-                throw new Wrong(code.getRowIdx());
+                throw new Wrong(code.get_RowIdx());
             } else {
                 String s = stringValue.toString();
-                return new Symbol(s, code.getRowIdx());
+                return new Symbol(s, code.get_RowIdx());
             }
         }
 
-        char curCode_2 = code.getNextChar();
+        char curCode_2 = code.getNext_Char();
         if (curCode == '&' || curCode == '|') {
             if (curCode == curCode_2) {
                 stringValue.append(curCode);
             } else {
-                code.backWard();
+                code.back_Ward();
             }
             String s = stringValue.toString();
-            return new Symbol(s, code.getRowIdx());
+            return new Symbol(s, code.get_RowIdx());
         } else {
             if (curCode_2 == '=') {
                 stringValue.append(curCode_2);
             } else {
-                code.backWard();
+                code.back_Ward();
             }
             String s = stringValue.toString();
-            return new Symbol(s, code.getRowIdx());
+            return new Symbol(s, code.get_RowIdx());
         }
     }
 
@@ -131,7 +131,7 @@ public class IdentifySymbol {
     private Symbol extraNum(SourceCode code) {
         StringBuilder stringValue = new StringBuilder();
         while (!code.isEnd()) {
-            char cur_Char = code.getNextChar();
+            char cur_Char = code.getNext_Char();
             if (Character.isDigit(cur_Char)) {
                 stringValue.append(cur_Char);
             } else {
@@ -139,45 +139,45 @@ public class IdentifySymbol {
             }
         }
         String s = stringValue.toString();
-        code.backWard();
-        return new Symbol(RegKey.INTCON, s, code.getRowIdx());
+        code.back_Ward();
+        return new Symbol(RegKey.INTCON, s, code.get_RowIdx());
     }
 
     private Symbol extraComOrDiv(SourceCode code) {
         char curChar;
-        curChar = code.getNextChar();
+        curChar = code.getNext_Char();
         Symbol symbol = null;
         if (!code.isEnd()) {
-            curChar = code.getNextChar();
+            curChar = code.getNext_Char();
         } else {
-            return new Symbol("/", code.getRowIdx());
+            return new Symbol("/", code.get_RowIdx());
         }
 
         if (curChar == '*') {
-            code.skipMulLineCom();
+            code.jumpOverMulLineComment();
         } else if (curChar == '/') {
-            code.skipLineCom();
+            code.jumpOverLineComments();
         } else {
-            code.backWard();
-            symbol = new Symbol("/", code.getRowIdx());
+            code.back_Ward();
+            symbol = new Symbol("/", code.get_RowIdx());
         }
 
         return symbol;
     }
 
     private Symbol extraFString(SourceCode code) throws Wrong {
-        char curCode = code.getNextChar();
+        char curCode = code.getNext_Char();
         StringBuilder value = new StringBuilder("\"");
 
         while (!code.isEnd()) {
-            curCode = code.getNextChar();
+            curCode = code.getNext_Char();
             value.append(curCode);
             if(curCode == '\"'){
                 break;
             }
         }
         String s = value.toString();
-        int rowIdx = code.getRowIdx();
+        int rowIdx = code.get_RowIdx();
         Symbol ret = new Symbol(RegKey.STRCON,s,rowIdx);
         return ret;
     }
@@ -192,10 +192,10 @@ public class IdentifySymbol {
             Symbol symbol = null;
             char curChar;
             while (symbol == null && !code.isEnd()) {
-                curChar = code.getNextChar();
+                curChar = code.getNext_Char();
                 boolean isSpace = (curChar == ' ' || curChar == '\r' || curChar == '\n' || curChar == '\t');
                 if (isSpace) continue;
-                code.backWard();
+                code.back_Ward();
                 try {
                     if (curChar == '_' || Character.isAlphabetic(curChar)) {
                         symbol = extraIdentOrKeyword(code);

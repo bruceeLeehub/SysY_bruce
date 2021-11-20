@@ -3,7 +3,7 @@ package WordAnalyse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class SourceCode {
@@ -12,79 +12,71 @@ public class SourceCode {
     private int rowIdx;
 
 
-    public char getNextChar() {
-        char c = sourceCode.get(ptr++);
-        if (c == '\n') {
-            rowIdx++;
+    public char getNext_Char() {
+        char ch = sourceCode.get(ptr);
+        if (ch == '\n') {
+            rowIdx = rowIdx + 1;
         }
-        return c;
-    }
-
-    public boolean isEnd() {
-        return ptr == sourceCode.size();
-    }
-
-    public void backWard() {
-        ptr--;
-    }
-
-    public int getRowIdx() {
-        return rowIdx;
-    }
-
-    public void skipLineCom() {
-        char c = getNextChar();
-        while (c != '\n' && !isEnd()) {
-            c = getNextChar();
-        }
+        ptr += 1;
+        return ch;
     }
 
 
-    public void skipMulLineCom() {
-        char c = getNextChar();
-        boolean flag = false;
-        while (!isEnd()) {
-            if (flag && c == '/') {
-                break;
-            } else {
-                flag = false;
-            }
-
-            if (c == '*') {
-                flag = true;
-            }
-            c = getNextChar();
-        }
+    public void back_Ward() {
+        this.ptr = this.ptr - 1;
     }
 
-    public String readToString(String fileName) {
-        String encoding = "UTF-8";
-        File file = new File(fileName);
-        Long filelength = file.length();
-        byte[] filecontent = new byte[filelength.intValue()];
+    public int get_RowIdx() {
+        return this.rowIdx;
+    }
+
+    public String readToString(String testfileName) {
+        File testFile = new File(testfileName);
+        long filelength = testFile.length();
+        byte[] file_content = new byte[(int) filelength];
         try {
-            FileInputStream in = new FileInputStream(file);
-            in.read(filecontent);
-            in.close();
+            FileInputStream input = new FileInputStream(testFile);
+            input.read(file_content);
+            input.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            return new String(filecontent, encoding);
-        } catch (UnsupportedEncodingException e) {
-            System.err.println("The OS does not support " + encoding);
-            e.printStackTrace();
-            return null;
-        }
-    }////
+        return new String(file_content, StandardCharsets.UTF_8);
+    }
 
-    public SourceCode(String path) {
+    public void jumpOverMulLineComment() {
+        char ch = getNext_Char();
+        boolean meetSecStar = false;
+        while (!isEnd()) {
+            if (meetSecStar && ch == '/') {
+                break;
+            } else {
+                meetSecStar = false;
+            }
+
+            if (ch == '*') {
+                meetSecStar = true;
+            }
+            ch = getNext_Char();
+        }
+    }
+    public SourceCode(String testfilename) {
         this.ptr = 0;
         this.rowIdx = 1;
-        String code = readToString(path);
+        String code = readToString(testfilename);
         this.sourceCode = new ArrayList<>();
         for(int i = 0; i < code.length(); i++){
             this.sourceCode.add(code.charAt(i));
+        }
+    }
+    public boolean isEnd() {
+        long distance = sourceCode.size() - ptr;
+        return (distance == 0);
+    }
+    public void jumpOverLineComments() {
+        char ch = getNext_Char();
+        while (ch != '\n' && !isEnd()) {
+            ch = getNext_Char();
         }
     }
 }
