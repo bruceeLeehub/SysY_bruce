@@ -49,10 +49,10 @@ public class FuncDef {
     }
 
     public void genCode() {
-        Typ typ = Typ.TYP_INT;
+        Typ typ = Typ.INT_TYP;
         int funcRef = ProgTable.insertProg_Entry(ident.getIdentName(), funcFParamList.size());
         if (this.funcType.getRegKey().equals(RegKey.VOIDTK))
-            typ = Typ.TYP_VOID;
+            typ = Typ.VOID_TYP;
 
         Table.addTeToCurrentTable(ident.getIdentName(), Obj.FUNC_OBJ, typ, 0,
                 funcRef, Table.getCurLayer(), Code.get_NextFreeRoom());

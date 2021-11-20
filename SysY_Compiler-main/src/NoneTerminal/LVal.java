@@ -40,7 +40,7 @@ public class LVal {
                     exp.genCode(value);
                     dimValue.add(value.myInt);
                 }
-                value.myInt = Table.getConstArrayValue(ident, dimValue);
+                value.myInt = Table.get_ConstArrayValue(ident, dimValue);
             } else {
                 value.myInt = Table.get_ConstIdentValue(ident);
             }
@@ -51,9 +51,9 @@ public class LVal {
             boolean isArray = lenOfExpList < lenOfDims;
             if (isArray) {
                 if (te.isPara())    // for array para, its value is adr, so LOD
-                    Code.addCode(CodeType.LOD, Table.getAttrLev(ident), Table.getArrayAdr(ident));
+                    Code.addCode(CodeType.LOD, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
                 else
-                    Code.addCode(CodeType.LDA, Table.getAttrLev(ident), Table.getArrayAdr(ident));
+                    Code.addCode(CodeType.LDA, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
                 for (Exp exp : expList) {
                     exp.genCode(null);
                 }
@@ -81,9 +81,9 @@ public class LVal {
                     if (te.getObj().equals(Obj.CONST_OBJ))
                         Code.addCode(CodeType.LDC, te.getAdr());
                     else if (te.isPara())    // for array para, its value is adr, so LOD
-                        Code.addCode(CodeType.LOD, Table.getAttrLev(ident), Table.getArrayAdr(ident));
+                        Code.addCode(CodeType.LOD, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
                     else
-                        Code.addCode(CodeType.LDA, Table.getAttrLev(ident), Table.getArrayAdr(ident));
+                        Code.addCode(CodeType.LDA, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
                     for (Exp exp : expList) {
                         exp.genCode(null);
                     }
@@ -108,7 +108,7 @@ public class LVal {
 
                 } else {    // normal var
                     if (isLeftValue)
-                        Code.addCode(CodeType.LDA, Table.getAttrLev(ident), te.getAdr());
+                        Code.addCode(CodeType.LDA, Table.get_AttrLev(ident), te.getAdr());
                     else {
                         if (te.getObj().equals(Obj.CONST_OBJ))
                             Code.addCode(CodeType.LDC, te.getAdr());

@@ -65,14 +65,14 @@ public class VarDef {
             buildDefaultIniValue(dimList, iniValue);
 
         if (dimList.size() != 0) {    // this is an array
-            Table.addTeToCurrentTable(ident.getIdentName(), Obj.VAR_OBJ, Typ.TYP_INT,
+            Table.addTeToCurrentTable(ident.getIdentName(), Obj.VAR_OBJ, Typ.INT_TYP,
                     dimList.size(), ArrTable.createAnEntry(dimList), Table.getCurLayer(), sizeOfArray);
             if(this.initVal == null){
                 for(int k : iniValue)
                     Code.addCode(CodeType.LDC, 0);  // initial value with 0
             }   // else if iniValue.size != 0, it says that this initial procdure has been done
         } else {
-            Table.addTeToCurrentTable(ident.getIdentName(), Obj.VAR_OBJ, Typ.TYP_INT,
+            Table.addTeToCurrentTable(ident.getIdentName(), Obj.VAR_OBJ, Typ.INT_TYP,
                     dimList.size(), 0, Table.getCurLayer(), 1);
             if(this.initVal == null)
                 Code.addCode(CodeType.LDC, 0);

@@ -20,17 +20,25 @@ public class Table {
         return tableEntry;
     }
 
-    public static int getConstArrayValue(Ident ident, ArrayList<Integer> dimValue) {
-        TableEntry te = getAttrTableEntry(ident.getIdentName());
-        ArrTableEntry arrTableEntry = ArrTable.getArrTable().get(te.getRef());
-        int diff = dimValue.get(dimValue.size() - 1);
-        for(int i = dimValue.size() - 2; i >=0 ;i--){
-            diff += dimValue.get(i) * arrTableEntry.getUpper_Bounds().get(i);
+    public static int get_ConstArrayValue(Ident ident, ArrayList<Integer> dim_Value) {
+        String name = ident.getIdentName();
+        TableEntry tableEntry = getAttrTableEntry(name);
+        ArrayList<ArrTableEntry> arrayTable = ArrTable.getArrTable();
+        int ref = tableEntry.getRef();
+        ArrTableEntry arrTableEntry = arrayTable.get(ref);
+        int back = dim_Value.size() - 1;
+        int diff = dim_Value.get(back);
+        for(int i = dim_Value.size() - 2; i >=0 ;i--){
+            int dimValue_i = dim_Value.get(i);
+            int upperBounds = arrTableEntry.getUpper_Bounds().get(i);
+            diff  = diff + dimValue_i * upperBounds;
         }
-        return arrTableEntry.getConst_Array().get(diff);
+        ArrayList<Integer> constArray = arrTableEntry.getConst_Array();
+        int value = constArray.get(diff);
+        return value;
     }
 
-    public static int getAttrLev(Ident ident) {
+    public static int get_AttrLev(Ident ident) {
         String name = ident.getIdentName();
         TableEntry tableEntry = getAttrTableEntry(name);
         int level = tableEntry.getLev();
@@ -111,7 +119,7 @@ public class Table {
         return identValue;
     }
 
-    public static int getArrayAdr(Ident ident) {
+    public static int get_ArrayAdr(Ident ident) {
         String name = ident.getIdentName();
         TableEntry tableEntry = getAttrTableEntry(name);
         int adr = tableEntry.getAdr();

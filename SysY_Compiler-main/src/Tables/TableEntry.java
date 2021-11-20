@@ -1,13 +1,13 @@
 package Tables;
 
 public class TableEntry {
-    private Obj obj;
-    private Typ typ;
-    private int dims;
-    private int ref;    // for array - abtab & func - btab
-    private int lev;    // for level
-    private int adr;    // for var - relative address & func - entry address & const - values
-    private boolean isPara;
+    private final Obj obj;
+    private final Typ typ;
+    private final int dims;
+    private final int ref;    // for array - abtab & func - btab
+    private final int lev;    // for level
+    private final int adr;    // for var - relative address & func - entry address & const - values
+    private final boolean isPara;
 
 
     public TableEntry(Obj obj, Typ typ, int dims, int ref, int lev, int adr) {
