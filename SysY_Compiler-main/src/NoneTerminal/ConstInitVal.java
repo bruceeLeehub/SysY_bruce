@@ -1,71 +1,74 @@
 package NoneTerminal;
 
-import ParcelType.My_Int;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import ParcelType.*;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class ConstInitVal {
-    public static String name = "<ConstInitVal>";
+    public static String name_constInitVal = "<ConstInitVal>";
 
-    private ArrayList<ConstExp> constExpList;
+    private final ArrayList<ConstExp> constExpList = new ArrayList<>();
+
+    public static boolean isMyFirst(Symbol sym) {
+        RegKey regKey = sym.getRegKey();
+        boolean isLbrace = (regKey == RegKey.LBRACE);
+        boolean ConstExp_isMyFirst = ConstExp.isMyFirst(sym);
+        return isLbrace || ConstExp_isMyFirst;
+    }
 
     public ConstInitVal() {
-        this.constExpList = new ArrayList<>();
     }
 
-    public void addConstExp(ConstExp constExp) {
-        this.constExpList.add(constExp);
-    }
-
-    public void genCode(ArrayList<Integer> constIniValue){
-        if(constIniValue != null) {
-            My_Int value = new My_Int();
-            for (ConstExp constExp : constExpList) {
-                constExp.genCode(value);
-                constIniValue.add(value.my_Int);
-            }
-        }
-    }
-
-    public static ConstInitVal analyse(IdentifySymbol identifySymbol, ConstInitVal constInitVal) {
-        Symbol sym;
-        boolean judge = true;
-        if(constInitVal == null)
+    public static ConstInitVal analyse(IdentifySymbol identSymbol, ConstInitVal constInitVal) {
+        if(constInitVal == null) {
             constInitVal = new ConstInitVal();
-
-        sym = identifySymbol.get_CurrentSym();
-        if (sym.getRegKey() == RegKey.LBRACE) {
-            identifySymbol.getASymbol();
-            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACE) {
-                ConstInitVal.analyse(identifySymbol, constInitVal);
-                while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
-                    identifySymbol.getASymbol();
-                    ConstInitVal.analyse(identifySymbol, constInitVal);
+        }
+        boolean judge = true;
+        Symbol sym = identSymbol.get_CurrentSym();
+        RegKey regKey = sym.getRegKey();
+        boolean isLBRACE = (regKey == RegKey.LBRACE);
+        if (isLBRACE) {
+            identSymbol.getASymbol();
+            Symbol curSymbol = identSymbol.get_CurrentSym();
+            RegKey curRegKey = curSymbol.getRegKey();
+            boolean isRBRACE = (curRegKey == RegKey.RBRACE);
+            if (isRBRACE) {
+                ConstInitVal.analyse(identSymbol, constInitVal);
+                while (identSymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
+                    identSymbol.getASymbol();
+                    ConstInitVal.analyse(identSymbol, constInitVal);
                 }
             }
-            if (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.RBRACE) {
-                judge = true;
-                identifySymbol.getASymbol();
-            } else {
-                judge = false;
+            curSymbol = identSymbol.get_CurrentSym();
+            curRegKey = curSymbol.getRegKey();
+            isRBRACE = (curRegKey == RegKey.RBRACE);
+            if (isRBRACE) {
+                identSymbol.getASymbol();
             }
+            judge = isRBRACE;
         } else {
-            constInitVal.addConstExp(ConstExp.analyse(identifySymbol));
+            ConstExp constExp = ConstExp.analyse(identSymbol);
+            constInitVal.addConstExp(constExp);
         }
-
         if (judge) {
-            identifySymbol.addStr(name);
+            identSymbol.addStr(name_constInitVal);
         }
         return constInitVal;
     }
 
-    public static boolean isMyFirst(Symbol sym) {
-        if (sym.getRegKey() == RegKey.LBRACE || ConstExp.isMyFirst(sym)) {
-            return true;
+    public void addConstExp(ConstExp constExp) {
+        constExpList.add(constExp);
+    }
+
+    public void genCode(ArrayList<Integer> constIniValue_List){
+        My_Int intValue = new My_Int();
+        for (ConstExp constExp : this.constExpList) {
+            if(constIniValue_List != null) {
+                constExp.genCode(intValue);
+                int value = intValue.my_Int;
+                constIniValue_List.add(value);
+            }
         }
-        return false;
     }
 }

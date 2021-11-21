@@ -20,15 +20,10 @@ public class ConstDecl extends Decl{
         boolean isConst;
         isConst = symbol.getRegKey() == RegKey.CONSTTK;
         if (isConst) {
-            identSymbol.addStr(name_constDecl);
-        }
-
-        if (isConst) {
             identSymbol.getASymbol();
             BType bType1 = BType.analyse(identSymbol);
             constDecl.setBType(bType1);
-        }
-        if (isConst) {
+
             ConstDef constDef = ConstDef.analyse(identSymbol);
             constDecl.add_ConstDef(constDef);
         }
@@ -42,6 +37,9 @@ public class ConstDecl extends Decl{
             identSymbol.getASymbol();
         } else {
             Error.addErrorOutPut(identSymbol.get_PreSym().getRow_Idx() + " i"); // ERROR -- i: ';' needed
+        }
+        if (isConst) {
+            identSymbol.addStr(name_constDecl);
         }
         return constDecl;
     }

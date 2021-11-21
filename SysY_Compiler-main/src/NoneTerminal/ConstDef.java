@@ -32,7 +32,8 @@ public class ConstDef {
         constDef.ident = ident;
         // ERROR: name Duplicated define -- type b
         Symbol symbol = identSymbol.get_PreSym();
-        Error.checkIfDupDef(false, symbol);
+        boolean isFunction = false;
+        Error.checkIfDupDef(isFunction, symbol);
 
         while (identSymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
             identSymbol.getASymbol();
@@ -67,12 +68,12 @@ public class ConstDef {
         RegKey regKey = symbol1.getRegKey();
         boolean hasAssign = (regKey == RegKey.ASSIGN);
         if (hasAssign) {
-            identSymbol.addStr(name_constDef);
-        }
-        if (hasAssign) {
             identSymbol.getASymbol();
             ConstInitVal constInitVal = ConstInitVal.analyse(identSymbol,null);
             constDef.constInitVal = constInitVal;
+        }
+        if (hasAssign) {
+            identSymbol.addStr(name_constDef);
         }
         return constDef;
     }
