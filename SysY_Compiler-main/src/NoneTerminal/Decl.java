@@ -1,34 +1,31 @@
 package NoneTerminal;
 
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 public class Decl implements BlockItemInter{
-    public static String name = "<Decl>";
-
-    public static Decl analyse(IdentifySymbol identifySymbol){
-        Symbol sym;
-        boolean judge = true;
-        Decl decl;
-
-        Block.hasReturnStmt = false;
-        sym = identifySymbol.get_CurrentSym();
-        if(sym.getRegKey() == RegKey.INTTK){
-            decl = VarDecl.analyse(identifySymbol);
-        }else{
-            decl = ConstDecl.analyse(identifySymbol);
-        }
-        return decl;
-    }
-
-    public static boolean isMyFirst(Symbol sym) {
-        if(sym.getRegKey() == RegKey.CONSTTK || sym.getRegKey() == RegKey.INTTK){
-            return true;
-        }
-        return false;
-    }
+    public static String name_decl = "<---Decl--->";
 
     public void genCode() {
+    }
+    public static Decl analyse(IdentifySymbol identSymbol){
+        Decl decline;
+        Symbol symbol = identSymbol.get_CurrentSym();
+        RegKey regKey = symbol.getRegKey();
+        boolean isInt = (regKey == RegKey.INTTK);
+        if(!isInt){
+            ConstDecl constDecl = ConstDecl.analyse(identSymbol);
+            decline = constDecl;
+        }else{
+            VarDecl varDecl = VarDecl.analyse(identSymbol);
+            decline = varDecl;
+        }
+        Block.hasReturnStmt = false;
+        return decline;
+    }
+    public static boolean isMyFirst(Symbol symbol) {
+        RegKey regKey = symbol.getRegKey();
+        boolean isConst = (regKey == RegKey.CONSTTK);
+        boolean isInt = (regKey == RegKey.INTTK);
+        return isConst || isInt;
     }
 }

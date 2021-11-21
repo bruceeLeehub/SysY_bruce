@@ -29,7 +29,7 @@ public class CompUnit {
         boolean isDecl;
         boolean isFuncDef;
         Symbol sym = identSymbol.get_CurrentSym();
-        SymTable.createNewTable();
+        SymTable.create_NewTable();
         CompUnit compUnit = new CompUnit();
 
         while (identSymbol.get_CurrentSym().getRegKey() == RegKey.CONSTTK

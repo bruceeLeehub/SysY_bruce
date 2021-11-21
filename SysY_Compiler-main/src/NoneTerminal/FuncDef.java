@@ -1,136 +1,177 @@
 package NoneTerminal;
 
-import MyError.Error;
-import ParcelType.My_DataType;
-import ParcelType.MyString;
+import ParcelType.*;
 import Table.DataType;
 import Table.SymTable;
 import Table.TableEntry;
 import Tables.*;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
+import MyError.Error;
 
 import java.util.ArrayList;
 
 public class FuncDef {
-    public static String name = "<FuncDef>";
-    public static boolean isInFuncDef = false;
-    public static boolean funcBlockST = false;
-    public static boolean haveRetVal = false;
+    public final ArrayList<FuncFParam> funcFParamList = new ArrayList<>();
+    public Block funcBlock = null;
+
+    public static boolean InFuncDef = false;
     public static boolean isFunEnd = false;
 
-    private FuncType funcType;
-    private Ident ident;
-    private ArrayList<FuncFParam> funcFParamList;
-    private Block block;
 
-    public FuncDef() {
-        this.funcType = null;
-        this.ident = null;
-        this.funcFParamList = new ArrayList<>();
-        this.block = null;
-    }
+    public FuncType funcType = null;
+    public Ident ident = null;
 
-    public void setFuncType(FuncType funcType) {
-        this.funcType = funcType;
-    }
+    public static boolean funcBlockST = false;
+    public static boolean haveReturnValue = false;
+    public static String name_funcDef = "<FuncDef>";
 
-    public void setIdent(Ident ident) {
-        this.ident = ident;
-    }
 
-    public void setBlock(Block block) {
-        this.block = block;
-    }
-
-    public void addFuncFParam(FuncFParam funcFParam) {
+    public void add_FuncFParam(FuncFParam funcFParam) {
         this.funcFParamList.add(funcFParam);
     }
 
-    public void genCode() {
-        Typ typ = Typ.INT_TYP;
-        int funcRef = ProgTable.insertProg_Entry(ident.getIdentName(), funcFParamList.size());
-        if (this.funcType.getRegKey().equals(RegKey.VOIDTK))
-            typ = Typ.VOID_TYP;
-
-        Table.addTeToCurrentTable(ident.getIdentName(), Obj.FUNC_OBJ, typ, 0,
-                funcRef, Table.getCurLayer(), Code.get_NextFreeRoom());
-        Table.createANewLayer();
-        for (FuncFParam para : funcFParamList) {
-            para.genCode();
-        }
-        this.block.genCode(ident.getIdentName(), Table.getFuncTableEntry(ident.getIdentName()));
-    }
-
     public static FuncDef analyse(IdentifySymbol identifySymbol) {
-        Symbol sym;
-        boolean judge = true;
-        MyString identName = new MyString();
-        My_DataType dataType = new My_DataType();
-        ArrayList<TableEntry> paramList = new ArrayList<>();
-        funcBlockST = true;
-        isInFuncDef = true;
         isFunEnd = false;
-        FuncDef funcDef = new FuncDef();    // ast tree node
+        funcBlockST = true;
 
-        funcDef.setFuncType(FuncType.analyse(identifySymbol, dataType));
+        MyString identName;
+        My_DataType dataType;
+        identName = new MyString();
+        dataType = new My_DataType();
 
-        if (judge) funcDef.setIdent(Ident.analyse(identifySymbol, identName));
-        // ERROR: name Duplicated define -- type b
-        Error.checkIfDupDef(true, identifySymbol.get_PreSym());
+        ArrayList<TableEntry> paramList;
+        paramList = new ArrayList<>();
+
+        FuncDef funcDef;    // ast tree node
+        funcDef = new FuncDef();    // ast tree node
+        InFuncDef = true;
+
+        FuncType funcType = FuncType.analyse(identifySymbol,dataType);
+        funcDef.funcType = funcType;
+
+        Ident ident = Ident.analyse(identifySymbol, identName);
+        funcDef.ident = ident;
+        Symbol preSymbol = identifySymbol.get_PreSym();
+        Error.checkIfDupDef(true, preSymbol);// name Duplicated -- type b
         // record does it have a return value
-        haveRetVal = dataType.dataType == DataType.INT_DATA;
+        haveReturnValue = dataType.dataType == DataType.INT_DATA;
         // create symTable stack of the following func
-        SymTable.createNewTable();
+        SymTable.create_NewTable();
 
+        Symbol symbol = identifySymbol.get_CurrentSym();
+        boolean judge = symbol.getRegKey() == RegKey.LPARENT;
         if (judge) {
-            sym = identifySymbol.get_CurrentSym();
-            judge &= sym.getRegKey() == RegKey.LPARENT;
-            if (judge) {
-                sym = identifySymbol.getASymbol();
-                if (sym.getRegKey() == RegKey.RPARENT || sym.getRegKey() == RegKey.LBRACE) {
-                    if (sym.getRegKey() == RegKey.LBRACE) {
-                        // ERROR -- j: ')' needed
-                        if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
-                            Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
-                    } else {
-                        identifySymbol.getASymbol();
+            symbol = identifySymbol.getASymbol();
+            RegKey regKey = symbol.getRegKey();
+            boolean isRPARENT = (RegKey.RPARENT == regKey);
+            boolean isLBRACE = (regKey == RegKey.LBRACE);
+            if (isRPARENT || isLBRACE) {
+                if (isLBRACE) {
+                    // j: ')' needed
+                    Symbol curSymbol = identifySymbol.get_CurrentSym();
+                    RegKey regKey1 = curSymbol.getRegKey();
+                    if (regKey1 != RegKey.RPARENT) {
+                        Symbol Symbol2 = identifySymbol.get_PreSym();
+                        int rowIdx = Symbol2.getRow_Idx();
+                        Error.addErrorOutPut(rowIdx + " j");
                     }
-                    // insert funcDef into previous stmTable
-                    if (CompUnit.isNameDuplicateDef == false)
-                        SymTable.insertTabEntryIntoPreTab(true, identName.string, false, dataType.dataType, 0, paramList);
-                    else CompUnit.isNameDuplicateDef = false;
-                    funcDef.setBlock(Block.analyse(identifySymbol));
-                    // ERROR -- g: func have return value don't have return stmt in the end
-                    if (FuncDef.haveRetVal == true && Block.hasReturnStmt == false)
-                        Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " g");
-                } else {
-                    judge &= FuncFParams.analyse(identifySymbol, paramList, funcDef);
-                    // ERROR -- j: ')' needed
-                    if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
-                        Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
-                    else identifySymbol.getASymbol();
-                    // insert funcDef into previous stmTable
-                    if (CompUnit.isNameDuplicateDef == false)
-                        SymTable.insertTabEntryIntoPreTab(true, identName.string, false, dataType.dataType, 0, paramList);
-                    else CompUnit.isNameDuplicateDef = false;
-                    funcDef.setBlock(Block.analyse(identifySymbol));
-                    // ERROR -- g: func have return value don't have return stmt in the end
-                    if (FuncDef.haveRetVal == true && Block.hasReturnStmt == false)
-                        Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " g");
-
                 }
-
+                else if (isRPARENT){
+                    identifySymbol.getASymbol();
+                }
+                // insert funcDef into previous stmTable
+                if (!CompUnit.isNameDuplicateDef) {
+                    boolean isFunc = true;
+                    String name = identName.string;
+                    boolean isConst = false;
+                    int dims = 0;
+                    SymTable.insertTabEntryIntoPreTab(isFunc, name, isConst, dataType.dataType, dims, paramList);
+                }
+                else {
+                    CompUnit.isNameDuplicateDef = false;
+                }
+                Block block = Block.analyse(identifySymbol);
+                funcDef.funcBlock = block;
+                // g: func have return value don't have return stmt in the end
+                boolean noReturnError = FuncDef.haveReturnValue && !Block.hasReturnStmt;
+                if (noReturnError) {
+                    Symbol symbol_pre = identifySymbol.get_PreSym();
+                    int rowidx = symbol_pre.getRow_Idx();
+                    Error.addErrorOutPut(rowidx + " g");
+                }
+            } else {
+                judge = FuncFParams.analyse(identifySymbol, paramList, funcDef);
+                // j: ')' needed
+                Symbol curSymbol = identifySymbol.get_CurrentSym();
+                RegKey regKey1 = curSymbol.getRegKey();
+                boolean isRPARENT1 = (regKey1 == RegKey.RPARENT);
+                if (isRPARENT1) {
+                    identifySymbol.getASymbol();
+                }
+                else {
+                    Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
+                }
+                // insert funcDef into previous stmTable
+                if (CompUnit.isNameDuplicateDef) {
+                    CompUnit.isNameDuplicateDef = false;
+                }
+                else {
+                    boolean isFunc = true;
+                    String name = identName.string;
+                    boolean isConst = false;
+                    int dims = 0;
+                    SymTable.insertTabEntryIntoPreTab(isFunc, name, isConst, dataType.dataType, dims, paramList);
+                }
+                funcDef.funcBlock = (Block.analyse(identifySymbol));
+                // -- g: func have return value don't have return stmt in the end
+                boolean noReturnError = (FuncDef.haveReturnValue && !Block.hasReturnStmt);
+                if (noReturnError) {
+                    Symbol pre_Symbol = identifySymbol.get_PreSym();
+                    int rowidx = pre_Symbol.getRow_Idx();
+                    Error.addErrorOutPut(rowidx + " g");
+                }
             }
         }
-
-        if (judge) identifySymbol.addStr(name);
-
-        isInFuncDef = false;
+        InFuncDef = false;
+        if (judge) {
+            identifySymbol.addStr(name_funcDef);
+        }
+        return funcDef;
         // remove the current function table stack
         // SymTable.popOutterTable();
         // Block has done the remove job even when a table is built here
-        return funcDef;
+    }
+
+    public FuncDef() {
+    }
+
+    public void genCode() {
+        String name = ident.getIdentName();
+        int paraSize = funcFParamList.size();
+        int funcRef = ProgTable.insertProg_Entry(name,paraSize);
+        Typ typ;
+        RegKey regKey = this.funcType.getRegKey();
+        boolean isVoid = regKey.equals(RegKey.VOIDTK);
+        if (isVoid) {
+            typ = Typ.VOID_TYP;
+        }
+        else {
+            typ = Typ.INT_TYP;
+        }
+
+        name = ident.getIdentName();
+        Obj objFunc = Obj.FUNC_OBJ;
+        Typ type = typ;
+        int dims = 0;
+        int ref = funcRef;
+        int level = Table.getCurLayer();
+        int adr = Code.get_NextFreeRoom();
+        Table.addTeToCurrentTable(name, objFunc, type, dims,ref, level, adr);
+        Table.createANewLayer();
+        for (FuncFParam parameter : this.funcFParamList) {
+            parameter.genCode();
+        }
+        Tables.TableEntry tableEntry = Table.getFuncTableEntry(ident.getIdentName());
+        this.funcBlock.genCode(ident.getIdentName(),tableEntry);
     }
 }

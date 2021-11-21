@@ -20,7 +20,7 @@ public class Block {
         boolean judge = true;
         // create a new table stack for this block
         if (!FuncDef.funcBlockST) {
-            SymTable.createNewTable();
+            SymTable.create_NewTable();
         }
         else {
             FuncDef.funcBlockST = false;

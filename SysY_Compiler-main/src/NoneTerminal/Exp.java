@@ -1,32 +1,31 @@
 package NoneTerminal;
 
-import ParcelType.My_Int;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.Symbol;
+import ParcelType.*;
+import WordAnalyse.*;
 
 public class Exp {
-    public static String name = "<Exp>";
+    public static String name_exp = "<Exp>";
 
-    private AddExp addExp;
+    private final AddExp addExp;
+
+    public static boolean isMyFirst(Symbol symbol) {
+        boolean addExp_isMyFirst;
+        addExp_isMyFirst = AddExp.isMyFirst(symbol);
+        return addExp_isMyFirst;
+    }
+
     public Exp(AddExp addExp){
         this.addExp = addExp;
     }
 
-    public void genCode(My_Int value ){
-        addExp.genCode(value);
-    }
-
-    public static Exp analyse(IdentifySymbol identifySymbol) {
-        boolean judge = true;
-        Exp exp = new Exp(AddExp.analyse(identifySymbol));
-
-        if(judge){
-            identifySymbol.addStr(name);
-        }
+    public static Exp analyse(IdentifySymbol identSymbol) {
+        AddExp addExp1 = AddExp.analyse(identSymbol);
+        Exp exp = new Exp(addExp1);
+        identSymbol.addStr(name_exp);
         return exp;
     }
 
-    public static boolean isMyFirst(Symbol sym) {
-        return AddExp.isMyFirst(sym);
+    public void genCode(My_Int intValue){
+        addExp.genCode(intValue);
     }
 }

@@ -1,113 +1,103 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.My_Int;
-import ParcelType.MyString;
-import Table.DataType;
-import Table.SymTable;
-import Table.TableEntry;
+import ParcelType.*;
+import Table.*;
 import Tables.ArrTable;
 import Tables.Obj;
 import Tables.Table;
 import Tables.Typ;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class FuncFParam {
+    public Ident ident = null;
     public static String name = "<FuncFParam>";
 
-    private BType bType;
-    private Ident ident;
-    private ArrayList<ConstExp> constExpList;
-
-    public FuncFParam() {
-        this.ident = null;
-        this.bType = null;
-        this.constExpList = null;
-    }
-
-    public void setIdent(Ident ident) {
-        this.ident = ident;
-    }
-
-    public void addConstExp(ConstExp constExp) {
-        this.constExpList.add(constExp);
-    }
-
-    public void setBType(BType bType) {
-        this.bType = bType;
-    }
-
-    public void newConstExp() {
-        this.constExpList = new ArrayList<>();
-    }
+    public BType bType = null;
+    public ArrayList<ConstExp> constExp_List = null;
 
     public void genCode() {
-        if (constExpList == null) {       // var param
-            Table.addTeToCurrentTable(ident.getIdentName(), Obj.VAR_OBJ, Typ.INT_TYP, 0,
-                    0, Table.getCurLayer(), 1, true);
+        if (constExp_List == null) {       // var param
+            String name = ident.getIdentName();
+            Obj obj_var = Obj.VAR_OBJ;
+            Typ type = Typ.INT_TYP;
+            int dims = 0;
+            int ref = 0;
+            int level = Table.getCurLayer();
+            int addr = 1;
+            boolean isPara = true;
+            Table.addTeToCurrentTable(name, obj_var, type, dims, ref,level, addr, isPara);
         } else {      // array param
-
+            My_Int value = new My_Int();
             ArrayList<Integer> dimList = new ArrayList<>();
             dimList.add(0);    // it says that this is a param
-            My_Int value = new My_Int();
-            for (ConstExp constExp : constExpList) {
+            for (ConstExp constExp : this.constExp_List) {
                 constExp.genCode(value);
                 dimList.add(value.my_Int);
             }
 
             // array param ref need to be done until running time
-            Table.addTeToCurrentTable(ident.getIdentName(), Obj.VAR_OBJ, Typ.INT_TYP,
-                    dimList.size(), ArrTable.createAnEntry(dimList), Table.getCurLayer(), 1, true);
+            String name = ident.getIdentName();
+            Obj obj_var = Obj.VAR_OBJ;
+            Typ type = Typ.INT_TYP;
+            int dims = dimList.size();
+            int ref = ArrTable.createAnEntry(dimList);
+            int level = Table.getCurLayer();
+            int addr = 1;
+            boolean isPara = true;
+            Table.addTeToCurrentTable(name, obj_var, type,
+                    dims, ref, level, addr, isPara);
         }
 
     }
 
+    public void newConstExp() {
+        this.constExp_List = new ArrayList<>();
+    }
+
     public static FuncFParam analyse(IdentifySymbol identifySymbol, ArrayList<TableEntry> paramList) {
         Symbol sym;
-        boolean judge = true;
         int dims = 0;
         MyString identName = new MyString();
         FuncFParam funcFParam = new FuncFParam();
 
-        funcFParam.setBType(BType.analyse(identifySymbol));
-        if (judge) {
-            funcFParam.setIdent(Ident.analyse(identifySymbol, identName));
-        }
+        funcFParam.bType = (BType.analyse(identifySymbol));
+        funcFParam.ident = (Ident.analyse(identifySymbol, identName));
+
         // ERROR: name Duplicated define -- type b
         Error.checkIfDupDef(false, identifySymbol.get_PreSym());
-        if (judge) {
-            sym = identifySymbol.get_CurrentSym();
-            if (sym.getRegKey() == RegKey.LBRACK) {
+        sym = identifySymbol.get_CurrentSym();
+        if (sym.getRegKey() == RegKey.LBRACK) {
+            dims++; // dims++
+            identifySymbol.getASymbol();
+            funcFParam.newConstExp();
+            //k: ']' needed
+            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
+                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
+            else identifySymbol.getASymbol();
+            while (identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
                 dims++; // dims++
                 identifySymbol.getASymbol();
-                funcFParam.newConstExp();
-                // ERROR -- k: ']' needed
+                funcFParam.constExp_List.add(ConstExp.analyse(identifySymbol));
+                //funcFParam.addConstExp(ConstExp.analyse(identifySymbol));
+
+                // k: ']' needed
                 if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
                     Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
                 else identifySymbol.getASymbol();
-                while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
-                    dims++; // dims++
-                    identifySymbol.getASymbol();
-                    funcFParam.addConstExp(ConstExp.analyse(identifySymbol));
-                    // ERROR -- k: ']' needed
-                    if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
-                        Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
-                    else identifySymbol.getASymbol();
 
-                }
             }
         }
         // as a param & as a local var of the following func
         SymTable.add_Param(paramList, false, DataType.INT_DATA, dims);
         SymTable.insertTabEntryIntoCurTab(false, identName.string, false, DataType.INT_DATA, dims);
 
-        if (judge) {
-            identifySymbol.addStr(name);
-        }
+        identifySymbol.addStr(name);
         return funcFParam;
+    }
+
+    public FuncFParam() {
     }
 }

@@ -163,7 +163,7 @@ public class Stmt implements BlockItemInter {
                 exp = Exp.analyse(identifySymbol);
                 if (judge) {
                     // ERROR -- f: a void func have a return value
-                    if (FuncDef.isInFuncDef && FuncDef.haveRetVal == false)
+                    if (FuncDef.InFuncDef && FuncDef.haveReturnValue == false)
                         Error.addErrorOutPut(retSym.getRow_Idx() + " f");
                 }
                 if (judge) {

@@ -40,7 +40,7 @@ public class SymTable {
         return haveName;
     }
 
-    public static void createNewTable() {
+    public static void create_NewTable() {
         table_Ptr = table_Ptr + 1;
         table_Stack.add(new AggTable());
     }

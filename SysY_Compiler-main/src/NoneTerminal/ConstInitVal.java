@@ -10,10 +10,10 @@ public class ConstInitVal {
 
     private final ArrayList<ConstExp> constExpList = new ArrayList<>();
 
-    public static boolean isMyFirst(Symbol sym) {
-        RegKey regKey = sym.getRegKey();
+    public static boolean isMyFirst(Symbol symbol) {
+        RegKey regKey = symbol.getRegKey();
         boolean isLbrace = (regKey == RegKey.LBRACE);
-        boolean ConstExp_isMyFirst = ConstExp.isMyFirst(sym);
+        boolean ConstExp_isMyFirst = ConstExp.isMyFirst(symbol);
         return isLbrace || ConstExp_isMyFirst;
     }
 

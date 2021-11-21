@@ -14,10 +14,10 @@ public class FuncFParams {
         Symbol sym;
         boolean judge = true;
 
-        funcDef.addFuncFParam(FuncFParam.analyse(identifySymbol, paramList));
+        funcDef.add_FuncFParam(FuncFParam.analyse(identifySymbol, paramList));
         while(judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA){
             identifySymbol.getASymbol();
-            funcDef.addFuncFParam(FuncFParam.analyse(identifySymbol, paramList));
+            funcDef.add_FuncFParam(FuncFParam.analyse(identifySymbol, paramList));
         }
 
         if(judge){
