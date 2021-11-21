@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class FuncFParam {
     public Ident ident = null;
-    public static String name = "<FuncFParam>";
+    public static String name_funcFParam = "<FuncFParam>";
 
     public BType bType = null;
     public ArrayList<ConstExp> constExp_List = null;
@@ -53,48 +53,65 @@ public class FuncFParam {
 
     }
 
-    public void newConstExp() {
+    public void new_ConstExp() {
         this.constExp_List = new ArrayList<>();
     }
 
     public static FuncFParam analyse(IdentifySymbol identifySymbol, ArrayList<TableEntry> paramList) {
-        Symbol sym;
-        int dims = 0;
         MyString identName = new MyString();
-        FuncFParam funcFParam = new FuncFParam();
 
+        FuncFParam funcFParam = new FuncFParam();
         funcFParam.bType = (BType.analyse(identifySymbol));
         funcFParam.ident = (Ident.analyse(identifySymbol, identName));
 
         // ERROR: name Duplicated define -- type b
-        Error.checkIfDupDef(false, identifySymbol.get_PreSym());
-        sym = identifySymbol.get_CurrentSym();
+        boolean isFunc = false;
+        Symbol preSymbol = identifySymbol.get_PreSym();
+        Error.checkIfDupDef(isFunc, preSymbol);
+        int dims = 0;
+        Symbol sym = identifySymbol.get_CurrentSym();
         if (sym.getRegKey() == RegKey.LBRACK) {
-            dims++; // dims++
             identifySymbol.getASymbol();
-            funcFParam.newConstExp();
+            dims = dims + 1; // dims++
+            funcFParam.new_ConstExp();
             //k: ']' needed
-            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
-                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
-            else identifySymbol.getASymbol();
-            while (identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
-                dims++; // dims++
+            Symbol curSymbol = identifySymbol.get_CurrentSym();
+            RegKey regKey = curSymbol.getRegKey();
+            boolean isRBRACK = regKey == RegKey.RBRACK;
+            if (isRBRACK) {
                 identifySymbol.getASymbol();
-                funcFParam.constExp_List.add(ConstExp.analyse(identifySymbol));
+            }
+            else {
+                Symbol pre_Symbol = identifySymbol.get_PreSym();
+                int rowidx = pre_Symbol.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " k");
+            }
+            while (identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
+                identifySymbol.getASymbol();
+                dims = dims + 1; // dims++
+                ConstExp constExp = ConstExp.analyse(identifySymbol);
+                funcFParam.constExp_List.add(constExp);
                 //funcFParam.addConstExp(ConstExp.analyse(identifySymbol));
 
                 // k: ']' needed
-                if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
-                    Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
-                else identifySymbol.getASymbol();
-
+                curSymbol = identifySymbol.get_CurrentSym();
+                regKey = curSymbol.getRegKey();
+                isRBRACK = regKey == RegKey.RBRACK;
+                if (isRBRACK) {
+                    identifySymbol.getASymbol();
+                }
+                else {
+                    Symbol pre_Symbol = identifySymbol.get_PreSym();
+                    int rowidx = pre_Symbol.getRow_Idx();
+                    Error.addErrorOutPut(rowidx + " k");
+                }
             }
         }
-        // as a param & as a local var of the following func
-        SymTable.add_Param(paramList, false, DataType.INT_DATA, dims);
-        SymTable.insertTabEntryIntoCurTab(false, identName.string, false, DataType.INT_DATA, dims);
-
-        identifySymbol.addStr(name);
+        identifySymbol.addStr(name_funcFParam);
+        boolean isConst = false;
+        isFunc = false;
+        SymTable.add_Param(paramList, isConst, DataType.INT_DATA, dims);
+        SymTable.insertTabEntryIntoCurTab(isFunc, identName.string, isConst, DataType.INT_DATA, dims);
         return funcFParam;
     }
 

@@ -1,28 +1,22 @@
 package NoneTerminal;
 
-import Table.TableEntry;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import Table.*;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class FuncFParams {
-    public static String name = "<FuncFParams>";
+    public static String name_funcFParams = "<FuncFParams>";
 
-    public static boolean analyse(IdentifySymbol identifySymbol, ArrayList<TableEntry> paramList, FuncDef funcDef){
-        Symbol sym;
-        boolean judge = true;
-
-        funcDef.add_FuncFParam(FuncFParam.analyse(identifySymbol, paramList));
-        while(judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA){
-            identifySymbol.getASymbol();
-            funcDef.add_FuncFParam(FuncFParam.analyse(identifySymbol, paramList));
+    public static boolean analyse(IdentifySymbol identSymbol, ArrayList<TableEntry> paramList, FuncDef funcDef){
+        FuncFParam funcFParam = FuncFParam.analyse(identSymbol,paramList);
+        funcDef.add_FuncFParam(funcFParam);
+        while(identSymbol.get_CurrentSym().getRegKey() == RegKey.COMMA){
+            identSymbol.getASymbol();
+            FuncFParam funcFParam1 = FuncFParam.analyse(identSymbol,paramList);
+            funcDef.add_FuncFParam(funcFParam1);
         }
-
-        if(judge){
-            identifySymbol.addStr(name);
-        }
-        return judge;
+        identSymbol.addStr(name_funcFParams);
+        return true;
     }
 }

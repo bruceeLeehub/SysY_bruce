@@ -109,10 +109,10 @@ public class UnaryExp {
                 Error.checkNameUndefined(true, identSym);
                 // checking RParams type
                 tmpEntry = SymTable.get_SymByNameInAllTable(true, identSym.get_IdentName());
-                if (FuncRParams.checkingType) {
+                if (FuncRParams.TypeCheck) {
                     FuncRParams.tbEntryModel.add(SymTable.createTableEntryModel(tmpEntry, 0));
                     if (LVal.inDims == 0)
-                        FuncRParams.checkingType = false;
+                        FuncRParams.TypeCheck = false;
                 }
                 if (identifySymbol.getASymbol().getRegKey() != RegKey.RPARENT) {
                     judge &= FuncRParams.analyse(identifySymbol, numOfParamsActually, unaryExp);

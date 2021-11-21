@@ -149,10 +149,10 @@ public class LVal {
         }
 
         // checking RParams type
-        if (FuncRParams.checkingType) {
+        if (FuncRParams.TypeCheck) {
             FuncRParams.tbEntryModel.add(SymTable.createTableEntryModel(tmpEntry, dims));
             if (LVal.inDims == 0)
-                FuncRParams.checkingType = false;
+                FuncRParams.TypeCheck = false;
         }
         if (judge) {
             identifySymbol.addStr(name);

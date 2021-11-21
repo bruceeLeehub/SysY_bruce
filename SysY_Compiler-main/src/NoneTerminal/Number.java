@@ -33,10 +33,10 @@ public class Number {
             identifySymbol.addStr(name);
         }
         // checking RParams type
-        if (FuncRParams.checkingType) {
+        if (FuncRParams.TypeCheck) {
             FuncRParams.tbEntryModel.add(new TableEntry(true, DataType.INT_DATA, 0));
             if (LVal.inDims == 0)
-                FuncRParams.checkingType = false;
+                FuncRParams.TypeCheck = false;
         }
         return number;
     }
