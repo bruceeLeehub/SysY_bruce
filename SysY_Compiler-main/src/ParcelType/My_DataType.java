@@ -1,19 +1,14 @@
 package ParcelType;
 
-import java.lang.String;
+import Table.DataType;
 
-public class MyString {
+public class My_DataType {
     private int Ky_0 = 0;
     private int Ky_1 = 0;
     private int Ky_2 = 0;
     private int Ky_3 = 0;
     private int Ky_4 = 0;
-    public String string = "";
-
-    @Override
-    public String toString() {
-        return string;
-    }
+    public DataType dataType = DataType.VOID_DATA;
 
     public int getKy_0() {
         return Ky_0;

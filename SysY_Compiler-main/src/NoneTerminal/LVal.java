@@ -1,7 +1,7 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import ParcelType.MyString;
 import Table.SymTable;
 import Table.TableEntry;
@@ -32,17 +32,17 @@ public class LVal {
         this.ident = ident;
     }
 
-    public void genCode(MyInt value, boolean isLeftValue) {
+    public void genCode(My_Int value, boolean isLeftValue) {
         if (value != null) {      // is const, you need to calculate it right now
             if (expList.size() != 0) {    // this is an Array
                 ArrayList<Integer> dimValue = new ArrayList<>();
                 for (Exp exp : expList) {
                     exp.genCode(value);
-                    dimValue.add(value.myInt);
+                    dimValue.add(value.my_Int);
                 }
-                value.myInt = Table.get_ConstArrayValue(ident, dimValue);
+                value.my_Int = Table.get_ConstArrayValue(ident, dimValue);
             } else {
-                value.myInt = Table.get_ConstIdentValue(ident);
+                value.my_Int = Table.get_ConstIdentValue(ident);
             }
         } else {          // not a const you need to get it when running program
             Tables.TableEntry te = Table.getAttrTableEntry(ident.getIdentName());

@@ -2,7 +2,7 @@ package NoneTerminal;
 
 
 import MyError.Error;
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import ParcelType.MyString;
 import Tables.ArrTable;
 import Table.DataType;
@@ -42,12 +42,12 @@ public class ConstDef {
     }
 
     public void genCode(){
-        MyInt value = new MyInt();
+        My_Int value = new My_Int();
         ArrayList<Integer> dimList = new ArrayList<>();
         ArrayList<Integer> constIniValue = new ArrayList<>();
         for(ConstExp constExp : constExpList){
             constExp.genCode(value);
-            dimList.add(value.myInt);
+            dimList.add(value.my_Int);
         }
 
         this.constInitVal.genCode(constIniValue);

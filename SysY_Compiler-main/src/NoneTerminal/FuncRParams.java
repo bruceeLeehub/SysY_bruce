@@ -1,7 +1,7 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import Table.SymTable;
 import Table.TableEntry;
 import WordAnalyse.IdentifySymbol;
@@ -15,7 +15,7 @@ public class FuncRParams {
     public static boolean checkingType = false;
     public static ArrayList<TableEntry> tbEntryModel = new ArrayList<>();
 
-    public static boolean analyse(IdentifySymbol identifySymbol, MyInt numOfParamsActually, UnaryExp unaryExp) {
+    public static boolean analyse(IdentifySymbol identifySymbol, My_Int numOfParamsActually, UnaryExp unaryExp) {
         Symbol sym = identifySymbol.getCurSym();
         boolean judge = true;
         int paramSeq = 1;
@@ -24,7 +24,7 @@ public class FuncRParams {
         if (sym.getRegKey() == RegKey.IDENFR || sym.getRegKey() == RegKey.LPARENT ||
                 sym.getRegKey() == RegKey.PLUS || sym.getRegKey() == RegKey.MINU ||
                 sym.getRegKey() == RegKey.NOT || sym.getRegKey() == RegKey.INTCON) {
-            numOfParamsActually.myInt++;
+            numOfParamsActually.my_Int++;
             checkingType = true;
         }else{
             return true;
@@ -34,7 +34,7 @@ public class FuncRParams {
         Error.checkRParamsMatched(funcEntry, tbEntryModel.get(tbEntryModel.size() - 1), funcSym, paramSeq++);
         tbEntryModel.remove(tbEntryModel.size() - 1);
         while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.COMMA) {
-            numOfParamsActually.myInt++;
+            numOfParamsActually.my_Int++;
             checkingType = true;
             identifySymbol.getASymbol();
             unaryExp.addFuncRParam(Exp.analyse(identifySymbol));

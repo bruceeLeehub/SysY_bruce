@@ -2,7 +2,7 @@ package NoneTerminal;
 
 import MyError.Error;
 import NoneTerminal.StmtPack.*;
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import Tables.ConStrTable;
 import WordAnalyse.IdentifySymbol;
 import WordAnalyse.RegKey;
@@ -178,7 +178,7 @@ public class Stmt implements BlockItemInter {
             }
             stmt = new ReturnExp(exp);
         } else if (sym.getRegKey() == RegKey.PRINTFTK) {  // 'printf' '(' FormatString {',' Exp} ')' ';'
-            MyInt numOfExpExpected = new MyInt();
+            My_Int numOfExpExpected = new My_Int();
             int numOfExpActually = 0;
             Symbol errorSym = sym;
             String formatString = "";
@@ -202,7 +202,7 @@ public class Stmt implements BlockItemInter {
                     sym = identifySymbol.getCurSym();
                 }
                 // ERROR: numOfExpExpected not matches numOfExpActually -- type l
-                if (numOfExpActually != numOfExpExpected.myInt)
+                if (numOfExpActually != numOfExpExpected.my_Int)
                     Error.addErrorOutPut(errorSym.getRow_Idx() + " l");
             }
 

@@ -1,19 +1,12 @@
 package ParcelType;
 
-import java.lang.String;
-
-public class MyString {
+public class My_Int {
     private int Ky_0 = 0;
     private int Ky_1 = 0;
     private int Ky_2 = 0;
     private int Ky_3 = 0;
     private int Ky_4 = 0;
-    public String string = "";
-
-    @Override
-    public String toString() {
-        return string;
-    }
+    public int my_Int = 0;
 
     public int getKy_0() {
         return Ky_0;

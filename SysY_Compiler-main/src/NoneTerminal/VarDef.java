@@ -1,7 +1,7 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import ParcelType.MyString;
 import Table.*;
 import Tables.*;
@@ -49,14 +49,14 @@ public class VarDef {
     }
 
     public void genCode() {
-        MyInt value = new MyInt();
+        My_Int value = new My_Int();
         ArrayList<Integer> dimList = new ArrayList<>();
         ArrayList<Integer> iniValue = new ArrayList<>();
         int sizeOfArray = 1;
         for (ConstExp constExp : constExpList) {
             constExp.genCode(value);
-            dimList.add(value.myInt);
-            sizeOfArray *= value.myInt;
+            dimList.add(value.my_Int);
+            sizeOfArray *= value.my_Int;
         }
 
         if (this.initVal != null)

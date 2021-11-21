@@ -1,7 +1,7 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import Tables.Code;
 import Tables.CodeType;
 import Table.SymTable;
@@ -53,7 +53,7 @@ public class UnaryExp {
         this.funcRParamList.add(exp);
     }
 
-    public void genCode(MyInt value) {
+    public void genCode(My_Int value) {
         if (value != null) {      // is const, you need to calculate it right now
             if (primaryExp != null)
                 primaryExp.genCode(value);
@@ -64,7 +64,7 @@ public class UnaryExp {
             else if (unaryOp != null) {
                 unaryExp.genCode(value);
                 if (unaryOp.getOp().equals(RegKey.MINU))
-                    value.myInt = -value.myInt;
+                    value.my_Int = -value.my_Int;
             }
         } else {          // not a const you need to get it when running program
             if (primaryExp != null)
@@ -104,7 +104,7 @@ public class UnaryExp {
 
             if (sym.getRegKey() == RegKey.LPARENT) { // Ident '(' [ FuncRParams ] ')'
                 unaryExp.setIdent(new Ident(identSym.get_IdentName()));
-                MyInt numOfParamsActually = new MyInt();
+                My_Int numOfParamsActually = new My_Int();
                 // ERROR: check name undefined -- type c
                 Error.checkNameUndefined(true, identSym);
                 // checking RParams type
@@ -126,7 +126,7 @@ public class UnaryExp {
                     identifySymbol.getASymbol();
                 }
                 // ERROR: check is number of param matches
-                Error.checkParamNumMatched(identSym, numOfParamsActually.myInt);
+                Error.checkParamNumMatched(identSym, numOfParamsActually.my_Int);
             } else {        // PrimaryExp
                 identifySymbol.spitSym(1);
                 unaryExp.setPrimaryExp(PrimaryExp.analyse(identifySymbol));

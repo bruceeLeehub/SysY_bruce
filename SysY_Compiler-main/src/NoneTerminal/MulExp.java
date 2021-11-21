@@ -1,6 +1,6 @@
 package NoneTerminal;
 
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import Tables.Code;
 import Tables.CodeType;
 import WordAnalyse.IdentifySymbol;
@@ -28,18 +28,18 @@ public class MulExp {
         this.opList.add(regKey);
     }
 
-    public void genCode(MyInt value) {
+    public void genCode(My_Int value) {
         if (value != null) {      // is const, you need to calculate it right now
-            MyInt value_1 = new MyInt();
+            My_Int value_1 = new My_Int();
             unaryExpList.get(0).genCode(value);
             for (int i = 1; i < unaryExpList.size(); i++) {
                 unaryExpList.get(i).genCode(value_1);
                 if (opList.get(i - 1).equals(RegKey.MULT))
-                    value.myInt *= value_1.myInt;
+                    value.my_Int *= value_1.my_Int;
                 else if (opList.get(i - 1).equals(RegKey.DIV))
-                    value.myInt /= value_1.myInt;
+                    value.my_Int /= value_1.my_Int;
                 else
-                    value.myInt %= value_1.myInt;
+                    value.my_Int %= value_1.my_Int;
             }
         } else {          // not a const you need to get it when running program
             unaryExpList.get(0).genCode(null);

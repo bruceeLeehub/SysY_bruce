@@ -1,6 +1,6 @@
 package NoneTerminal;
 
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import WordAnalyse.IdentifySymbol;
 import WordAnalyse.RegKey;
 import WordAnalyse.Symbol;
@@ -22,10 +22,10 @@ public class ConstInitVal {
 
     public void genCode(ArrayList<Integer> constIniValue){
         if(constIniValue != null) {
-            MyInt value = new MyInt();
+            My_Int value = new My_Int();
             for (ConstExp constExp : constExpList) {
                 constExp.genCode(value);
-                constIniValue.add(value.myInt);
+                constIniValue.add(value.my_Int);
             }
         }
     }

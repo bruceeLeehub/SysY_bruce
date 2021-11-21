@@ -1,6 +1,6 @@
 package NoneTerminal;
 
-import ParcelType.MyDataType;
+import ParcelType.My_DataType;
 import Table.DataType;
 import WordAnalyse.IdentifySymbol;
 import WordAnalyse.RegKey;
@@ -18,7 +18,7 @@ public class FuncType {
         return this.regKey;
     }
 
-    public static FuncType analyse(IdentifySymbol identifySymbol, MyDataType dataType) {
+    public static FuncType analyse(IdentifySymbol identifySymbol, My_DataType dataType) {
         Symbol sym = identifySymbol.getCurSym();
         boolean judge = true;
         FuncType funcType = new FuncType(sym.getRegKey());

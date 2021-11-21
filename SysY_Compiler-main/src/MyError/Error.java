@@ -1,7 +1,7 @@
 package MyError;
 
 import NoneTerminal.CompUnit;
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import Table.SymTable;
 import Table.TableEntry;
 import WordAnalyse.Symbol;
@@ -13,17 +13,17 @@ public class Error {
     public Error() {
     }
 
-    public static boolean checkFormatStr(Symbol sym, MyInt numOfExpExpected) {
+    public static boolean checkFormatStr(Symbol sym, My_Int numOfExpExpected) {
         char str[] = sym.get_IdentName().toCharArray();
         boolean ret = true;
-        numOfExpExpected.myInt = 0;
+        numOfExpExpected.my_Int = 0;
         for (int i = 0; i < str.length && ret; i++) {
             if (str[i] == '%') {
                 i++;
                 if(i < str.length) {
                     ret = str[i] == 'd';
                     if(ret)
-                        numOfExpExpected.myInt++;
+                        numOfExpExpected.my_Int++;
                 }else {
                     ret = false;
                     break;

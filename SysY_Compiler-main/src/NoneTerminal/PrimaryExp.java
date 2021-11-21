@@ -1,7 +1,7 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import WordAnalyse.IdentifySymbol;
 import WordAnalyse.RegKey;
 import WordAnalyse.Symbol;
@@ -40,7 +40,7 @@ public class PrimaryExp {
         return false;
     }
 
-    public void genCode(MyInt value) {
+    public void genCode(My_Int value) {
         if (exp != null)
             exp.genCode(value);
         else if (lVal != null)

@@ -1,7 +1,7 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import ParcelType.MyString;
 import Table.DataType;
 import Table.SymTable;
@@ -53,10 +53,10 @@ public class FuncFParam {
 
             ArrayList<Integer> dimList = new ArrayList<>();
             dimList.add(0);    // it says that this is a param
-            MyInt value = new MyInt();
+            My_Int value = new My_Int();
             for (ConstExp constExp : constExpList) {
                 constExp.genCode(value);
-                dimList.add(value.myInt);
+                dimList.add(value.my_Int);
             }
 
             // array param ref need to be done until running time

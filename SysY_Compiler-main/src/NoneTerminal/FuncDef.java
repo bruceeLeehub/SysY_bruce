@@ -1,7 +1,7 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.MyDataType;
+import ParcelType.My_DataType;
 import ParcelType.MyString;
 import Table.DataType;
 import Table.SymTable;
@@ -67,7 +67,7 @@ public class FuncDef {
         Symbol sym;
         boolean judge = true;
         MyString identName = new MyString();
-        MyDataType dataType = new MyDataType();
+        My_DataType dataType = new My_DataType();
         ArrayList<TableEntry> paramList = new ArrayList<>();
         funcBlockST = true;
         isInFuncDef = true;

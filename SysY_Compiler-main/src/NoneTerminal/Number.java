@@ -1,6 +1,6 @@
 package NoneTerminal;
 
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import Table.*;
 import Tables.Code;
 import Tables.CodeType;
@@ -16,9 +16,9 @@ public class Number {
         this.number = number;
     }
 
-    public void genCode(MyInt value) {
+    public void genCode(My_Int value) {
         if (value != null)
-            value.myInt = number;
+            value.my_Int = number;
         else
             Code.addCode(CodeType.LDC, number);
     }

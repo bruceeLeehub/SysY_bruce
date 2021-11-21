@@ -1,6 +1,6 @@
 package NoneTerminal;
 
-import ParcelType.MyInt;
+import ParcelType.My_Int;
 import WordAnalyse.IdentifySymbol;
 import WordAnalyse.Symbol;
 
@@ -13,7 +13,7 @@ public class ConstExp {
         this.addExp = addExp;
     }
 
-    public void genCode(MyInt value){
+    public void genCode(My_Int value){
         addExp.genCode(value);
     }
 
