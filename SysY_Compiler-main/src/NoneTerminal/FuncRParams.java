@@ -16,7 +16,7 @@ public class FuncRParams {
     public static ArrayList<TableEntry> tbEntryModel = new ArrayList<>();
 
     public static boolean analyse(IdentifySymbol identifySymbol, My_Int numOfParamsActually, UnaryExp unaryExp) {
-        Symbol sym = identifySymbol.getCurSym();
+        Symbol sym = identifySymbol.get_CurrentSym();
         boolean judge = true;
         int paramSeq = 1;
         Symbol funcSym = identifySymbol.getNearest_PreIdent();
@@ -33,7 +33,7 @@ public class FuncRParams {
         // ERROR -- e: RParams not match
         Error.checkRParamsMatched(funcEntry, tbEntryModel.get(tbEntryModel.size() - 1), funcSym, paramSeq++);
         tbEntryModel.remove(tbEntryModel.size() - 1);
-        while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.COMMA) {
+        while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
             numOfParamsActually.my_Int++;
             checkingType = true;
             identifySymbol.getASymbol();

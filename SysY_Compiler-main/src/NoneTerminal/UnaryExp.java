@@ -88,7 +88,7 @@ public class UnaryExp {
     public static UnaryExp analyse(IdentifySymbol identifySymbol) {
         boolean judge = true;
         UnaryExp unaryExp = new UnaryExp(); // ast Tree node
-        Symbol sym = identifySymbol.getCurSym();
+        Symbol sym = identifySymbol.get_CurrentSym();
         if (sym.getRegKey() == RegKey.LPARENT) {    // '(' Exp ')'
             unaryExp.setPrimaryExp(PrimaryExp.analyse(identifySymbol));
         } else if (sym.getRegKey() == RegKey.PLUS ||
@@ -118,8 +118,8 @@ public class UnaryExp {
                     judge &= FuncRParams.analyse(identifySymbol, numOfParamsActually, unaryExp);
                     if (judge) {
                         // ERROR -- j: ')' needed
-                        if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)
-                            Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " j");
+                        if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
+                            Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
                         else identifySymbol.getASymbol();
                     }
                 } else {

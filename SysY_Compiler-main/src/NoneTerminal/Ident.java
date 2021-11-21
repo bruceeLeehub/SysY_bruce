@@ -26,7 +26,7 @@ public class Ident {
     }
 
     public static Ident analyse(IdentifySymbol identifySymbol, MyString name){
-        Symbol sym = identifySymbol.getCurSym();
+        Symbol sym = identifySymbol.get_CurrentSym();
         Ident ident = new Ident();
         if(sym.getRegKey() == RegKey.IDENFR){
             name.string = sym.get_IdentName();

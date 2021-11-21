@@ -19,7 +19,7 @@ public class FuncType {
     }
 
     public static FuncType analyse(IdentifySymbol identifySymbol, My_DataType dataType) {
-        Symbol sym = identifySymbol.getCurSym();
+        Symbol sym = identifySymbol.get_CurrentSym();
         boolean judge = true;
         FuncType funcType = new FuncType(sym.getRegKey());
         judge &= (sym.getRegKey() == RegKey.VOIDTK || sym.getRegKey() == RegKey.INTTK);

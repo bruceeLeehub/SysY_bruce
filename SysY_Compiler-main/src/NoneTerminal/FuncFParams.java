@@ -15,7 +15,7 @@ public class FuncFParams {
         boolean judge = true;
 
         funcDef.addFuncFParam(FuncFParam.analyse(identifySymbol, paramList));
-        while(judge && identifySymbol.getCurSym().getRegKey() == RegKey.COMMA){
+        while(judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA){
             identifySymbol.getASymbol();
             funcDef.addFuncFParam(FuncFParam.analyse(identifySymbol, paramList));
         }

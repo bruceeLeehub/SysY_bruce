@@ -57,10 +57,10 @@ public class CompUnit {
         CompUnit compUnit = new CompUnit();
         SymTable.createNewTable();
 
-        sym = identifySymbol.getCurSym();
-        while (judge && (identifySymbol.getCurSym().getRegKey() == RegKey.CONSTTK ||
-                identifySymbol.getCurSym().getRegKey() == RegKey.INTTK)) { // Decl
-            if (identifySymbol.getCurSym().getRegKey() == RegKey.INTTK) {
+        sym = identifySymbol.get_CurrentSym();
+        while (judge && (identifySymbol.get_CurrentSym().getRegKey() == RegKey.CONSTTK ||
+                identifySymbol.get_CurrentSym().getRegKey() == RegKey.INTTK)) { // Decl
+            if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.INTTK) {
                 sym = identifySymbol.getASymbol();
                 if (sym.getRegKey() == RegKey.IDENFR) {
                     sym = identifySymbol.getASymbol();
@@ -78,9 +78,9 @@ public class CompUnit {
             compUnit.addDecl(Decl.analyse(identifySymbol));
         }
 
-        while (judge && (identifySymbol.getCurSym().getRegKey() == RegKey.VOIDTK ||
-                identifySymbol.getCurSym().getRegKey() == RegKey.INTTK)) {
-            if (identifySymbol.getCurSym().getRegKey() == RegKey.INTTK) {
+        while (judge && (identifySymbol.get_CurrentSym().getRegKey() == RegKey.VOIDTK ||
+                identifySymbol.get_CurrentSym().getRegKey() == RegKey.INTTK)) {
+            if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.INTTK) {
                 sym = identifySymbol.getASymbol();
                 if (sym.getRegKey() == RegKey.IDENFR) {
                     identifySymbol.spitSym(1);

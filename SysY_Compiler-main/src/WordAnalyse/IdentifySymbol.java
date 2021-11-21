@@ -42,7 +42,7 @@ public class IdentifySymbol {
         return ret_Sym;
     }
 
-    public Symbol extraIdentOrKeyword(SourceCode code) {
+    public Symbol extra_IdentOrKeyword(SourceCode code) {
         StringBuilder stringValue = new StringBuilder();
         char cur_Char;
         while (!code.isEnd()) {
@@ -61,15 +61,15 @@ public class IdentifySymbol {
     }
 
 
-    public Symbol getPreSym(){ return symbolsRecord.get(cur_Ptr - 2); }
+    public Symbol get_PreSym(){ return symbolsRecord.get(cur_Ptr - 2); }
 
-    public void addTimes(int i) {
+    public void add_Times(int i) {
         this.add_Times = this.add_Times + i;
     }
 
     public void addStr(String s) {
         this.add_Times = this.add_Times + 1;
-        // this.output.add(this.curPtr + this.addTimes - 2, s);
+        // this.output.add(this.curPtr + this.add_Times - 2, s);
     }
 
     public void spitSym(int spitNum) {
@@ -80,7 +80,7 @@ public class IdentifySymbol {
 
 
 
-    private Symbol extraSingle(SourceCode code) throws Wrong {
+    private Symbol extra_Single(SourceCode code) throws Wrong {
         char curCode = code.getNext_Char();
         boolean isSingle = (curCode == '+' || curCode == '-' || curCode == '*' ||
                 curCode == '%' || curCode == ';' || curCode == ',' || curCode == '(' ||
@@ -93,7 +93,7 @@ public class IdentifySymbol {
         }
     }
 
-    private Symbol extraEven(SourceCode code) throws Wrong {
+    private Symbol extra_Even(SourceCode code) throws Wrong {
         char curCode = code.getNext_Char();
         StringBuilder stringValue = new StringBuilder();
         stringValue.append(curCode);
@@ -128,7 +128,7 @@ public class IdentifySymbol {
     }
 
 
-    private Symbol extraNum(SourceCode code) {
+    private Symbol extra_Num(SourceCode code) {
         StringBuilder stringValue = new StringBuilder();
         while (!code.isEnd()) {
             char cur_Char = code.getNext_Char();
@@ -143,7 +143,7 @@ public class IdentifySymbol {
         return new Symbol(RegKey.INTCON, s, code.get_RowIdx());
     }
 
-    private Symbol extraComOrDiv(SourceCode code) {
+    private Symbol extra_ComOrDiv(SourceCode code) {
         char curChar;
         curChar = code.getNext_Char();
         Symbol symbol = null;
@@ -165,7 +165,7 @@ public class IdentifySymbol {
         return symbol;
     }
 
-    private Symbol extraFString(SourceCode code) throws Wrong {
+    private Symbol extra_FString(SourceCode code) throws Wrong {
         char curCode = code.getNext_Char();
         StringBuilder value = new StringBuilder("\"");
 
@@ -198,19 +198,19 @@ public class IdentifySymbol {
                 code.back_Ward();
                 try {
                     if (curChar == '_' || Character.isAlphabetic(curChar)) {
-                        symbol = extraIdentOrKeyword(code);
+                        symbol = extra_IdentOrKeyword(code);
                     } else if (curChar == '&' || curChar == '|' ||
                             curChar == '!' || curChar == '<' ||
                             curChar == '>' || curChar == '=') {
-                        symbol = extraEven(code);
+                        symbol = extra_Even(code);
                     } else if (curChar == '/') {
-                        symbol = extraComOrDiv(code);
+                        symbol = extra_ComOrDiv(code);
                     } else if (Character.isDigit(curChar)) {
-                        symbol = extraNum(code);
+                        symbol = extra_Num(code);
                     } else if (curChar == '\"') {
-                        symbol = extraFString(code);
+                        symbol = extra_FString(code);
                     } else {
-                        symbol = extraSingle(code);
+                        symbol = extra_Single(code);
                     }
                 } catch (Wrong e) {
                     int row = e.wrongRow();
@@ -220,7 +220,7 @@ public class IdentifySymbol {
             if (symbol != null) {
                 this.cur_Ptr += 1;
                 this.symbolsRecord.add(symbol);
-                // this.output.add(this.curPtr + this.addTimes - 1, symbol.toString());
+                // this.output.add(this.curPtr + this.add_Times - 1, symbol.toString());
             }
             return symbol;
         }
@@ -230,7 +230,7 @@ public class IdentifySymbol {
         return symbolsRecord;
     }
 
-    public Symbol getCurSym() {
+    public Symbol get_CurrentSym() {
         return symbolsRecord.get(cur_Ptr - 1);
     }
 

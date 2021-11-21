@@ -48,7 +48,7 @@ public class RelExp {
         RelExp relExp = new RelExp();
 
         relExp.addAddExp(AddExp.analyse(identifySymbol));
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         while (judge && (sym.getRegKey() == RegKey.LSS ||
                 sym.getRegKey() == RegKey.LEQ ||
                 sym.getRegKey() == RegKey.GRE ||
@@ -57,7 +57,7 @@ public class RelExp {
             relExp.addOp(sym.getRegKey());
             identifySymbol.getASymbol();
             relExp.addAddExp(AddExp.analyse(identifySymbol));
-            sym = identifySymbol.getCurSym();
+            sym = identifySymbol.get_CurrentSym();
         }
 
         if (judge) identifySymbol.addStr(name);

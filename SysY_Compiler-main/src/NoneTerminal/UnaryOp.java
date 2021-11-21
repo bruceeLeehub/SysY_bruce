@@ -19,7 +19,7 @@ public class UnaryOp {
 
     public static UnaryOp analyse(IdentifySymbol identifySymbol) {
         boolean judge = true;
-        Symbol sym = identifySymbol.getCurSym();
+        Symbol sym = identifySymbol.get_CurrentSym();
         if (sym.getRegKey() != RegKey.PLUS &&
                 sym.getRegKey() != RegKey.MINU &&
                 sym.getRegKey() != RegKey.NOT) {

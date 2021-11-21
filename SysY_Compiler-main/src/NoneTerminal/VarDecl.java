@@ -39,18 +39,18 @@ public class VarDecl extends Decl {
         VarDecl varDecl = new VarDecl();
 
 
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         varDecl.setBType(BType.analyse(identifySymbol));
 
         if (judge) {
             varDecl.addVarDef(VarDef.analyse(identifySymbol));
         }
-        while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.COMMA) {
+        while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
             identifySymbol.getASymbol();
             varDecl.addVarDef(VarDef.analyse(identifySymbol));
         }
-        if (judge && identifySymbol.getCurSym().getRegKey() == RegKey.SEMICN) identifySymbol.getASymbol();
-        else Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " i"); // ERROR -- i: ';' needed
+        if (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.SEMICN) identifySymbol.getASymbol();
+        else Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " i"); // ERROR -- i: ';' needed
 
 
         if (judge) {

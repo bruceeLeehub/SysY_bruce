@@ -89,15 +89,15 @@ public class VarDef {
 
         varDef.setIdent(Ident.analyse(identifySymbol, identName));
         // ERROR: name Duplicated define -- type b
-        Error.checkIfDupDef(false, identifySymbol.getPreSym());
+        Error.checkIfDupDef(false, identifySymbol.get_PreSym());
 
-        while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.LBRACK) {
+        while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
             dims++;
             identifySymbol.getASymbol();
             varDef.addConstExp(ConstExp.analyse(identifySymbol));
             // ERROR -- k: ']' needed
-            if (identifySymbol.getCurSym().getRegKey() != RegKey.RBRACK)
-                Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " k");
+            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
+                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
             else identifySymbol.getASymbol();
 
         }
@@ -107,7 +107,7 @@ public class VarDef {
                 SymTable.insertTabEntryIntoCurTab(false, identName.string, false, DataType.INT_DATA, dims);
             else CompUnit.isNameDupDef = false;
 
-            if (identifySymbol.getCurSym().getRegKey() == RegKey.ASSIGN) {
+            if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.ASSIGN) {
                 identifySymbol.getASymbol();
                 varDef.setInitVal(InitVal.analyse(identifySymbol, null));
             }

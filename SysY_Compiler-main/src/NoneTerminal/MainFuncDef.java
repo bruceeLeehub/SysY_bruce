@@ -28,7 +28,7 @@ public class MainFuncDef {
         boolean judge = true;
         MainFuncDef mainFuncDef = new MainFuncDef();
 
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         judge &= sym.getRegKey() == RegKey.INTTK;
         if(judge){
             sym = identifySymbol.getASymbol();
@@ -41,8 +41,8 @@ public class MainFuncDef {
         if(judge){
             sym = identifySymbol.getASymbol();
             // ERROR -- j: ')' needed
-            if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)
-                Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " j");
+            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
+                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
             else
                 identifySymbol.getASymbol();
         }
@@ -51,7 +51,7 @@ public class MainFuncDef {
             mainFuncDef.setBlock(Block.analyse(identifySymbol));
             // ERROR -- g: func have return value don't have return stmt in the end
             if (Block.hasReturnStmt == false)
-                Error.addErrorOutPut(identifySymbol.getCurSym().getRow_Idx() + " g");
+                Error.addErrorOutPut(identifySymbol.get_CurrentSym().getRow_Idx() + " g");
         }
 
         if(judge){

@@ -78,24 +78,24 @@ public class FuncFParam {
             funcFParam.setIdent(Ident.analyse(identifySymbol, identName));
         }
         // ERROR: name Duplicated define -- type b
-        Error.checkIfDupDef(false, identifySymbol.getPreSym());
+        Error.checkIfDupDef(false, identifySymbol.get_PreSym());
         if (judge) {
-            sym = identifySymbol.getCurSym();
+            sym = identifySymbol.get_CurrentSym();
             if (sym.getRegKey() == RegKey.LBRACK) {
                 dims++; // dims++
                 identifySymbol.getASymbol();
                 funcFParam.newConstExp();
                 // ERROR -- k: ']' needed
-                if (identifySymbol.getCurSym().getRegKey() != RegKey.RBRACK)
-                    Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " k");
+                if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
+                    Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
                 else identifySymbol.getASymbol();
-                while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.LBRACK) {
+                while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
                     dims++; // dims++
                     identifySymbol.getASymbol();
                     funcFParam.addConstExp(ConstExp.analyse(identifySymbol));
                     // ERROR -- k: ']' needed
-                    if (identifySymbol.getCurSym().getRegKey() != RegKey.RBRACK)
-                        Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " k");
+                    if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
+                        Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
                     else identifySymbol.getASymbol();
 
                 }

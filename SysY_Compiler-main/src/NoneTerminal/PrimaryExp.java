@@ -54,17 +54,17 @@ public class PrimaryExp {
         boolean judge = true;
         PrimaryExp primaryExp = new PrimaryExp();
 
-        if (identifySymbol.getCurSym().getRegKey() == RegKey.LPARENT) {   // '(' Exp ')'
+        if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.LPARENT) {   // '(' Exp ')'
             identifySymbol.getASymbol();
             primaryExp.setExp(Exp.analyse(identifySymbol));
             if (judge) {
-                if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)
-                    Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " j");
+                if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
+                    Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
                 else
                     identifySymbol.getASymbol();
             }
         } else {
-            if (identifySymbol.getCurSym().getRegKey() == RegKey.IDENFR) {  // LVal --> Ident { '[' Exp ']' }
+            if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.IDENFR) {  // LVal --> Ident { '[' Exp ']' }
                 primaryExp.setlVal(LVal.analyse(identifySymbol));
             } else {  // Number
                 primaryExp.setNumber(Number.analyse(identifySymbol));

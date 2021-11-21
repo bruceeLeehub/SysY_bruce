@@ -40,12 +40,12 @@ public class LAndExp {
         LAndExp lAndExp = new LAndExp();
 
         lAndExp.addEqExp(EqExp.analyse(identifySymbol));
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         while (judge && sym.getRegKey() == RegKey.AND) {
             if (judge) identifySymbol.addStr(name);
             identifySymbol.getASymbol();
             lAndExp.addEqExp(EqExp.analyse(identifySymbol));
-            sym = identifySymbol.getCurSym();
+            sym = identifySymbol.get_CurrentSym();
         }
 
         if (judge) identifySymbol.addStr(name);

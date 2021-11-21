@@ -44,13 +44,13 @@ public class EqExp {
         EqExp eqExp = new EqExp();
 
         eqExp.addRelExp(RelExp.analyse(identifySymbol));
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         while (judge && (sym.getRegKey() == RegKey.EQL || sym.getRegKey() == RegKey.NEQ)) {
             if (judge) identifySymbol.addStr(name);
             eqExp.addOpList(sym.getRegKey());
             identifySymbol.getASymbol();
             eqExp.addRelExp(RelExp.analyse(identifySymbol));
-            sym = identifySymbol.getCurSym();
+            sym = identifySymbol.get_CurrentSym();
         }
 
         if (judge) identifySymbol.addStr(name);

@@ -78,22 +78,22 @@ public class FuncDef {
 
         if (judge) funcDef.setIdent(Ident.analyse(identifySymbol, identName));
         // ERROR: name Duplicated define -- type b
-        Error.checkIfDupDef(true, identifySymbol.getPreSym());
+        Error.checkIfDupDef(true, identifySymbol.get_PreSym());
         // record does it have a return value
         haveRetVal = dataType.dataType == DataType.INT_DATA;
         // create symTable stack of the following func
         SymTable.createNewTable();
 
         if (judge) {
-            sym = identifySymbol.getCurSym();
+            sym = identifySymbol.get_CurrentSym();
             judge &= sym.getRegKey() == RegKey.LPARENT;
             if (judge) {
                 sym = identifySymbol.getASymbol();
                 if (sym.getRegKey() == RegKey.RPARENT || sym.getRegKey() == RegKey.LBRACE) {
                     if (sym.getRegKey() == RegKey.LBRACE) {
                         // ERROR -- j: ')' needed
-                        if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)
-                            Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " j");
+                        if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
+                            Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
                     } else {
                         identifySymbol.getASymbol();
                     }
@@ -104,12 +104,12 @@ public class FuncDef {
                     funcDef.setBlock(Block.analyse(identifySymbol));
                     // ERROR -- g: func have return value don't have return stmt in the end
                     if (FuncDef.haveRetVal == true && Block.hasReturnStmt == false)
-                        Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " g");
+                        Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " g");
                 } else {
                     judge &= FuncFParams.analyse(identifySymbol, paramList, funcDef);
                     // ERROR -- j: ')' needed
-                    if (identifySymbol.getCurSym().getRegKey() != RegKey.RPARENT)
-                        Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " j");
+                    if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
+                        Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
                     else identifySymbol.getASymbol();
                     // insert funcDef into previous stmTable
                     if (CompUnit.isNameDupDef == false)
@@ -118,7 +118,7 @@ public class FuncDef {
                     funcDef.setBlock(Block.analyse(identifySymbol));
                     // ERROR -- g: func have return value don't have return stmt in the end
                     if (FuncDef.haveRetVal == true && Block.hasReturnStmt == false)
-                        Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " g");
+                        Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " g");
 
                 }
 

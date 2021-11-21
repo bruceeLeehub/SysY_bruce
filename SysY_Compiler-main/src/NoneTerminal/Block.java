@@ -27,15 +27,15 @@ public class Block {
         }
 
 
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         boolean b1 = sym.getRegKey() == RegKey.LBRACE;
         judge = b1;
         identifySymbol.getASymbol();
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         while (judge && sym.getRegKey() != RegKey.RBRACE) {
             b1 = BlockItem.analyse(identifySymbol, block);
             judge = b1;
-            sym = identifySymbol.getCurSym();
+            sym = identifySymbol.get_CurrentSym();
         }
         if (judge) {
             b1 = sym.getRegKey() == RegKey.RBRACE;
@@ -47,7 +47,7 @@ public class Block {
             b1 = MainFuncDef.mainIsChecking;
             b1 = b1 && identifySymbol.isEndLine();
             if (b1) {
-                identifySymbol.addTimes(1);
+                identifySymbol.add_Times(1);
             }
             identifySymbol.addStr(name_block);
         }

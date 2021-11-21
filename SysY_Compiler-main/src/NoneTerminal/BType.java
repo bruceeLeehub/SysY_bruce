@@ -1,27 +1,27 @@
 package NoneTerminal;
 
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 public class BType {
-    public static String name = "<BType>";
+    public static String name_bType = "<---BType--->";
 
-    private RegKey regKey;
+    private final RegKey regKey;
 
-    public BType(){
-        this.regKey = RegKey.INTTK;
+    public RegKey getRegKey() {
+        return regKey;
     }
 
-    public static BType analyse(IdentifySymbol identifySymbol){
-        Symbol sym;
+    public static BType analyse(IdentifySymbol identSym){
+        Symbol sym = identSym.get_CurrentSym();
         BType bType = new BType();
-
-        sym = identifySymbol.getCurSym();
-        if(sym.getRegKey() == RegKey.INTTK){
-            identifySymbol.getASymbol();
-            return bType;
+        boolean isInt = (sym.getRegKey() == RegKey.INTTK);
+        if(!isInt){
+            return null;
         }
-        return null;
+        identSym.getASymbol();
+        return bType;
+    }
+    public BType(){
+        regKey = RegKey.INTTK;
     }
 }

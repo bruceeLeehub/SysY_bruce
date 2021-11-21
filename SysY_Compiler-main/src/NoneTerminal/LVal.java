@@ -130,19 +130,19 @@ public class LVal {
 
         lVal.setIdent(Ident.analyse(identifySymbol, identName));
         // ERROR: check name undefined -- type c
-        Error.checkNameUndefined(false, identifySymbol.getPreSym());
+        Error.checkNameUndefined(false, identifySymbol.get_PreSym());
         // checking RParams type
         tmpEntry = SymTable.get_SymByNameInAllTable(false, identName.string);
         if (judge) {
-            while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.LBRACK) {
+            while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
                 inDims++;
                 dims++;
                 identifySymbol.getASymbol();
                 lVal.addExp(Exp.analyse(identifySymbol));
 
                 // ERROR -- k: ']' needed
-                if (identifySymbol.getCurSym().getRegKey() != RegKey.RBRACK)
-                    Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " k");
+                if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
+                    Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
                 else identifySymbol.getASymbol();
                 inDims--;
             }

@@ -60,11 +60,11 @@ public class MulExp {
         MulExp mulExp = new MulExp();
         mulExp.addUnaryExp(UnaryExp.analyse(identifySymbol));
 
-        while (judge && (identifySymbol.getCurSym().getRegKey() == RegKey.MULT ||
-                identifySymbol.getCurSym().getRegKey() == RegKey.DIV ||
-                identifySymbol.getCurSym().getRegKey() == RegKey.MOD)) {
+        while (judge && (identifySymbol.get_CurrentSym().getRegKey() == RegKey.MULT ||
+                identifySymbol.get_CurrentSym().getRegKey() == RegKey.DIV ||
+                identifySymbol.get_CurrentSym().getRegKey() == RegKey.MOD)) {
             if (judge) identifySymbol.addStr(name);
-            mulExp.addOp(identifySymbol.getCurSym().getRegKey());
+            mulExp.addOp(identifySymbol.get_CurrentSym().getRegKey());
             identifySymbol.getASymbol();
             mulExp.addUnaryExp(UnaryExp.analyse(identifySymbol));
         }

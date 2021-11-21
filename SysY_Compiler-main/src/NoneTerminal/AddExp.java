@@ -21,10 +21,10 @@ public class AddExp {
         MulExp mulExp = MulExp.analyse(identSymbol);
         addExp.add_MulExp(mulExp);
 
-        while ((identSymbol.getCurSym().getRegKey() == RegKey.PLUS ||
-                identSymbol.getCurSym().getRegKey() == RegKey.MINU)) {
+        while ((identSymbol.get_CurrentSym().getRegKey() == RegKey.PLUS ||
+                identSymbol.get_CurrentSym().getRegKey() == RegKey.MINU)) {
             identSymbol.addStr(name_addExp);
-            Symbol symbol = identSymbol.getCurSym();
+            Symbol symbol = identSymbol.get_CurrentSym();
             RegKey regKey = symbol.getRegKey();
 
             addExp.add_Operator(regKey);

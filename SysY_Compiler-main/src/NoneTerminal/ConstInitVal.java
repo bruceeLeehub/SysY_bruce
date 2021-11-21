@@ -36,17 +36,17 @@ public class ConstInitVal {
         if(constInitVal == null)
             constInitVal = new ConstInitVal();
 
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         if (sym.getRegKey() == RegKey.LBRACE) {
             identifySymbol.getASymbol();
-            if (identifySymbol.getCurSym().getRegKey() != RegKey.RBRACE) {
+            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACE) {
                 ConstInitVal.analyse(identifySymbol, constInitVal);
-                while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.COMMA) {
+                while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
                     identifySymbol.getASymbol();
                     ConstInitVal.analyse(identifySymbol, constInitVal);
                 }
             }
-            if (judge && identifySymbol.getCurSym().getRegKey() == RegKey.RBRACE) {
+            if (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.RBRACE) {
                 judge = true;
                 identifySymbol.getASymbol();
             } else {

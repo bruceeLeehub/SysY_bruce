@@ -31,17 +31,17 @@ public class InitVal {
         if(initVal == null)
             initVal = new InitVal();
 
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         if (sym.getRegKey() == RegKey.LBRACE) {
             identifySymbol.getASymbol();
-            if (identifySymbol.getCurSym().getRegKey() != RegKey.RBRACE) {
+            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACE) {
                 InitVal.analyse(identifySymbol, initVal);
-                while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.COMMA) {
+                while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
                     identifySymbol.getASymbol();
                     InitVal.analyse(identifySymbol, initVal);
                 }
             }
-            if(judge && identifySymbol.getCurSym().getRegKey() == RegKey.RBRACE){
+            if(judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.RBRACE){
                 judge = true;
                 identifySymbol.getASymbol();
             }else{

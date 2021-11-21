@@ -38,7 +38,7 @@ public class ConstDecl extends Decl{
         boolean judge = true;
         ConstDecl constDecl = new ConstDecl();
 
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         judge &= sym.getRegKey() == RegKey.CONSTTK;
         if (judge) {
             identifySymbol.getASymbol();
@@ -47,12 +47,12 @@ public class ConstDecl extends Decl{
         if (judge) {
             constDecl.addConstDef(ConstDef.analyse(identifySymbol));
         }
-        while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.COMMA) {
+        while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
             identifySymbol.getASymbol();
             constDecl.addConstDef(ConstDef.analyse(identifySymbol));
         }
-        if (judge && identifySymbol.getCurSym().getRegKey() == RegKey.SEMICN) identifySymbol.getASymbol();
-        else Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " i"); // ERROR -- i: ';' needed
+        if (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.SEMICN) identifySymbol.getASymbol();
+        else Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " i"); // ERROR -- i: ';' needed
 
 
         if (judge) {

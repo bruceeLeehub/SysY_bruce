@@ -70,15 +70,15 @@ public class ConstDef {
 
         constDef.setIdent(Ident.analyse(identifySymbol, identName));
         // ERROR: name Duplicated define -- type b
-        Error.checkIfDupDef(false, identifySymbol.getPreSym());
+        Error.checkIfDupDef(false, identifySymbol.get_PreSym());
 
-        while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.LBRACK) {
+        while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
             dims++;
             identifySymbol.getASymbol();
             constDef.addConstExp(ConstExp.analyse(identifySymbol));
             // ERROR -- k: ']' needed
-            if (identifySymbol.getCurSym().getRegKey() != RegKey.RBRACK)
-                Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " k");
+            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
+                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
             else identifySymbol.getASymbol();
 
         }
@@ -88,7 +88,7 @@ public class ConstDef {
         else CompUnit.isNameDupDef = false;
 
         if (judge) {
-            judge &= identifySymbol.getCurSym().getRegKey() == RegKey.ASSIGN;
+            judge &= identifySymbol.get_CurrentSym().getRegKey() == RegKey.ASSIGN;
         }
         if (judge) {
             identifySymbol.getASymbol();

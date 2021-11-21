@@ -13,7 +13,7 @@ public class Decl implements BlockItemInter{
         Decl decl;
 
         Block.hasReturnStmt = false;
-        sym = identifySymbol.getCurSym();
+        sym = identifySymbol.get_CurrentSym();
         if(sym.getRegKey() == RegKey.INTTK){
             decl = VarDecl.analyse(identifySymbol);
         }else{
