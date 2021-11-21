@@ -98,9 +98,9 @@ public class FuncDef {
                         identifySymbol.getASymbol();
                     }
                     // insert funcDef into previous stmTable
-                    if (CompUnit.isNameDupDef == false)
+                    if (CompUnit.isNameDuplicateDef == false)
                         SymTable.insertTabEntryIntoPreTab(true, identName.string, false, dataType.dataType, 0, paramList);
-                    else CompUnit.isNameDupDef = false;
+                    else CompUnit.isNameDuplicateDef = false;
                     funcDef.setBlock(Block.analyse(identifySymbol));
                     // ERROR -- g: func have return value don't have return stmt in the end
                     if (FuncDef.haveRetVal == true && Block.hasReturnStmt == false)
@@ -112,9 +112,9 @@ public class FuncDef {
                         Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
                     else identifySymbol.getASymbol();
                     // insert funcDef into previous stmTable
-                    if (CompUnit.isNameDupDef == false)
+                    if (CompUnit.isNameDuplicateDef == false)
                         SymTable.insertTabEntryIntoPreTab(true, identName.string, false, dataType.dataType, 0, paramList);
-                    else CompUnit.isNameDupDef = false;
+                    else CompUnit.isNameDuplicateDef = false;
                     funcDef.setBlock(Block.analyse(identifySymbol));
                     // ERROR -- g: func have return value don't have return stmt in the end
                     if (FuncDef.haveRetVal == true && Block.hasReturnStmt == false)

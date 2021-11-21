@@ -42,8 +42,8 @@ public class Error {
     }
 
     public static void checkIfDupDef(boolean isFunc, Symbol sym){
-        CompUnit.isNameDupDef = SymTable.currentTableContainName(isFunc, sym.get_IdentName());
-        if (CompUnit.isNameDupDef)
+        CompUnit.isNameDuplicateDef = SymTable.currentTableContainName(isFunc, sym.get_IdentName());
+        if (CompUnit.isNameDuplicateDef)
             Error.addErrorOutPut(sym.getRow_Idx() + " b");
     }
 

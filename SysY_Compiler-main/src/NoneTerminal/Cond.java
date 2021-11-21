@@ -1,29 +1,22 @@
 package NoneTerminal;
 
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 public class Cond {
-    public static String name = "<Cond>";
-
-    private LOrExp lOrExp;
-    public Cond(LOrExp lOrExp){
-        this.lOrExp = lOrExp;
-    }
+    private final LOrExp lOrExp;
+    public static String name_cond = "<Cond>";
 
     public void genCode() {
-        lOrExp.genCode();
+        this.lOrExp.genCode();
     }
 
-    public static Cond analyse(IdentifySymbol identifySymbol){
-        Symbol sym;
-        boolean judge = true;
-
-        Cond cond = new Cond(LOrExp.analyse(identifySymbol));
-
-        if(judge){
-            identifySymbol.addStr(name);
-        }
-        return cond;
+    public static Cond analyse(IdentifySymbol identSymbol){
+        LOrExp lOrExp1 = LOrExp.analyse(identSymbol);
+//        Cond cond = new Cond(lOrExp1);
+        identSymbol.addStr(name_cond);
+        return new Cond(lOrExp1);
+    }
+    public Cond(LOrExp lOrExp){
+        this.lOrExp = lOrExp;
     }
 }

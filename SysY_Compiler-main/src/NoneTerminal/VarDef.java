@@ -103,9 +103,9 @@ public class VarDef {
         }
         if (judge) {
             // create a const var
-            if (CompUnit.isNameDupDef == false)
+            if (CompUnit.isNameDuplicateDef == false)
                 SymTable.insertTabEntryIntoCurTab(false, identName.string, false, DataType.INT_DATA, dims);
-            else CompUnit.isNameDupDef = false;
+            else CompUnit.isNameDuplicateDef = false;
 
             if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.ASSIGN) {
                 identifySymbol.getASymbol();

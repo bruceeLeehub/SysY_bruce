@@ -83,9 +83,9 @@ public class ConstDef {
 
         }
         // create a const var
-        if (CompUnit.isNameDupDef == false)
+        if (CompUnit.isNameDuplicateDef == false)
             SymTable.insertTabEntryIntoCurTab(false, identName.string, true, DataType.INT_DATA, dims);
-        else CompUnit.isNameDupDef = false;
+        else CompUnit.isNameDuplicateDef = false;
 
         if (judge) {
             judge &= identifySymbol.get_CurrentSym().getRegKey() == RegKey.ASSIGN;

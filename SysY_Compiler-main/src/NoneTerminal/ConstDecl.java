@@ -1,21 +1,18 @@
 package NoneTerminal;
 
+import WordAnalyse.*;
 import MyError.Error;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
 
 import java.util.ArrayList;
 
 public class ConstDecl extends Decl{
-    public static String name = "<ConstDecl>";
-
+    private final ArrayList<ConstDef> constDefList;
+    public static String name_constDecl = "<ConstDecl>";
     private BType bType;
-    private ArrayList<ConstDef> constDefList;
 
     public ConstDecl(){
-        this.bType = null;
         this.constDefList = new ArrayList<>();
+        this.bType = null;
     }
 
     public void setBType(BType bType){
@@ -35,11 +32,11 @@ public class ConstDecl extends Decl{
 
     public static ConstDecl analyse(IdentifySymbol identifySymbol) {
         Symbol sym;
-        boolean judge = true;
+        boolean judge;
         ConstDecl constDecl = new ConstDecl();
 
         sym = identifySymbol.get_CurrentSym();
-        judge &= sym.getRegKey() == RegKey.CONSTTK;
+        judge = sym.getRegKey() == RegKey.CONSTTK;
         if (judge) {
             identifySymbol.getASymbol();
             constDecl.setBType(BType.analyse(identifySymbol));
@@ -56,7 +53,7 @@ public class ConstDecl extends Decl{
 
 
         if (judge) {
-            identifySymbol.addStr(name);
+            identifySymbol.addStr(name_constDecl);
         }
         return constDecl;
     }

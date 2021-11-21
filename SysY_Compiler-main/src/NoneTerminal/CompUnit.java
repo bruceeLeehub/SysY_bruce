@@ -1,105 +1,116 @@
 package NoneTerminal;
 
-import Tables.ArrTable;
+import Tables.*;
 import Table.SymTable;
-import Tables.Code;
-import Tables.CodeType;
-import Tables.Table;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class CompUnit {
-    public static String name = "<CompUnit>";
-    public static boolean isNameDupDef = false;
+    private final ArrayList<Decl> decl_List;
+    public static boolean isNameDuplicateDef = false;
+    private final ArrayList<FuncDef> funcDef_List;
+    private MainFuncDef main_FuncDef;
 
-    private ArrayList<Decl> declList;
-    private ArrayList<FuncDef> funcDefList;
-    private MainFuncDef mainFuncDef;
+    public static String name_compUnit = "<CompUnit>";
 
-    public CompUnit(){
-        this.declList = new ArrayList<>();
-        this.funcDefList = new ArrayList<>();
-        this.mainFuncDef = null;
+    public void setMain_FuncDef(MainFuncDef main_FuncDef){
+        this.main_FuncDef = main_FuncDef;
     }
 
-    public void setMainFuncDef(MainFuncDef mainFuncDef){
-        this.mainFuncDef = mainFuncDef;
+    public boolean isDecl(IdentifySymbol identSymbol) {
+        boolean b1 = identSymbol.get_CurrentSym().getRegKey() == RegKey.CONSTTK;
+        boolean b2 = identSymbol.get_CurrentSym().getRegKey() == RegKey.INTTK;
+        return b1 || b2;
+    }
+
+
+    public static CompUnit analyse(IdentifySymbol identSymbol) {
+        boolean isDecl;
+        boolean isFuncDef;
+        Symbol sym = identSymbol.get_CurrentSym();
+        SymTable.createNewTable();
+        CompUnit compUnit = new CompUnit();
+
+        while (identSymbol.get_CurrentSym().getRegKey() == RegKey.CONSTTK
+                || identSymbol.get_CurrentSym().getRegKey() == RegKey.INTTK) { // Decl
+            Symbol symbol = identSymbol.get_CurrentSym();
+            RegKey regKey = symbol.getRegKey();
+            boolean isInt = (regKey == RegKey.INTTK);
+            if (isInt) {
+                sym = identSymbol.getASymbol();
+                regKey = sym.getRegKey();
+                boolean isIdent = (regKey == RegKey.IDENFR);
+                if (!isIdent) {
+                    identSymbol.spitSym(1);
+                    break;
+                } else {
+                    sym = identSymbol.getASymbol();
+                    regKey = sym.getRegKey();
+                    boolean isLparent = (regKey == RegKey.LPARENT);
+                    identSymbol.spitSym(2);
+                    if (isLparent) {
+                        break;
+                    }
+                }
+            }
+            Decl decl = Decl.analyse(identSymbol);
+            compUnit.addDecl(decl);
+        }
+
+        while (identSymbol.get_CurrentSym().getRegKey() == RegKey.INTTK ||
+                identSymbol.get_CurrentSym().getRegKey() == RegKey.VOIDTK) {
+            Symbol symbol = identSymbol.get_CurrentSym();
+            RegKey regKey = symbol.getRegKey();
+            boolean isInt = (regKey == RegKey.INTTK);
+            if (isInt) {
+                sym = identSymbol.getASymbol();
+                regKey = sym.getRegKey();
+                boolean isIdent= (regKey == RegKey.IDENFR);
+                identSymbol.spitSym(1);
+                if (!isIdent) {
+                    break;
+                }
+            }
+            FuncDef funcDef = FuncDef.analyse(identSymbol);
+            compUnit.addFuncDef(funcDef);
+        }
+
+        MainFuncDef mainFuncDef = MainFuncDef.analyse(identSymbol);
+        compUnit.setMain_FuncDef(mainFuncDef);
+
+        identSymbol.addStr(name_compUnit);
+
+        return compUnit;
     }
 
     public void addDecl(Decl decl){
-        this.declList.add(decl);
+        decl_List.add(decl);
     }
 
     public void addFuncDef(FuncDef funcDef){
-        this.funcDefList.add(funcDef);
+        funcDef_List.add(funcDef);
     }
 
     public void genCode(){
-        int mainJumpInsAdr = -1;
-        Table.createANewLayer();
         ArrTable.createArrTable();
         Code.addCode(CodeType.INI);
-        for(Decl decl : declList)
-            decl.genCode();
-        mainJumpInsAdr = Code.addCode(CodeType.JMP, -1); // TODO: modify adr later, you need to jump to main
-        for(FuncDef funcDef : funcDefList)
-            funcDef.genCode();
-        Code.modify_Y(mainJumpInsAdr, Code.addCode(CodeType.MAI));
-        mainFuncDef.genCode();
+        Table.createANewLayer();
+        for(Decl decline : decl_List) {
+            decline.genCode();
+        }
+        int main_JumpInsAdr = Code.addCode(CodeType.JMP, -1);
+        // TODO: modify adr later, you need to jump to main
+        for(FuncDef func_Def : funcDef_List) {
+            func_Def.genCode();
+        }
+        Code.modify_Y(main_JumpInsAdr, Code.addCode(CodeType.MAI));
+        main_FuncDef.genCode();
     }
 
-    public static CompUnit analyse(IdentifySymbol identifySymbol) {
-        Symbol sym;
-        boolean judge = true;
-        CompUnit compUnit = new CompUnit();
-        SymTable.createNewTable();
-
-        sym = identifySymbol.get_CurrentSym();
-        while (judge && (identifySymbol.get_CurrentSym().getRegKey() == RegKey.CONSTTK ||
-                identifySymbol.get_CurrentSym().getRegKey() == RegKey.INTTK)) { // Decl
-            if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.INTTK) {
-                sym = identifySymbol.getASymbol();
-                if (sym.getRegKey() == RegKey.IDENFR) {
-                    sym = identifySymbol.getASymbol();
-                    if (sym.getRegKey() == RegKey.LPARENT) {
-                        identifySymbol.spitSym(2);
-                        break;
-                    } else {
-                        identifySymbol.spitSym(2);
-                    }
-                } else {
-                    identifySymbol.spitSym(1);
-                    break;
-                }
-            }
-            compUnit.addDecl(Decl.analyse(identifySymbol));
-        }
-
-        while (judge && (identifySymbol.get_CurrentSym().getRegKey() == RegKey.VOIDTK ||
-                identifySymbol.get_CurrentSym().getRegKey() == RegKey.INTTK)) {
-            if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.INTTK) {
-                sym = identifySymbol.getASymbol();
-                if (sym.getRegKey() == RegKey.IDENFR) {
-                    identifySymbol.spitSym(1);
-                } else {
-                    identifySymbol.spitSym(1);
-                    break;
-                }
-            }
-            compUnit.addFuncDef(FuncDef.analyse(identifySymbol));
-        }
-
-        if (judge) {
-            compUnit.setMainFuncDef(MainFuncDef.analyse(identifySymbol));
-        }
-
-        if (judge) {
-            identifySymbol.addStr(name);
-        }
-
-        return compUnit;
+    public CompUnit(){
+        decl_List = new ArrayList<>();
+        funcDef_List = new ArrayList<>();
+        main_FuncDef = null;
     }
 }
