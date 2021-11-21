@@ -103,7 +103,7 @@ public class FuncDef {
                     else CompUnit.isNameDupDef = false;
                     funcDef.setBlock(Block.analyse(identifySymbol));
                     // ERROR -- g: func have return value don't have return stmt in the end
-                    if (FuncDef.haveRetVal == true && Block.haveRetStmt == false)
+                    if (FuncDef.haveRetVal == true && Block.hasReturnStmt == false)
                         Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " g");
                 } else {
                     judge &= FuncFParams.analyse(identifySymbol, paramList, funcDef);
@@ -117,7 +117,7 @@ public class FuncDef {
                     else CompUnit.isNameDupDef = false;
                     funcDef.setBlock(Block.analyse(identifySymbol));
                     // ERROR -- g: func have return value don't have return stmt in the end
-                    if (FuncDef.haveRetVal == true && Block.haveRetStmt == false)
+                    if (FuncDef.haveRetVal == true && Block.hasReturnStmt == false)
                         Error.addErrorOutPut(identifySymbol.getPreSym().getRow_Idx() + " g");
 
                 }

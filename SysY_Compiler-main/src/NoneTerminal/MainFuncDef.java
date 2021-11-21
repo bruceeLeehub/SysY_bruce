@@ -50,7 +50,7 @@ public class MainFuncDef {
             mainIsChecking = true;
             mainFuncDef.setBlock(Block.analyse(identifySymbol));
             // ERROR -- g: func have return value don't have return stmt in the end
-            if (Block.haveRetStmt == false)
+            if (Block.hasReturnStmt == false)
                 Error.addErrorOutPut(identifySymbol.getCurSym().getRow_Idx() + " g");
         }
 

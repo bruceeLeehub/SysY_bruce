@@ -1,77 +1,92 @@
 package NoneTerminal;
 
-import ParcelType.My_Int;
-import Tables.Code;
-import Tables.CodeType;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import ParcelType.*;
+import Tables.*;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class AddExp {
-    public static String name = "<AddExp>";
-
-    private ArrayList<MulExp> mulExpList;
-    private ArrayList<RegKey> opList;
-
-    public AddExp() {
-        this.mulExpList = new ArrayList<>();
-        this.opList = new ArrayList<>();
-    }
-
-    public void addMulExp(MulExp mulExp) {
-        this.mulExpList.add(mulExp);
-    }
-
-    public void addOp(RegKey regKey) {
-        this.opList.add(regKey);
-    }
-
-    public void genCode(My_Int value  ) {
-        if (value != null) {      // is const, you need to calculate it right now
-            My_Int value_1 = new My_Int();
-            mulExpList.get(0).genCode(value);
-            for (int i = 1; i < mulExpList.size(); i++) {
-                mulExpList.get(i).genCode(value_1);
-                if (opList.get(i - 1).equals(RegKey.PLUS)) {
-                    value.my_Int += value_1.my_Int;
-                } else {
-                    value.my_Int -= value_1.my_Int;
-                }
-            }
-        } else {          // not a const you need to get it when running program
-            mulExpList.get(0).genCode(null);
-            for (int i = 1; i < mulExpList.size(); i++) {
-                mulExpList.get(i).genCode(null);
-                if (opList.get(i - 1).equals(RegKey.PLUS))
-                    Code.addCode(CodeType.ADD);
-                else Code.addCode(CodeType.SUB);
-            }
-        }
-    }
-
-    public static AddExp analyse(IdentifySymbol identifySymbol) {
-        boolean judge = true;
-        AddExp addExp = new AddExp();   // ast Tree node
-        addExp.addMulExp(MulExp.analyse(identifySymbol));
-
-        while (judge && (identifySymbol.getCurSym().getRegKey() == RegKey.PLUS ||
-                identifySymbol.getCurSym().getRegKey() == RegKey.MINU)) {
-            if (judge)
-                identifySymbol.addStr(name);
-            addExp.addOp(identifySymbol.getCurSym().getRegKey());
-            identifySymbol.getASymbol();
-            addExp.addMulExp(MulExp.analyse(identifySymbol));
-        }
-
-        if (judge)
-            identifySymbol.addStr(name);
-
-        return addExp;
-    }
+    private final ArrayList<MulExp> mulExpList;
+    private final ArrayList<RegKey> operatorList;
+    public static String name_addExp = "<AddExp>";
 
     public static boolean isMyFirst(Symbol sym) {
         return MulExp.isMyFirst(sym);
+    }
+
+    public static AddExp analyse(IdentifySymbol identSymbol) {
+        AddExp addExp = new AddExp();   // ast Tree node
+        //boolean judge = true;
+        MulExp mulExp = MulExp.analyse(identSymbol);
+        addExp.add_MulExp(mulExp);
+
+        while ((identSymbol.getCurSym().getRegKey() == RegKey.PLUS ||
+                identSymbol.getCurSym().getRegKey() == RegKey.MINU)) {
+            identSymbol.addStr(name_addExp);
+            Symbol symbol = identSymbol.getCurSym();
+            RegKey regKey = symbol.getRegKey();
+
+            addExp.add_Operator(regKey);
+            identSymbol.getASymbol();
+            MulExp mulExp1 = MulExp.analyse(identSymbol);
+            addExp.add_MulExp(mulExp1);
+        }
+//        if (judge)
+//            identSymbol.addStr(name_addExp);
+        identSymbol.addStr(name_addExp);
+        return addExp;
+    }
+
+    public void add_MulExp(MulExp mul_Exp) {
+        mulExpList.add(mul_Exp);
+    }
+
+    public void genCode(My_Int value_int) {
+        if (value_int == null) {
+            // get it when running program,not a const
+            //mulExpList.get(0).genCode(null);
+            MulExp mulExp = mulExpList.get(0);
+            mulExp.genCode(null);
+            for (int i = 1; i < mulExpList.size(); i++) {
+                MulExp mulExp1 = mulExpList.get(i);
+                mulExp1.genCode(null);
+                //mulExpList.get(i).genCode(null);
+                RegKey regKey = operatorList.get(i - 1);
+                boolean isPlus = (regKey.equals(RegKey.PLUS));
+                if (!isPlus) {
+                    Code.addCode(CodeType.SUB);
+                }
+                else {
+                    Code.addCode(CodeType.ADD);
+                }
+            }
+        } else {          // calculate it right now,is const
+            My_Int value_int_1 = new My_Int();
+            //mulExpList.get(0).genCode(value_int);
+            MulExp mulExp = mulExpList.get(0);
+            mulExp.genCode(value_int);
+            for (int i = 1; i < mulExpList.size(); i++) {
+                MulExp mulExp1 = mulExpList.get(i);
+                mulExp1.genCode(value_int_1);
+                //mulExpList.get(i).genCode(value_int_1);
+                RegKey regKey = operatorList.get(i - 1);
+                boolean isPlus = regKey.equals(RegKey.PLUS);
+                if (!isPlus) {
+                    value_int.my_Int = value_int.my_Int - value_int_1.my_Int;
+                } else {
+                    value_int.my_Int = value_int.my_Int + value_int_1.my_Int;
+                }
+            }
+        }
+    }
+
+    public void add_Operator(RegKey regKey) {
+        operatorList.add(regKey);
+    }
+
+    public AddExp() {
+        this.operatorList = new ArrayList<>();
+        this.mulExpList = new ArrayList<>();
     }
 }

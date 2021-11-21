@@ -1,11 +1,14 @@
 package NoneTerminal;
 
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
-
+import WordAnalyse.*;
 public class BlockItem {
-    public static String name = "<BlockItem>";
+    public static String name_blockItem = "<BlockItem>";
+
+    public static boolean isMyFirst(Symbol sym){
+        boolean b1 = Decl.isMyFirst(sym);
+        boolean b2 = Stmt.isMyFirst(sym);
+        return b1 || b2;
+    }
 
     public static boolean analyse(IdentifySymbol identifySymbol, Block block) {
         Symbol sym;
@@ -14,9 +17,9 @@ public class BlockItem {
         sym = identifySymbol.getCurSym();
         if (sym.getRegKey() == RegKey.CONSTTK ||
                 sym.getRegKey() == RegKey.INTTK) {
-            block.addDeclList(Decl.analyse(identifySymbol));
+            block.add_Decl_List(Decl.analyse(identifySymbol));
         }else{
-            block.addStmtList(Stmt.analyse(identifySymbol));
+            block.add_Stmt_List(Stmt.analyse(identifySymbol));
         }
 
         /*
@@ -25,12 +28,5 @@ public class BlockItem {
         }
         */
         return judge;
-    }
-
-    public static boolean isMyFirst(Symbol sym){
-        if(Decl.isMyFirst(sym) || Stmt.isMyFirst(sym)){
-            return true;
-        }
-        return false;
     }
 }

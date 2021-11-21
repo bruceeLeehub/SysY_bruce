@@ -2,97 +2,110 @@ package NoneTerminal;
 
 import Table.SymTable;
 import Tables.*;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class Block {
-    public static String name = "<Block>";
-    public static boolean haveRetStmt = false;
-    public static int blockLayer = 0;
+    private final ArrayList<BlockItemInter> blockItemInterList;
+    public static int block_Layers = 0;
+    public static boolean hasReturnStmt = false;
+    public static String name_block = "<Block>";
 
-    private ArrayList<BlockItemInter> blockItemInters;
+    public static Block analyse(IdentifySymbol identifySymbol) {
+        Block block = new Block();  // AST TREE NODE
+        hasReturnStmt = false;
+        block_Layers = block_Layers + 1;
+        Symbol sym;
+        boolean judge = true;
+        // create a new table stack for this block
+        if (!FuncDef.funcBlockST) {
+            SymTable.createNewTable();
+        }
+        else {
+            FuncDef.funcBlockST = false;
+        }
 
-    public Block() {
-        this.blockItemInters = new ArrayList<>();
+
+        sym = identifySymbol.getCurSym();
+        boolean b1 = sym.getRegKey() == RegKey.LBRACE;
+        judge = b1;
+        identifySymbol.getASymbol();
+        sym = identifySymbol.getCurSym();
+        while (judge && sym.getRegKey() != RegKey.RBRACE) {
+            b1 = BlockItem.analyse(identifySymbol, block);
+            judge = b1;
+            sym = identifySymbol.getCurSym();
+        }
+        if (judge) {
+            b1 = sym.getRegKey() == RegKey.RBRACE;
+            judge = b1;
+            identifySymbol.getASymbol();
+        }
+
+        if (judge) {
+            b1 = MainFuncDef.mainIsChecking;
+            b1 = b1 && identifySymbol.isEndLine();
+            if (b1) {
+                identifySymbol.addTimes(1);
+            }
+            identifySymbol.addStr(name_block);
+        }
+        // popOutdata current table stack of this block
+        block_Layers = block_Layers - 1;
+        SymTable.popOutterTable();
+        return block;
     }
 
-    public void addDeclList(Decl decl) {
-        this.blockItemInters.add(decl);
+    public void add_Stmt_List(Stmt stmt) {
+        blockItemInterList.add(stmt);
     }
 
-    public void addStmtList(Stmt stmt) {
-        this.blockItemInters.add(stmt);
+    public static boolean isMyFirst(Symbol sym) {
+        return sym.getRegKey() == RegKey.LBRACE;
     }
 
-    public void genCode(String name, TableEntry funcTe) {
+
+    public void genCode(String name, TableEntry funcTableEntry) {
         int recPreSize = 0;
-        if (funcTe != null /* is func */ &&
-                !name.equals("main") /* is not main */)     // enter from a func def
-            Table.add_FuncTentryToCurTable(name, funcTe);
+
+        boolean isFunc_NotMain = (funcTableEntry != null && !name.equals("main"));
+        if (isFunc_NotMain)     // enter from a func def
+            Table.add_FuncTentryToCurTable(name, funcTableEntry);
         else {                   // enter from others
             recPreSize = Table.get_CurrentPreSize();
             Table.createANewLayer();
         }
 
-        if(name == null)
+        boolean noName = (name == null);
+        if(noName) {
             Code.addCode(CodeType.BKI);
+        }
 
-        for(BlockItemInter blockItemInter : blockItemInters)
+        for(BlockItemInter blockItemInter : blockItemInterList) {
             blockItemInter.genCode();
+        }
 
         Table.getOutFromLayer();
         Table.setCurrentPreSize(recPreSize);
 
-        if(name == null)
+        boolean noName1 = (name == null);
+        if(noName1) {
             Code.addCode(CodeType.DBK);
+        }
 
-        if(funcTe != null && funcTe.get_Typ().equals(Typ.VOID_TYP))
+        boolean voidFunc = (funcTableEntry != null);
+        voidFunc = voidFunc && funcTableEntry.get_Typ().equals(Typ.VOID_TYP);
+        if(voidFunc) {
             Code.addCode(CodeType.RET);
+        }
     }
 
-    public static Block analyse(IdentifySymbol identifySymbol) {
-        blockLayer++;
-        Symbol sym;
-        boolean judge = true;
-        haveRetStmt = false;
-        Block block = new Block();  // ast Tree node
-        // create a new table stack for this block
-        if (!FuncDef.funcBlockST)
-            SymTable.createNewTable();
-        else
-            FuncDef.funcBlockST = false;
-
-
-        sym = identifySymbol.getCurSym();
-        judge &= sym.getRegKey() == RegKey.LBRACE;
-        identifySymbol.getASymbol();
-        sym = identifySymbol.getCurSym();
-        while (judge && sym.getRegKey() != RegKey.RBRACE) {
-            judge &= BlockItem.analyse(identifySymbol, block);
-            sym = identifySymbol.getCurSym();
-        }
-        if (judge) {
-            judge &= sym.getRegKey() == RegKey.RBRACE;
-            identifySymbol.getASymbol();
-        }
-
-        if (judge) {
-            if (MainFuncDef.mainIsChecking && identifySymbol.isEndLine()) identifySymbol.addTimes(1);
-            identifySymbol.addStr(name);
-        }
-        // popOutdata current table stack of this block
-        SymTable.popOutterTable();
-        blockLayer--;
-        return block;
+    public void add_Decl_List(Decl decl) {
+        blockItemInterList.add(decl);
     }
 
-    public static boolean isMyFirst(Symbol sym) {
-        if (sym.getRegKey() == RegKey.LBRACE) {
-            return true;
-        }
-        return false;
+    public Block() {
+        blockItemInterList = new ArrayList<>();
     }
 }

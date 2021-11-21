@@ -25,7 +25,7 @@ public class Stmt implements BlockItemInter {
         boolean judge = true;
         Stmt stmt = null;  // ast Tree node
 
-        Block.haveRetStmt = false;
+        Block.hasReturnStmt = false;
         sym = identifySymbol.getCurSym();
         if (sym.getRegKey() == RegKey.IDENFR) {
             if (assignExist(identifySymbol)) {  // LVal '=' Exp ';' | LVal '=' 'getint' '(' ')' ';'
@@ -152,8 +152,8 @@ public class Stmt implements BlockItemInter {
         } else if (sym.getRegKey() == RegKey.RETURNTK) {  // 'return' [Exp] ';'
             Symbol retSym = sym;
             Exp exp = null;
-            if (Block.blockLayer == 1 && whileStmtCnt == 0 && ifStmtCnt == 0 && elseStmtCnt == 0)
-                Block.haveRetStmt = true;
+            if (Block.block_Layers == 1 && whileStmtCnt == 0 && ifStmtCnt == 0 && elseStmtCnt == 0)
+                Block.hasReturnStmt = true;
             sym = identifySymbol.getASymbol();
             if (sym.getRegKey() == RegKey.RBRACE) {
                 // ERROR -- i: ';' needed
