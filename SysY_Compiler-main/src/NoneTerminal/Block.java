@@ -49,7 +49,7 @@ public class Block {
         if(name == null)
             Code.addCode(CodeType.DBK);
 
-        if(funcTe != null && funcTe.getTyp().equals(Typ.VOID_TYP))
+        if(funcTe != null && funcTe.get_Typ().equals(Typ.VOID_TYP))
             Code.addCode(CodeType.RET);
     }
 

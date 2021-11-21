@@ -434,14 +434,14 @@ public class Interpret {
         ProgTableEntry progTableEntry = ProgTable.getProg_Entry(adr);
         String proName = progTableEntry.getProgName();
         TableEntry tableEntry = Table.getFuncTableEntry(proName);
-        level = tableEntry.getLev() + 1;
+        level = tableEntry.get_Level() + 1;
         boolean have_value = (display.get(level) != null);
         if (have_value) {   // it says that there is a value
             addValToDisStack(level, display.get(level));
         }
         display.put(level, basePtr);
         MemoryStack.saveDataToAdr(basePtr + 1, pc + 1);
-        pc = tableEntry.getAdr();
+        pc = tableEntry.get_Addr();
     }
 
     public static void runningEAT(int y) {

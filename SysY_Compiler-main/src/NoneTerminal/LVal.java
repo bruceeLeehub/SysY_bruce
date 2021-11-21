@@ -47,10 +47,10 @@ public class LVal {
         } else {          // not a const you need to get it when running program
             Tables.TableEntry te = Table.getAttrTableEntry(ident.getIdentName());
             int lenOfExpList = expList.size();
-            int lenOfDims = te.getDims();
+            int lenOfDims = te.get_Dims();
             boolean isArray = lenOfExpList < lenOfDims;
             if (isArray) {
-                if (te.isPara())    // for array para, its value is adr, so LOD
+                if (te.isParam())    // for array para, its value is adr, so LOD
                     Code.addCode(CodeType.LOD, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
                 else
                     Code.addCode(CodeType.LDA, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
@@ -58,14 +58,14 @@ public class LVal {
                     exp.genCode(null);
                 }
                 if (expList.size() > 1 && /* dims are same refer to a value or addr*/
-                        expList.size() == Table.getAttrTableEntry(ident.getIdentName()).getDims()) {
+                        expList.size() == Table.getAttrTableEntry(ident.getIdentName()).get_Dims()) {
                     Code.addCode(CodeType.SWP);
                     ArrayList<Integer> dims = Table.get_ArrayDims(ident);
                     Code.addCode(CodeType.LDC, dims.get(dims.size() - 1));
                     Code.addCode(CodeType.MUL);
                     Code.addCode(CodeType.ADD);
-                } else if (expList.size() != 0 && expList.size() != Table.getAttrTableEntry(ident.getIdentName()).getDims()) { // dims not equal, send a sub-array
-                    int lastDim = ArrTable.getArrTable().get(Table.getAttrTableEntry(ident.getIdentName()).getRef()).getUpper_Bounds().get(1);
+                } else if (expList.size() != 0 && expList.size() != Table.getAttrTableEntry(ident.getIdentName()).get_Dims()) { // dims not equal, send a sub-array
+                    int lastDim = ArrTable.getArrTable().get(Table.getAttrTableEntry(ident.getIdentName()).get_Ref()).getUpper_Bounds().get(1);
                     Code.addCode(CodeType.LDC, lastDim);
                     Code.addCode(CodeType.MUL);
                     isLeftValue = true;
@@ -78,9 +78,9 @@ public class LVal {
                     Code.addCode(CodeType.LAV);
             } else {
                 if (lenOfDims != 0) { // elements of array
-                    if (te.getObj().equals(Obj.CONST_OBJ))
-                        Code.addCode(CodeType.LDC, te.getAdr());
-                    else if (te.isPara())    // for array para, its value is adr, so LOD
+                    if (te.get_Obj().equals(Obj.CONST_OBJ))
+                        Code.addCode(CodeType.LDC, te.get_Addr());
+                    else if (te.isParam())    // for array para, its value is adr, so LOD
                         Code.addCode(CodeType.LOD, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
                     else
                         Code.addCode(CodeType.LDA, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
@@ -89,7 +89,7 @@ public class LVal {
                     }
 
                     if (expList.size() > 1 && /* dims are same refer to a value or addr*/
-                            expList.size() == Table.getAttrTableEntry(ident.getIdentName()).getDims()) {
+                            expList.size() == Table.getAttrTableEntry(ident.getIdentName()).get_Dims()) {
                         Code.addCode(CodeType.SWP);
                         ArrayList<Integer> dims = Table.get_ArrayDims(ident);
                         Code.addCode(CodeType.LDC, dims.get(dims.size() - 1));
@@ -100,7 +100,7 @@ public class LVal {
                     if (isLeftValue)
                         Code.addCode(CodeType.ADD);
                     else {
-                        if (te.getObj().equals(Obj.CONST_OBJ))
+                        if (te.get_Obj().equals(Obj.CONST_OBJ))
                             Code.addCode(CodeType.LCA);
                         else
                             Code.addCode(CodeType.LAV);
@@ -108,12 +108,12 @@ public class LVal {
 
                 } else {    // normal var
                     if (isLeftValue)
-                        Code.addCode(CodeType.LDA, Table.get_AttrLev(ident), te.getAdr());
+                        Code.addCode(CodeType.LDA, Table.get_AttrLev(ident), te.get_Addr());
                     else {
-                        if (te.getObj().equals(Obj.CONST_OBJ))
-                            Code.addCode(CodeType.LDC, te.getAdr());
+                        if (te.get_Obj().equals(Obj.CONST_OBJ))
+                            Code.addCode(CodeType.LDC, te.get_Addr());
                         else
-                            Code.addCode(CodeType.LOD, te.getLev(), te.getAdr());
+                            Code.addCode(CodeType.LOD, te.get_Level(), te.get_Addr());
                     }
                 }
             }
