@@ -26,8 +26,8 @@ public class SymTable {
 
 
     public static boolean NameContainedInAllTable(boolean isFunc, String identName) {
-        boolean haveName = false;
         int tablePtr = table_Ptr;
+        boolean haveName = false;
         for(; tablePtr >= 0; tablePtr--){
             AggTable aggTable = table_Stack.get(tablePtr);
             TreeMap<String,TableEntry> right_table = aggTable.get_RightTable(isFunc);
@@ -47,19 +47,19 @@ public class SymTable {
 
     public static TableEntry createTableEntryModel(TableEntry tempEntry, int dims) {
         boolean isConst = tempEntry.isConst();
-        DataType dataType = tempEntry.getDType();
-        int Dims = tempEntry.getDims();
-        ArrayList<TableEntry> paramList = tempEntry.getParamList();
+        DataType dataType = tempEntry.get_DType();
+        int Dims = tempEntry.get_Dims();
+        ArrayList<TableEntry> paramList = tempEntry.get_ParamsList();
         TableEntry tableEntry = new TableEntry(isConst, dataType, Dims, paramList);
-//        if(tempEntry.getDims() == dims){
-//            tableEntry.setDims(0);
-//        }else if(tempEntry.getDims() == 2 && dims == 1){
-//            tableEntry.setDims(1);
+//        if(tempEntry.get_Dims() == dims){
+//            tableEntry.set_Dims(0);
+//        }else if(tempEntry.get_Dims() == 2 && dims == 1){
+//            tableEntry.set_Dims(1);
 //        }
-        if(tempEntry.getDims() == 2 && dims == 1){
-            tableEntry.setDims(1);
-        }else if(tempEntry.getDims() == dims){
-            tableEntry.setDims(0);
+        if(tempEntry.get_Dims() == 2 && dims == 1){
+            tableEntry.set_Dims(1);
+        }else if(tempEntry.get_Dims() == dims){
+            tableEntry.set_Dims(0);
         }
         return tableEntry;
     }
@@ -102,9 +102,9 @@ public class SymTable {
             boolean hasFuncName = (funcTable.containsKey(functionName));
             if(hasFuncName){
                 TableEntry tableEntry = funcTable.get(functionName);
-                paramNum = tableEntry.getParamNums();
+                paramNum = tableEntry.get_ParamSize();
                 return paramNum;
-                //paramNum = table_Stack.get(stack_ptr).get_FuncTable().get(functionName).getParamNums();
+                //paramNum = table_Stack.get(stack_ptr).get_FuncTable().get(functionName).get_ParamSize();
                 //break;
             }
         }

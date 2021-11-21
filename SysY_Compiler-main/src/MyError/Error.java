@@ -61,12 +61,12 @@ public class Error {
 
     public static void checkRParamsMatched(TableEntry funcTE, TableEntry actuallyTE, Symbol sym, int paramSeq){
         boolean isMatched = true;
-        if(paramSeq > funcTE.getParamNums()){
+        if(paramSeq > funcTE.get_ParamSize()){
             return;
         }
-        TableEntry expectedTE = funcTE.getParamList().get(paramSeq - 1);
-        isMatched &= expectedTE.getDType() == actuallyTE.getDType();
-        isMatched &= expectedTE.getDims() == actuallyTE.getDims();
+        TableEntry expectedTE = funcTE.get_ParamsList().get(paramSeq - 1);
+        isMatched &= expectedTE.get_DType() == actuallyTE.get_DType();
+        isMatched &= expectedTE.get_Dims() == actuallyTE.get_Dims();
         if(isMatched == false)
             Error.addErrorOutPut(sym.getRow_Idx() + " e");
     }

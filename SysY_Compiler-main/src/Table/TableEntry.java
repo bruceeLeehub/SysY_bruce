@@ -3,46 +3,47 @@ package Table;
 import java.util.ArrayList;
 
 public class TableEntry {
-    private boolean isConst;
-    private DataType dType;
     private int dims;
-    private ArrayList<TableEntry> paramList;
+    private ArrayList<TableEntry> paramsList;
+    private final boolean isConst;
+    private final DataType dataType;
 
-    public TableEntry(boolean isConst, DataType dType, int dims){
-        this.isConst = isConst;
-        this.dType = dType;
-        this.dims = dims;
-        this.paramList = null;
-    }
-
-    public TableEntry(boolean isConst, DataType dType, int dims, ArrayList<TableEntry> paramList){
-        this.isConst = isConst;
-        this.dType = dType;
-        this.dims = dims;
-        this.paramList = paramList;
+    public int get_ParamSize(){
+        return paramsList.size();
     }
 
     public boolean isConst(){
-        return this.isConst;
+        return isConst;
     }
 
-    public DataType getDType(){
-        return this.dType;
+    public DataType get_DType(){
+        return dataType;
     }
 
-    public int getDims(){
-        return this.dims;
+    public TableEntry(boolean isConst, DataType dataType, int dims, ArrayList<TableEntry> paramsList){
+        this.paramsList = paramsList;
+        this.isConst = isConst;
+        this.dims = dims;
+        this.dataType = dataType;
     }
 
-    public void setDims(int n){
-        this.dims = n;
+    public int get_Dims(){
+        return dims;
     }
 
-    public ArrayList<TableEntry> getParamList(){
-        return this.paramList;
+    public void set_Dims(int _Dims){
+        dims = _Dims;
     }
 
-    public int getParamNums(){
-        return paramList.size();
+    public ArrayList<TableEntry> get_ParamsList(){
+        return paramsList;
+    }
+
+
+    public TableEntry(boolean isConst, DataType dataType, int dims){
+        this.paramsList = null;
+        this.isConst = isConst;
+        this.dims = dims;
+        this.dataType = dataType;
     }
 }
