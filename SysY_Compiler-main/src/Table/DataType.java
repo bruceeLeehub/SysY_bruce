@@ -1,5 +1,5 @@
 package Table;
 
 public enum DataType {
-    DT_VOID, DT_INT
+    VOID_DATA, INT_DATA
 }

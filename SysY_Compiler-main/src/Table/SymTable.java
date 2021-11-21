@@ -1,74 +1,113 @@
 package Table;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class SymTable {
-    private static ArrayList<AggTable> tableStack = new ArrayList<>();
+    private static int table_Ptr = -1;
+    private static final ArrayList<AggTable> table_Stack = new ArrayList<>();
 
-    private static int tablePtr = -1;
-
-    public static AggTable createNewTable() {
-        AggTable newTable = new AggTable();
-        tableStack.add(newTable);
-        tablePtr++;
-        return newTable;
+    public static void popOutterTable() {
+        table_Stack.remove(table_Ptr);
+        table_Ptr = table_Ptr - 1;
     }
 
-    public static void removeOuterTable() {
-        tableStack.remove(tablePtr--);
+    public static TableEntry get_SymByNameInAllTable(boolean isFunction, String idName) {
+        int tablePtr = table_Ptr;
+        TableEntry tableEntry = null;
+        for(; tableEntry == null && tablePtr >= 0; tablePtr--){
+            AggTable aggTable = table_Stack.get(tablePtr);
+            TreeMap<String,TableEntry> right_table = aggTable.get_RightTable(isFunction);
+            tableEntry = right_table.get(idName);
+            ///tableEntry = table_Stack.get(tablePtr).get_RightTable(isFunction).get(idName);
+        }
+        return tableEntry;
     }
 
-    public static void insTabEnIntoCurTab(boolean isFunc, String name, boolean isConst, DataType dType, int dims) {
-        tableStack.get(tablePtr).getRightTable(isFunc).put(name, new TableEntry(isConst, dType, dims));
+
+    public static boolean NameContainedInAllTable(boolean isFunc, String identName) {
+        boolean haveName = false;
+        int tablePtr = table_Ptr;
+        for(; tablePtr >= 0; tablePtr--){
+            AggTable aggTable = table_Stack.get(tablePtr);
+            TreeMap<String,TableEntry> right_table = aggTable.get_RightTable(isFunc);
+            haveName = right_table.containsKey(identName);
+            if (haveName) {
+                return true;
+            }
+            //haveName |= table_Stack.get(tablePtr).get_RightTable(isFunc).containsKey(identName);
+        }
+        return haveName;
     }
 
-    public static void insTabEnIntoPreTab(boolean isFunc, String name, boolean isConst, DataType dType, int dims, ArrayList<TableEntry> paramList) {
-        tableStack.get(tablePtr - 1).getRightTable(isFunc).put(name, new TableEntry(isConst, dType, dims, paramList));
+    public static void createNewTable() {
+        table_Ptr = table_Ptr + 1;
+        table_Stack.add(new AggTable());
     }
 
-    public static void addParam(ArrayList<TableEntry> paramList, boolean isConst, DataType dType, int dims) {
-        paramList.add(new TableEntry(isConst, dType, dims, paramList));
+    public static TableEntry createTableEntryModel(TableEntry tempEntry, int dims) {
+        boolean isConst = tempEntry.isConst();
+        DataType dataType = tempEntry.getDType();
+        int Dims = tempEntry.getDims();
+        ArrayList<TableEntry> paramList = tempEntry.getParamList();
+        TableEntry tableEntry = new TableEntry(isConst, dataType, Dims, paramList);
+//        if(tempEntry.getDims() == dims){
+//            tableEntry.setDims(0);
+//        }else if(tempEntry.getDims() == 2 && dims == 1){
+//            tableEntry.setDims(1);
+//        }
+        if(tempEntry.getDims() == 2 && dims == 1){
+            tableEntry.setDims(1);
+        }else if(tempEntry.getDims() == dims){
+            tableEntry.setDims(0);
+        }
+        return tableEntry;
     }
 
-    public static boolean curTabContainsName(boolean isFunc, String name) {
-        return tableStack.get(tablePtr).getRightTable(isFunc).containsKey(name);
+    public static void add_Param(ArrayList<TableEntry> paramList, boolean isConst, DataType dataType, int dims) {
+        TableEntry tableEntry = new TableEntry(isConst, dataType, dims, paramList);
+        paramList.add(tableEntry);
     }
 
-    public static int getParamsExpected(String funcName){
-        int ret = 0;
-        for(int stackPtr = tablePtr; stackPtr >= 0; stackPtr--){
-            if(tableStack.get(stackPtr).getFuncTable().containsKey(funcName)){
-                ret = tableStack.get(stackPtr).getFuncTable().get(funcName).getParamNums();
-                break;
+    public static boolean currentTableContainName(boolean isFunction, String name) {
+        AggTable aggTable = table_Stack.get(table_Ptr);
+        TreeMap<String,TableEntry> right_table= aggTable.get_RightTable(isFunction);
+        boolean hasName = right_table.containsKey(name);
+        return hasName;
+        //return table_Stack.get(table_Ptr).get_RightTable(isFunction).containsKey(name);
+    }
+
+    public static void insertTabEntryIntoCurTab(boolean isFunction, String name, boolean isConst, DataType dataType, int dims) {
+        AggTable aggTable = table_Stack.get(table_Ptr);
+        TreeMap<String,TableEntry> right_table = aggTable.get_RightTable(isFunction);
+        Table.TableEntry tableEntry = new TableEntry(isConst, dataType, dims);
+        right_table.put(name,tableEntry);
+        //table_Stack.get(table_Ptr).get_RightTable(isFunction).put(name, new TableEntry(isConst, dataType, dims));
+    }
+
+    public static void insertTabEntryIntoPreTab(boolean isFunction, String name, boolean isConst, DataType dType, int dims, ArrayList<TableEntry> paramList) {
+        AggTable aggTable = table_Stack.get(table_Ptr - 1);
+        TreeMap<String,TableEntry> right_table = aggTable.get_RightTable(isFunction);
+        TableEntry tableEntry = new TableEntry(isConst, dType, dims, paramList);
+        right_table.put(name,tableEntry);
+        //table_Stack.get(table_Ptr - 1).get_RightTable(isFunction).put(name, new TableEntry(isConst, dType, dims, paramList));
+    }
+
+    public static int get_ExpectedParamsNum(String functionName){
+        int stack_ptr = table_Ptr;
+        int paramNum = 0;
+        for(; stack_ptr >= 0; stack_ptr--){
+            AggTable aggTable = table_Stack.get(stack_ptr);
+            TreeMap<String,TableEntry> funcTable = aggTable.get_FuncTable();
+            boolean hasFuncName = (funcTable.containsKey(functionName));
+            if(hasFuncName){
+                TableEntry tableEntry = funcTable.get(functionName);
+                paramNum = tableEntry.getParamNums();
+                return paramNum;
+                //paramNum = table_Stack.get(stack_ptr).get_FuncTable().get(functionName).getParamNums();
+                //break;
             }
         }
-        return ret;
-    }
-
-    public static TableEntry getSymByNameFromAllTab(boolean isFunc, String identName) {
-        TableEntry te = null;
-        for(int ptr = tablePtr; ptr >= 0 && te == null; ptr--){
-            te = tableStack.get(ptr).getRightTable(isFunc).get(identName);
-        }
-        return te;
-    }
-
-
-    public static TableEntry createTbEntryModel(TableEntry tmpEntry, int dims) {
-        TableEntry te = new TableEntry(tmpEntry.isConst(), tmpEntry.getDType(), tmpEntry.getDims(), tmpEntry.getParamList());
-        if(tmpEntry.getDims() == dims){
-            te.setDims(0);
-        }else if(tmpEntry.getDims() == 2 && dims == 1){
-            te.setDims(1);
-        }
-        return te;
-    }
-
-    public static boolean allTabContainsName(boolean isFunc, String identName) {
-        boolean ret = false;
-        for(int ptr = tablePtr; ptr >= 0 && ret == false; ptr--){
-            ret |= tableStack.get(ptr).getRightTable(isFunc).containsKey(identName);
-        }
-        return ret;
+        return paramNum;
     }
 }

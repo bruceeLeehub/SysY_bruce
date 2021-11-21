@@ -102,8 +102,8 @@ public class FuncFParam {
             }
         }
         // as a param & as a local var of the following func
-        SymTable.addParam(paramList, false, DataType.DT_INT, dims);
-        SymTable.insTabEnIntoCurTab(false, identName.string, false, DataType.DT_INT, dims);
+        SymTable.add_Param(paramList, false, DataType.INT_DATA, dims);
+        SymTable.insertTabEntryIntoCurTab(false, identName.string, false, DataType.INT_DATA, dims);
 
         if (judge) {
             identifySymbol.addStr(name);

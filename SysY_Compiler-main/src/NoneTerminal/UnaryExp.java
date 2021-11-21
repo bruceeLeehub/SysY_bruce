@@ -108,9 +108,9 @@ public class UnaryExp {
                 // ERROR: check name undefined -- type c
                 Error.checkNameUndefined(true, identSym);
                 // checking RParams type
-                tmpEntry = SymTable.getSymByNameFromAllTab(true, identSym.get_IdentName());
+                tmpEntry = SymTable.get_SymByNameInAllTable(true, identSym.get_IdentName());
                 if (FuncRParams.checkingType) {
-                    FuncRParams.tbEntryModel.add(SymTable.createTbEntryModel(tmpEntry, 0));
+                    FuncRParams.tbEntryModel.add(SymTable.createTableEntryModel(tmpEntry, 0));
                     if (LVal.inDims == 0)
                         FuncRParams.checkingType = false;
                 }

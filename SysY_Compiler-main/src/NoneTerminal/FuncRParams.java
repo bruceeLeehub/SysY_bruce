@@ -20,7 +20,7 @@ public class FuncRParams {
         boolean judge = true;
         int paramSeq = 1;
         Symbol funcSym = identifySymbol.getNearest_PreIdent();
-        TableEntry funcEntry = SymTable.getSymByNameFromAllTab(true, funcSym.get_IdentName());
+        TableEntry funcEntry = SymTable.get_SymByNameInAllTable(true, funcSym.get_IdentName());
         if (sym.getRegKey() == RegKey.IDENFR || sym.getRegKey() == RegKey.LPARENT ||
                 sym.getRegKey() == RegKey.PLUS || sym.getRegKey() == RegKey.MINU ||
                 sym.getRegKey() == RegKey.NOT || sym.getRegKey() == RegKey.INTCON) {

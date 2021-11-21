@@ -24,8 +24,8 @@ public class FuncType {
         FuncType funcType = new FuncType(sym.getRegKey());
         judge &= (sym.getRegKey() == RegKey.VOIDTK || sym.getRegKey() == RegKey.INTTK);
         if (judge) {
-            dataType.dataType = DataType.DT_VOID;
-            if (sym.getRegKey() == RegKey.INTTK) dataType.dataType = DataType.DT_INT;
+            dataType.dataType = DataType.VOID_DATA;
+            if (sym.getRegKey() == RegKey.INTTK) dataType.dataType = DataType.INT_DATA;
             identifySymbol.getASymbol();
         }
 

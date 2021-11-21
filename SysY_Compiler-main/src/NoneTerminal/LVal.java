@@ -132,7 +132,7 @@ public class LVal {
         // ERROR: check name undefined -- type c
         Error.checkNameUndefined(false, identifySymbol.getPreSym());
         // checking RParams type
-        tmpEntry = SymTable.getSymByNameFromAllTab(false, identName.string);
+        tmpEntry = SymTable.get_SymByNameInAllTable(false, identName.string);
         if (judge) {
             while (judge && identifySymbol.getCurSym().getRegKey() == RegKey.LBRACK) {
                 inDims++;
@@ -150,7 +150,7 @@ public class LVal {
 
         // checking RParams type
         if (FuncRParams.checkingType) {
-            FuncRParams.tbEntryModel.add(SymTable.createTbEntryModel(tmpEntry, dims));
+            FuncRParams.tbEntryModel.add(SymTable.createTableEntryModel(tmpEntry, dims));
             if (LVal.inDims == 0)
                 FuncRParams.checkingType = false;
         }

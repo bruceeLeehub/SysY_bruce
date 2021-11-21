@@ -42,19 +42,19 @@ public class Error {
     }
 
     public static void checkIfDupDef(boolean isFunc, Symbol sym){
-        CompUnit.isNameDupDef = SymTable.curTabContainsName(isFunc, sym.get_IdentName());
+        CompUnit.isNameDupDef = SymTable.currentTableContainName(isFunc, sym.get_IdentName());
         if (CompUnit.isNameDupDef)
             Error.addErrorOutPut(sym.getRow_Idx() + " b");
     }
 
     public static void checkNameUndefined(boolean isFunc, Symbol sym){
-        boolean isDefined = SymTable.allTabContainsName(isFunc, sym.get_IdentName());
+        boolean isDefined = SymTable.NameContainedInAllTable(isFunc, sym.get_IdentName());
         if(isDefined == false)
             Error.addErrorOutPut(sym.getRow_Idx() + " c");
     }
 
     public static void checkParamNumMatched(Symbol sym, Integer numOfParamsActually){
-        int numOfParamsExpected = SymTable.getParamsExpected(sym.get_IdentName());
+        int numOfParamsExpected = SymTable.get_ExpectedParamsNum(sym.get_IdentName());
         if(numOfParamsExpected != numOfParamsActually)
             Error.addErrorOutPut(sym.getRow_Idx() + " d");
     }
@@ -72,7 +72,7 @@ public class Error {
     }
 
     public static void checkAssignValueToConst(Symbol sym){
-        TableEntry te = SymTable.getSymByNameFromAllTab(false, sym.get_IdentName());
+        TableEntry te = SymTable.get_SymByNameInAllTable(false, sym.get_IdentName());
         if(te != null && te.isConst())
             Error.addErrorOutPut(sym.getRow_Idx() + " h");
     }

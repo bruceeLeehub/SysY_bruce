@@ -104,7 +104,7 @@ public class VarDef {
         if (judge) {
             // create a const var
             if (CompUnit.isNameDupDef == false)
-                SymTable.insTabEnIntoCurTab(false, identName.string, false, DataType.DT_INT, dims);
+                SymTable.insertTabEntryIntoCurTab(false, identName.string, false, DataType.INT_DATA, dims);
             else CompUnit.isNameDupDef = false;
 
             if (identifySymbol.getCurSym().getRegKey() == RegKey.ASSIGN) {

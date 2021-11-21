@@ -1,28 +1,28 @@
 package Table;
-
-
-import java.util.HashMap;
+import java.util.TreeMap;
 
 public class AggTable {
-    private HashMap<String, TableEntry> attrTable;
-    private HashMap<String, TableEntry> funcTable;
+    private final TreeMap<String, TableEntry> attrTable;
+    private final TreeMap<String, TableEntry> funcTable;
     public AggTable(){
-        attrTable = new HashMap<>();
-        funcTable = new HashMap<>();
+        this.attrTable = new TreeMap<>();
+        this.funcTable = new TreeMap<>();
     }
 
-    public HashMap<String, TableEntry> getAttrTable(){
-        return this.attrTable;
+    public TreeMap<String, TableEntry> get_FuncTable(){
+        return funcTable;
     }
 
-    public HashMap<String, TableEntry> getFuncTable(){
-        return this.funcTable;
+    public TreeMap<String, TableEntry> get_RightTable(boolean isFunc){
+        if(!isFunc) {
+            return get_AttrTable();
+        }
+        else {
+            return get_FuncTable();
+        }
     }
 
-    public HashMap<String, TableEntry> getRightTable(boolean isFunc){
-        if(isFunc)
-            return this.funcTable;
-        else
-            return this.attrTable;
+    public TreeMap<String, TableEntry> get_AttrTable(){
+        return attrTable;
     }
 }

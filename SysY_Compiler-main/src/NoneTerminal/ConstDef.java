@@ -84,7 +84,7 @@ public class ConstDef {
         }
         // create a const var
         if (CompUnit.isNameDupDef == false)
-            SymTable.insTabEnIntoCurTab(false, identName.string, true, DataType.DT_INT, dims);
+            SymTable.insertTabEntryIntoCurTab(false, identName.string, true, DataType.INT_DATA, dims);
         else CompUnit.isNameDupDef = false;
 
         if (judge) {

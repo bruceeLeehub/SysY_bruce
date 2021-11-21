@@ -84,7 +84,7 @@ public class Block {
             identifySymbol.addStr(name);
         }
         // popOutdata current table stack of this block
-        SymTable.removeOuterTable();
+        SymTable.popOutterTable();
         blockLayer--;
         return block;
     }

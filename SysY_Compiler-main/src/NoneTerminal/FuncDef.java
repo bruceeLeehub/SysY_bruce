@@ -80,7 +80,7 @@ public class FuncDef {
         // ERROR: name Duplicated define -- type b
         Error.checkIfDupDef(true, identifySymbol.getPreSym());
         // record does it have a return value
-        haveRetVal = dataType.dataType == DataType.DT_INT;
+        haveRetVal = dataType.dataType == DataType.INT_DATA;
         // create symTable stack of the following func
         SymTable.createNewTable();
 
@@ -99,7 +99,7 @@ public class FuncDef {
                     }
                     // insert funcDef into previous stmTable
                     if (CompUnit.isNameDupDef == false)
-                        SymTable.insTabEnIntoPreTab(true, identName.string, false, dataType.dataType, 0, paramList);
+                        SymTable.insertTabEntryIntoPreTab(true, identName.string, false, dataType.dataType, 0, paramList);
                     else CompUnit.isNameDupDef = false;
                     funcDef.setBlock(Block.analyse(identifySymbol));
                     // ERROR -- g: func have return value don't have return stmt in the end
@@ -113,7 +113,7 @@ public class FuncDef {
                     else identifySymbol.getASymbol();
                     // insert funcDef into previous stmTable
                     if (CompUnit.isNameDupDef == false)
-                        SymTable.insTabEnIntoPreTab(true, identName.string, false, dataType.dataType, 0, paramList);
+                        SymTable.insertTabEntryIntoPreTab(true, identName.string, false, dataType.dataType, 0, paramList);
                     else CompUnit.isNameDupDef = false;
                     funcDef.setBlock(Block.analyse(identifySymbol));
                     // ERROR -- g: func have return value don't have return stmt in the end
@@ -129,7 +129,7 @@ public class FuncDef {
 
         isInFuncDef = false;
         // remove the current function table stack
-        // SymTable.removeOuterTable();
+        // SymTable.popOutterTable();
         // Block has done the remove job even when a table is built here
         return funcDef;
     }

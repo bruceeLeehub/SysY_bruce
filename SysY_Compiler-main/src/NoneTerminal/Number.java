@@ -34,7 +34,7 @@ public class Number {
         }
         // checking RParams type
         if (FuncRParams.checkingType) {
-            FuncRParams.tbEntryModel.add(new TableEntry(true, DataType.DT_INT, 0));
+            FuncRParams.tbEntryModel.add(new TableEntry(true, DataType.INT_DATA, 0));
             if (LVal.inDims == 0)
                 FuncRParams.checkingType = false;
         }
