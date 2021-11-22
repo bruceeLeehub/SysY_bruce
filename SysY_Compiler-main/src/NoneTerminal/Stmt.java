@@ -2,232 +2,377 @@ package NoneTerminal;
 
 import MyError.Error;
 import NoneTerminal.StmtPack.*;
-import ParcelType.My_Int;
+import ParcelType.*;
 import Tables.ConStrTable;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class Stmt implements BlockItemInter {
-    public static String name = "<Stmt>";
-    public static int whileStmtCnt = 0;
-    public static int ifStmtCnt = 0;
-    public static int elseStmtCnt = 0;
+    public static int ifStmtCount = 0;
+    public static int whileStmtCount = 0;
+    public static int elseStmtCount = 0;
+    public static String name_stmt = "<Stmt>";
 
-    public void genCode(){
-        // TODO: this is nothing calling children's genCode...
+    public static boolean isMyFirst(Symbol symbol) {
+        RegKey regKey = symbol.getRegKey();
+        boolean isSEMICN = regKey == RegKey.SEMICN;
+        boolean isIFTK = regKey == RegKey.IFTK;
+        boolean isBREAKTK = regKey == RegKey.BREAKTK;
+        boolean isWHILETK = regKey == RegKey.WHILETK;
+        boolean isCONTINUETK = regKey == RegKey.CONTINUETK;
+        boolean isRETURNTK = regKey == RegKey.RETURNTK;
+        boolean isPRINTFTK = regKey == RegKey.PRINTFTK;
+        boolean Lval_isMyFirst = LVal.isMyFirst(symbol);
+        boolean Block_isMyFirst = Block.isMyFirst(symbol);
+        boolean Exp_isMyFirst = Exp.isMyFirst(symbol);
+        return isSEMICN || isIFTK || isBREAKTK ||
+                isWHILETK || isCONTINUETK || isRETURNTK || isPRINTFTK ||
+                Lval_isMyFirst || Block_isMyFirst || Exp_isMyFirst;
+    }
+
+    public static boolean assign_Exist(IdentifySymbol identifySymbol) {
+        Symbol symbol = identifySymbol.get_CurrentSym();
+        int rowPre = symbol.getRow_Idx();
+        int rowNow = symbol.getRow_Idx();
+        boolean exist = false;
+        int count = 0;
+        while (symbol != null &&
+                symbol.getRegKey() != RegKey.ASSIGN &&
+                symbol.getRegKey() != RegKey.SEMICN &&
+                rowNow == rowPre) {
+            rowPre = symbol.getRow_Idx();
+            identifySymbol.getASymbol();
+            symbol = identifySymbol.get_CurrentSym();
+            rowNow = symbol.getRow_Idx();
+            count = count + 1;
+        }
+        RegKey regKey = symbol.getRegKey();
+        if (rowNow != rowPre) {
+            exist = false;
+        }
+        else if (symbol != null && regKey== RegKey.ASSIGN) {
+            exist = true;
+        }
+        identifySymbol.spitSym(count);
+        return exist;
     }
 
     public static Stmt analyse(IdentifySymbol identifySymbol) {
-        Symbol sym;
-        boolean judge = true;
-        Stmt stmt = null;  // ast Tree node
-
         Block.hasReturnStmt = false;
-        sym = identifySymbol.get_CurrentSym();
-        if (sym.getRegKey() == RegKey.IDENFR) {
-            if (assignExist(identifySymbol)) {  // LVal '=' Exp ';' | LVal '=' 'getint' '(' ')' ';'
-                Symbol lvaSym = sym;
-                LVal lVal = LVal.analyse(identifySymbol);
-                if (judge) {
-                    // ERROR -- h: you can not assign a value to const type
-                    Error.checkAssignValueToConst(lvaSym);
-                    sym = identifySymbol.get_CurrentSym();
-                    judge &= sym.getRegKey() == RegKey.ASSIGN;
+        Stmt stmt = null;
+        // ast Tree node
+        boolean judge = true;
 
-                }
+        Symbol symbol = identifySymbol.get_CurrentSym();
+        RegKey regKey = symbol.getRegKey();
+        boolean isIDENFR = regKey == RegKey.IDENFR;
+        boolean isLBRACE = regKey == RegKey.LBRACE;
+        boolean isIFTK = regKey == RegKey.IFTK;
+        boolean isWHILETK = regKey == RegKey.WHILETK;
+        boolean isBREAKorCONTINUE = (regKey == RegKey.BREAKTK
+                || regKey == RegKey.CONTINUETK);
+        boolean isRETURNTK = regKey == RegKey.RETURNTK;
+        boolean isPRINTFTK = regKey == RegKey.PRINTFTK;
+        if (isIDENFR) {
+            if (assign_Exist(identifySymbol)) {
+                // LVal '=' 'getint' '(' ')' ';'
+                // LVal '=' Exp ';'
+                Symbol lvalSym = symbol;
+                LVal lVal = LVal.analyse(identifySymbol);
+                // h: can't assign a value to const
+                Error.checkAssignValueToConst(lvalSym);
+
+                symbol = identifySymbol.get_CurrentSym();
+                regKey = symbol.getRegKey();
+                judge = regKey == RegKey.ASSIGN;
+
                 if (judge) {
-                    sym = identifySymbol.getASymbol();
-                    if (sym.getRegKey() == RegKey.GETINTTK) {
-                        sym = identifySymbol.getASymbol();
-                        judge &= sym.getRegKey() == RegKey.LPARENT;
+                    symbol = identifySymbol.getASymbol();
+                    regKey = symbol.getRegKey();
+                    boolean isGETINTTK = regKey == RegKey.GETINTTK;
+                    if (isGETINTTK) {
+                        symbol = identifySymbol.getASymbol();
+                        regKey = symbol.getRegKey();
+                        boolean isLPARENT = regKey == RegKey.LPARENT;
+                        judge = isLPARENT;
+
                         identifySymbol.getASymbol();
 
                         stmt = new ReadStmt(lVal);
 
-                        // ERROR -- j: ')' needed
-                        if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
-                            Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
-                        else
-                            sym = identifySymbol.getASymbol();
+                        // j: ')' needed
+                        Symbol curSymbol = identifySymbol.get_CurrentSym();
+                        regKey = curSymbol.getRegKey();
+                        boolean isRPARENT = regKey == RegKey.RPARENT;
+                        if (isRPARENT) {
+                            symbol = identifySymbol.getASymbol();
+                        }
+                        else {
+                            Symbol preSymbol = identifySymbol.get_PreSym();
+                            int rowidx = preSymbol.getRow_Idx();
+                            Error.addErrorOutPut(rowidx + " j");
+                        }
 
-                        // ERROR -- i: ';' needed
-                        if (sym.getRegKey() != RegKey.SEMICN)
-                            Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " i");
-                        else
+                        // i: ';' needed
+                        regKey = symbol.getRegKey();
+                        boolean isSEMICN = regKey == RegKey.SEMICN;
+                        if (isSEMICN) {
                             identifySymbol.getASymbol();
-
+                        }
+                        else {
+                            Symbol preSymbol = identifySymbol.get_PreSym();
+                            int rowidx = preSymbol.getRow_Idx();
+                            Error.addErrorOutPut(rowidx + " i");
+                        }
                     } else {
-                        stmt = new AssignStmt(lVal, Exp.analyse(identifySymbol));
-                        if (judge) {
-                            sym = identifySymbol.get_CurrentSym();
-                            // ERROR -- i: ';' needed
-                            if (sym.getRegKey() != RegKey.SEMICN)
-                                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " i");
-                            else
-                                identifySymbol.getASymbol();
+                        Exp exp = Exp.analyse(identifySymbol);
+                        stmt = new AssignStmt(lVal, exp);
+                        symbol = identifySymbol.get_CurrentSym();
+                        // i: ';' needed
+                        regKey = symbol.getRegKey();
+                        boolean isSEMICN = regKey == RegKey.SEMICN;
+                        if (!isSEMICN) {
+                            Symbol preSymbol = identifySymbol.get_PreSym();
+                            int rowidx = preSymbol.getRow_Idx();
+                            Error.addErrorOutPut(rowidx + " i");
+                        }
+                        else {
+                            identifySymbol.getASymbol();
                         }
                     }
                 }
-            } else { // Exp ';'
-                stmt = new ExpStmt(Exp.analyse(identifySymbol));
-                if (judge) {
-                    sym = identifySymbol.get_CurrentSym();
-                    // ERROR -- i: ';' needed
-                    if (sym.getRegKey() != RegKey.SEMICN)
-                        Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " i");
-                    else
-                        identifySymbol.getASymbol();
+            } else {
+                //      -> Exp ';'
+                Exp exp = Exp.analyse(identifySymbol);
+                stmt = new ExpStmt(exp);
+                symbol = identifySymbol.get_CurrentSym();
+                regKey = symbol.getRegKey();
+                boolean isSEMICN = regKey == RegKey.SEMICN;
+                // i: ';' needed
+                if (isSEMICN) {
+                    identifySymbol.getASymbol();
+                }
+                else {
+                    Symbol preSymbol = identifySymbol.get_PreSym();
+                    int rowidx = preSymbol.getRow_Idx();
+                    Error.addErrorOutPut(rowidx + " i");
                 }
             }
-        } else if (sym.getRegKey() == RegKey.LBRACE) { // Block
-            stmt = new BlockStmt(Block.analyse(identifySymbol));
-        } else if (sym.getRegKey() == RegKey.IFTK) {    // 'if' '(' Cond ')' Stmt ['else' Stmt]
-            Cond cond = null;
-            Stmt ifStmt = null;
-            Stmt elseStmt = null;
-            ifStmtCnt++;
-            sym = identifySymbol.getASymbol();
-            judge &= sym.getRegKey() == RegKey.LPARENT;
+        } else if (isLBRACE) {
+            // Block
+            Block block = Block.analyse(identifySymbol);
+            stmt = new BlockStmt(block);
+        } else if (isIFTK) {
+            // ->  'if' '(' Cond ')' Stmt ['else' Stmt]
+            ifStmtCount = ifStmtCount + 1;
+            Stmt ifStatement;
+            Stmt elseStatement = null;
+            Cond condition = null;
+            symbol = identifySymbol.getASymbol();
+            regKey = symbol.getRegKey();
+            judge = regKey == RegKey.LPARENT;
+
             if (judge) {
                 identifySymbol.getASymbol();
-                cond = Cond.analyse(identifySymbol);
+                condition = Cond.analyse(identifySymbol);
             }
-            // ERROR -- j: ')' needed
-            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
-                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
-            else
+            // j: ')' needed
+            Symbol curSymbol = identifySymbol.get_CurrentSym();
+            regKey = curSymbol.getRegKey();
+            if (regKey == RegKey.RPARENT) {
                 identifySymbol.getASymbol();
-            ifStmt = Stmt.analyse(identifySymbol);
-
-            if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.ELSETK) {
-                elseStmtCnt++;
-                sym = identifySymbol.getASymbol();
-                elseStmt = Stmt.analyse(identifySymbol);
-                elseStmtCnt--;
             }
-            ifStmtCnt--;
+            else {
+                Symbol preSymbol = identifySymbol.get_PreSym();
+                int rowidx = preSymbol.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " j");
+            }
+            ifStatement = Stmt.analyse(identifySymbol);
 
-            stmt = new IfStmt(cond, ifStmt, elseStmt);
-        } else if (sym.getRegKey() == RegKey.WHILETK) {    // 'while' '(' Cond ')' Stmt
-            Cond cond = null;
-            Stmt whileStmt = null;
-            whileStmtCnt++;
-            sym = identifySymbol.getASymbol();
-            judge &= sym.getRegKey() == RegKey.LPARENT;
+            curSymbol = identifySymbol.get_CurrentSym();
+            regKey = curSymbol.getRegKey();
+            if (regKey == RegKey.ELSETK) {
+                elseStmtCount = elseStmtCount + 1;
+                symbol = identifySymbol.getASymbol();
+                elseStatement = Stmt.analyse(identifySymbol);
+                elseStmtCount = elseStmtCount - 1;
+            }
+            ifStmtCount = ifStmtCount - 1;
+            stmt = new IfStmt(condition, ifStatement, elseStatement);
+        } else if (isWHILETK) {
+            // --> 'while' '(' Cond ')' Stmt
+            whileStmtCount = whileStmtCount + 1;
+            Cond condition = null;
+            symbol = identifySymbol.getASymbol();
+            regKey = symbol.getRegKey();
+            judge = regKey == RegKey.LPARENT;
             if (judge) {
                 identifySymbol.getASymbol();
-                cond = Cond.analyse(identifySymbol);
+                condition = Cond.analyse(identifySymbol);
             }
-            // ERROR -- j: ')' needed
-            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
-                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
-            else
+            // j: ')' needed
+            Symbol curSymbol = identifySymbol.get_CurrentSym();
+            regKey = curSymbol.getRegKey();
+            if (regKey == RegKey.RPARENT) {
                 identifySymbol.getASymbol();
-            whileStmt = Stmt.analyse(identifySymbol);
-
-            whileStmtCnt--;
-            stmt = new WhileStmt(cond, whileStmt);
-        } else if (sym.getRegKey() == RegKey.BREAKTK ||
-                sym.getRegKey() == RegKey.CONTINUETK) {   // 'break' ';' | 'continue' ';'
-
-            if (sym.getRegKey() == RegKey.BREAKTK)
+            }
+            else {
+                Symbol preSymbol = identifySymbol.get_PreSym();
+                int rowidx = preSymbol.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " j");
+            }
+            Stmt whileStmt = Stmt.analyse(identifySymbol);
+            whileStmtCount = whileStmtCount - 1;
+            stmt = new WhileStmt(condition, whileStmt);
+        } else if (isBREAKorCONTINUE) {
+            // --> 'break' ';'
+            // --> 'continue' ';'
+            regKey = symbol.getRegKey();
+            if (regKey == RegKey.BREAKTK) {
                 stmt = new BreakStmt();
-            else stmt = new ContinueStmt();
+            }
+            else if (regKey == RegKey.CONTINUETK){
+                stmt = new ContinueStmt();
+            }
 
-            // ERROR: 'break' or 'continue' appeared when there is no loop -- type m
-            if (Stmt.whileStmtCnt == 0 &&
-                    (sym.getRegKey() == RegKey.BREAKTK || sym.getRegKey() == RegKey.CONTINUETK))
-                Error.addErrorOutPut(sym.getRow_Idx() + " m");
-            sym = identifySymbol.getASymbol();
-
-            // ERROR -- i: ';' needed
-            if (sym.getRegKey() != RegKey.SEMICN)
-                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " i");
-            else
+            // m:   there is no loop
+            regKey = symbol.getRegKey();
+            if (Stmt.whileStmtCount == 0 &&
+                    (regKey == RegKey.BREAKTK || regKey == RegKey.CONTINUETK)) {
+                int rowidx = symbol.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " m");
+            }
+            symbol = identifySymbol.getASymbol();
+            regKey = symbol.getRegKey();
+            //i: ';' needed
+            if (regKey == RegKey.SEMICN) {
                 identifySymbol.getASymbol();
-
-        } else if (sym.getRegKey() == RegKey.RETURNTK) {  // 'return' [Exp] ';'
-            Symbol retSym = sym;
+            }
+            else {
+                Symbol preSymbol = identifySymbol.get_PreSym();
+                int rowidx = preSymbol.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " i");
+            }
+        } else if (isRETURNTK) {
+            // --> 'return' [Exp] ';'
             Exp exp = null;
-            if (Block.block_Layers == 1 && whileStmtCnt == 0 && ifStmtCnt == 0 && elseStmtCnt == 0)
+            Symbol retSym = symbol;
+            boolean noStmtLeft = Block.block_Layers == 1;
+            noStmtLeft = noStmtLeft && whileStmtCount == 0;
+            noStmtLeft = noStmtLeft && ifStmtCount == 0;
+            noStmtLeft = noStmtLeft && elseStmtCount == 0;
+            if (noStmtLeft) {
                 Block.hasReturnStmt = true;
-            sym = identifySymbol.getASymbol();
-            if (sym.getRegKey() == RegKey.RBRACE) {
-                // ERROR -- i: ';' needed
-                if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.SEMICN)
-                    Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " i");
-            } else if (sym.getRegKey() != RegKey.SEMICN) {
-                exp = Exp.analyse(identifySymbol);
-                if (judge) {
-                    // ERROR -- f: a void func have a return value
-                    if (FuncDef.InFuncDef && FuncDef.haveReturnValue == false)
-                        Error.addErrorOutPut(retSym.getRow_Idx() + " f");
+            }
+            symbol = identifySymbol.getASymbol();
+            regKey = symbol.getRegKey();
+            if (regKey == RegKey.RBRACE) {
+                // i: ';' needed
+                Symbol curSymbol = identifySymbol.get_CurrentSym();
+                regKey = curSymbol.getRegKey();
+                if (regKey != RegKey.SEMICN) {
+                    Symbol preSymbol = identifySymbol.get_PreSym();
+                    int rowidx = preSymbol.getRow_Idx();
+                    Error.addErrorOutPut(rowidx + " i");
                 }
-                if (judge) {
-                    // ERROR -- i: ';' needed
-                    if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.SEMICN)
-                        Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " i");
-                    else
-                        identifySymbol.getASymbol();
+            } else if (symbol.getRegKey() != RegKey.SEMICN) {
+                exp = Exp.analyse(identifySymbol);
+                // -> f:  void func have  return value
+                if (FuncDef.InFuncDef && !FuncDef.haveReturnValue) {
+                    int rowidx = retSym.getRow_Idx();
+                    Error.addErrorOutPut(rowidx + " f");
+                }
+                // i: ';' needed
+                Symbol curSymbol = identifySymbol.get_CurrentSym();
+                regKey = curSymbol.getRegKey();
+                if (regKey != RegKey.SEMICN) {
+                    Symbol preSymbol = identifySymbol.get_PreSym();
+                    int rowidx = preSymbol.getRow_Idx();
+                    Error.addErrorOutPut(rowidx + " i");
+                }
+                else {
+                    identifySymbol.getASymbol();
                 }
             } else {
+                //is semicn
                 identifySymbol.getASymbol();
             }
             stmt = new ReturnExp(exp);
-        } else if (sym.getRegKey() == RegKey.PRINTFTK) {  // 'printf' '(' FormatString {',' Exp} ')' ';'
-            My_Int numOfExpExpected = new My_Int();
-            int numOfExpActually = 0;
-            Symbol errorSym = sym;
+        } else if (isPRINTFTK) {
+            // -> 'printf' '(' FormatString {',' Exp} ')' ';'
             String formatString = "";
-            ArrayList<Exp> expList = new ArrayList<>();
+            int actualExpCount = 0;
+            My_Int rightExpCount = new My_Int();
+            Symbol error_Sym = symbol;
+            ArrayList<Exp> exp_List = new ArrayList<>();
 
-            sym = identifySymbol.getASymbol();
-            judge &= sym.getRegKey() == RegKey.LPARENT;
+            symbol = identifySymbol.getASymbol();
+            regKey = symbol.getRegKey();
+            judge = regKey == RegKey.LPARENT;
             if (judge) {
-                sym = identifySymbol.getASymbol();
-                judge &= sym.getRegKey() == RegKey.STRCON;
-                formatString = sym.get_IdentName();
-                // ERROR: check formatString error of type a
-                Error.checkFormatStr(sym, numOfExpExpected);
+                symbol = identifySymbol.getASymbol();
+                formatString = symbol.get_IdentName();
+                regKey = symbol.getRegKey();
+                judge = regKey == RegKey.STRCON;
+                // a: formatString error
+                Error.checkFormatStr(symbol, rightExpCount);
             }
             if (judge) {
-                sym = identifySymbol.getASymbol();
-                while (judge && sym.getRegKey() == RegKey.COMMA) {
-                    numOfExpActually++;
+                symbol = identifySymbol.getASymbol();
+                while (symbol.getRegKey() == RegKey.COMMA) {
+                    actualExpCount = actualExpCount + 1;
                     identifySymbol.getASymbol();
-                    expList.add(Exp.analyse(identifySymbol));
-                    sym = identifySymbol.get_CurrentSym();
+                    Exp exp = Exp.analyse(identifySymbol);
+                    exp_List.add(exp);
+                    symbol = identifySymbol.get_CurrentSym();
                 }
-                // ERROR: numOfExpExpected not matches numOfExpActually -- type l
-                if (numOfExpActually != numOfExpExpected.my_Int)
-                    Error.addErrorOutPut(errorSym.getRow_Idx() + " l");
+                // l: rightExpCount != actualExpCount
+                if (actualExpCount != rightExpCount.my_Int) {
+                    int row_idx = error_Sym.getRow_Idx();
+                    Error.addErrorOutPut(row_idx + " l");
+                }
             }
 
-            stmt = new PrintStmt(ConStrTable.addConString(formatString), expList);
+            stmt = new PrintStmt(ConStrTable.addConString(formatString), exp_List);
 
-            // ERROR -- j: ')' needed
-            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
-                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
-            else
-                sym = identifySymbol.getASymbol();
-            // ERROR -- i: ';' needed
-            if (sym.getRegKey() != RegKey.SEMICN)
-                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " i");
-            else
+            // j: ')' needed
+            Symbol curSymbol = identifySymbol.get_CurrentSym();
+            regKey = curSymbol.getRegKey();
+            if (regKey == RegKey.RPARENT) {
+                symbol = identifySymbol.getASymbol();
+            }
+            else {
+                Symbol preSymbol = identifySymbol.get_PreSym();
+                int rowidx = preSymbol.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " j");
+            }
+            // i: ';' missing
+            regKey = symbol.getRegKey();
+            if (regKey != RegKey.SEMICN) {
+                Symbol preSymbol = identifySymbol.get_PreSym();
+                int rowidx = preSymbol.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " i");
+            }
+            else {
                 identifySymbol.getASymbol();
+            }
 
-        } else if (sym.getRegKey() != RegKey.SEMICN) {  // [Exp] ';'
-            stmt = new ExpStmt(Exp.analyse(identifySymbol));
-            if (judge) {
-                sym = identifySymbol.get_CurrentSym();
-                // ERROR -- i: ';' needed
-                if (sym.getRegKey() != RegKey.SEMICN)
-                    Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " i");
-                else
-                    identifySymbol.getASymbol();
+        } else if (symbol.getRegKey() != RegKey.SEMICN) {
+            // -> [Exp] ';'
+            Exp exp = Exp.analyse(identifySymbol);
+            stmt = new ExpStmt(exp);
+
+            symbol = identifySymbol.get_CurrentSym();
+            regKey = symbol.getRegKey();
+            // i: ';' needed
+            if (regKey != RegKey.SEMICN) {
+                Symbol preSymbol = identifySymbol.get_PreSym();
+                int rowidx = preSymbol.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " i");
+            }
+            else {
+                identifySymbol.getASymbol();
             }
         } else {  // ';'
             stmt = new ExpStmt(null);
@@ -235,46 +380,14 @@ public class Stmt implements BlockItemInter {
         }
 
         if (judge) {
-            identifySymbol.addStr(name);
+            identifySymbol.addStr(name_stmt);
         }
 
         return stmt;
     }
 
-    public static boolean isMyFirst(Symbol sym) {
-        if ((sym.getRegKey() == RegKey.SEMICN ||
-                sym.getRegKey() == RegKey.IFTK ||
-                sym.getRegKey() == RegKey.BREAKTK ||
-                sym.getRegKey() == RegKey.WHILETK ||
-                sym.getRegKey() == RegKey.CONTINUETK ||
-                sym.getRegKey() == RegKey.RETURNTK ||
-                sym.getRegKey() == RegKey.PRINTFTK ||
-                LVal.isMyFirst(sym) || Block.isMyFirst(sym) || Exp.isMyFirst(sym))) {
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean assignExist(IdentifySymbol identifySymbol) {
-        int cnt = 0;
-        Symbol sym = identifySymbol.get_CurrentSym();
-        boolean exist = false;
-        int rowPre = sym.getRow_Idx(), rowNow = sym.getRow_Idx();
-        while (sym != null &&
-                sym.getRegKey() != RegKey.ASSIGN &&
-                sym.getRegKey() != RegKey.SEMICN &&
-                rowNow == rowPre) {
-            rowPre = sym.getRow_Idx();
-            identifySymbol.getASymbol();
-            sym = identifySymbol.get_CurrentSym();
-            cnt++;
-            rowNow = sym.getRow_Idx();
-        }
-        if (rowNow != rowPre)
-            exist = false;
-        else if (sym != null && sym.getRegKey() == RegKey.ASSIGN)
-            exist = true;
-        identifySymbol.spitSym(cnt);
-        return exist;
+    public void genCode(){
+        //
+        // TODO: calling children's genCode...nothing
     }
 }
