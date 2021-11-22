@@ -35,7 +35,7 @@ public class Number {
         // checking RParams type
         if (FuncRParams.TypeCheck) {
             FuncRParams.tbEntryModel.add(new TableEntry(true, DataType.INT_DATA, 0));
-            if (LVal.inDims == 0)
+            if (LVal.in_Dims == 0)
                 FuncRParams.TypeCheck = false;
         }
         return number;

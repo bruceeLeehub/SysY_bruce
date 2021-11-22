@@ -111,7 +111,7 @@ public class UnaryExp {
                 tmpEntry = SymTable.get_SymByNameInAllTable(true, identSym.get_IdentName());
                 if (FuncRParams.TypeCheck) {
                     FuncRParams.tbEntryModel.add(SymTable.createTableEntryModel(tmpEntry, 0));
-                    if (LVal.inDims == 0)
+                    if (LVal.in_Dims == 0)
                         FuncRParams.TypeCheck = false;
                 }
                 if (identifySymbol.getASymbol().getRegKey() != RegKey.RPARENT) {

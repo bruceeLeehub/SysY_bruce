@@ -1,95 +1,158 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.My_Int;
-import ParcelType.MyString;
+import ParcelType.*;
 import Table.SymTable;
 import Table.TableEntry;
 import Tables.*;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class LVal {
-    public static String name = "<LVal>";
-    public static int inDims = 0;
+    public Ident ident = null;
+    public ArrayList<Exp> exp_List = new ArrayList<>();
+    public static String name_LVal = "<LVal>";
+    public static int in_Dims = 0;
 
-    private Ident ident;
-    private ArrayList<Exp> expList;
+    public static LVal analyse(IdentifySymbol identifySymbol) {
+        //      LVal -> Ident { '[' Exp ']' }
+        MyString identName = new MyString();
+        LVal lVal = new LVal();
+        lVal.ident = (Ident.analyse(identifySymbol, identName));
+        // c:  check name undefined
+        Symbol symbol = identifySymbol.get_PreSym();
+        boolean isFunc = false;
+        Error.checkNameUndefined(isFunc, symbol);
+        // checking RParams type
+        int dims = 0;
+        TableEntry tmpEntry = SymTable.get_SymByNameInAllTable(false, identName.string);
+
+
+        while (identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
+            dims = dims + 1;
+            in_Dims = in_Dims + 1;
+            identifySymbol.getASymbol();
+            Exp exp = Exp.analyse(identifySymbol);
+            lVal.exp_List.add(exp);
+
+            // k: ']' needed
+            symbol = identifySymbol.get_CurrentSym();
+            RegKey regKey = symbol.getRegKey();
+            boolean isRBACK = (regKey == RegKey.RBRACK);
+            if (isRBACK) {
+                identifySymbol.getASymbol();
+            }
+            else {
+                int rowinx = identifySymbol.get_PreSym().getRow_Idx();
+                Error.addErrorOutPut(rowinx + " k");
+            }
+            in_Dims = in_Dims - 1;
+        }
+
+        // check RParamList type
+        if (FuncRParams.TypeCheck) {
+            FuncRParams.tbEntryModel.add(SymTable.createTableEntryModel(tmpEntry, dims));
+            if (LVal.in_Dims == 0) {
+                FuncRParams.TypeCheck = false;
+            }
+        }
+        identifySymbol.addStr(name_LVal);
+        return lVal;
+    }
+
+    public static boolean isMyFirst(Symbol sym) {
+        RegKey regKey = sym.getRegKey();
+        return regKey == RegKey.INTCON;
+    }
 
     public LVal() {
-        this.ident = null;
-        this.expList = new ArrayList<>();
-    }
-
-    public void addExp(Exp exp) {
-        this.expList.add(exp);
-    }
-
-    public void setIdent(Ident ident) {
-        this.ident = ident;
     }
 
     public void genCode(My_Int value, boolean isLeftValue) {
-        if (value != null) {      // is const, you need to calculate it right now
-            if (expList.size() != 0) {    // this is an Array
+        if (value != null) {      // need to calculate now ,is const
+            if (exp_List.size() == 0) {
+                value.my_Int = Table.get_ConstIdentValue(ident);
+            } else {    // this is an Array
                 ArrayList<Integer> dimValue = new ArrayList<>();
-                for (Exp exp : expList) {
+                for (Exp exp : this.exp_List) {
                     exp.genCode(value);
                     dimValue.add(value.my_Int);
                 }
                 value.my_Int = Table.get_ConstArrayValue(ident, dimValue);
-            } else {
-                value.my_Int = Table.get_ConstIdentValue(ident);
             }
-        } else {          // not a const you need to get it when running program
-            Tables.TableEntry te = Table.getAttrTableEntry(ident.getId_Name());
-            int lenOfExpList = expList.size();
-            int lenOfDims = te.get_Dims();
-            boolean isArray = lenOfExpList < lenOfDims;
-            if (isArray) {
-                if (te.isParam())    // for array para, its value is adr, so LOD
-                    Code.addCode(CodeType.LOD, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
-                else
-                    Code.addCode(CodeType.LDA, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
-                for (Exp exp : expList) {
+        } else {          // need to get it when running program     not a const
+            Tables.TableEntry tableEntry = Table.getAttrTableEntry(ident.getId_Name());
+            int lenOfExpList = exp_List.size();
+            int lenOfDims = tableEntry.get_Dims();
+            //boolean isArray = lenOfExpList < lenOfDims;
+            if (lenOfExpList < lenOfDims) {  // isArray
+                if (tableEntry.isParam())    // for array para, its value is adr, so LOD
+                {
+                    int x = Table.get_AttrLev(ident);
+                    int y = Table.get_ArrayAdr(ident);
+                    Code.addCode(CodeType.LOD, x, y);
+                }
+                else {
+                    int x = Table.get_AttrLev(ident);
+                    int y = Table.get_ArrayAdr(ident);
+                    Code.addCode(CodeType.LDA, x, y);
+                }
+                for (Exp exp : this.exp_List) {
                     exp.genCode(null);
                 }
-                if (expList.size() > 1 && /* dims are same refer to a value or addr*/
-                        expList.size() == Table.getAttrTableEntry(ident.getId_Name()).get_Dims()) {
+                int size = exp_List.size();
+                int dimsize = Table.getAttrTableEntry(ident.getId_Name()).get_Dims();
+                if (size > 1 &&
+                        /* dims are same refer to a value or addr*/
+                        size == dimsize) {
                     Code.addCode(CodeType.SWP);
                     ArrayList<Integer> dims = Table.get_ArrayDims(ident);
                     Code.addCode(CodeType.LDC, dims.get(dims.size() - 1));
                     Code.addCode(CodeType.MUL);
                     Code.addCode(CodeType.ADD);
-                } else if (expList.size() != 0 && expList.size() != Table.getAttrTableEntry(ident.getId_Name()).get_Dims()) { // dims not equal, send a sub-array
-                    int lastDim = ArrTable.getArrTable().get(Table.getAttrTableEntry(ident.getId_Name()).get_Ref()).getUpper_Bounds().get(1);
+                } else if (size != 0 && size != dimsize) {
+                    // dims not equal, send a sub-array
+                    ArrTableEntry arrTableEntry = ArrTable.getArrTable().get(Table.getAttrTableEntry(ident.getId_Name()).get_Ref());
+                    int lastDim = arrTableEntry.getUpper_Bounds().get(1);
                     Code.addCode(CodeType.LDC, lastDim);
                     Code.addCode(CodeType.MUL);
                     isLeftValue = true;
                 } else {
                     return;
                 }
-                if (isLeftValue)
+                if (isLeftValue) {
                     Code.addCode(CodeType.ADD);
-                else
+                }
+                else {
                     Code.addCode(CodeType.LAV);
+                }
             } else {
-                if (lenOfDims != 0) { // elements of array
-                    if (te.get_Obj().equals(Obj.CONST_OBJ))
-                        Code.addCode(CodeType.LDC, te.get_Addr());
-                    else if (te.isParam())    // for array para, its value is adr, so LOD
-                        Code.addCode(CodeType.LOD, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
-                    else
-                        Code.addCode(CodeType.LDA, Table.get_AttrLev(ident), Table.get_ArrayAdr(ident));
-                    for (Exp exp : expList) {
+                if (lenOfDims != 0) {
+                    // elements of array
+                    if (tableEntry.get_Obj().equals(Obj.CONST_OBJ)) {
+                        int y = tableEntry.get_Addr();
+                        Code.addCode(CodeType.LDC, y);
+                    }
+                    else if (tableEntry.isParam())
+                        // FOR array para, its value is adr, so LOD
+                    {
+                        int x = Table.get_AttrLev(ident);
+                        int y = Table.get_ArrayAdr(ident);
+                        Code.addCode(CodeType.LOD, x, y);
+                    }
+                    else {
+                        int x = Table.get_AttrLev(ident);
+                        int y = Table.get_ArrayAdr(ident);
+                        Code.addCode(CodeType.LDA, x, y);
+                    }
+                    for (Exp exp : exp_List) {
                         exp.genCode(null);
                     }
-
-                    if (expList.size() > 1 && /* dims are same refer to a value or addr*/
-                            expList.size() == Table.getAttrTableEntry(ident.getId_Name()).get_Dims()) {
+                    int size = exp_List.size();
+                    int dimsize = Table.getAttrTableEntry(ident.getId_Name()).get_Dims();
+                    if (size > 1 && /* dims are same refer to a value or addr*/
+                            size == dimsize) {
                         Code.addCode(CodeType.SWP);
                         ArrayList<Integer> dims = Table.get_ArrayDims(ident);
                         Code.addCode(CodeType.LDC, dims.get(dims.size() - 1));
@@ -97,73 +160,38 @@ public class LVal {
                         Code.addCode(CodeType.ADD);
                     }
 
-                    if (isLeftValue)
+                    if (isLeftValue) {
                         Code.addCode(CodeType.ADD);
+                    }
                     else {
-                        if (te.get_Obj().equals(Obj.CONST_OBJ))
+                        boolean isConstObj = (tableEntry.get_Obj().equals(Obj.CONST_OBJ));
+                        if (isConstObj) {
                             Code.addCode(CodeType.LCA);
-                        else
+                        }
+                        else {
                             Code.addCode(CodeType.LAV);
+                        }
                     }
 
                 } else {    // normal var
-                    if (isLeftValue)
-                        Code.addCode(CodeType.LDA, Table.get_AttrLev(ident), te.get_Addr());
+                    if (isLeftValue) {
+                        int x = Table.get_AttrLev(ident);
+                        int y = tableEntry.get_Addr();
+                        Code.addCode(CodeType.LDA, x, y);
+                    }
                     else {
-                        if (te.get_Obj().equals(Obj.CONST_OBJ))
-                            Code.addCode(CodeType.LDC, te.get_Addr());
-                        else
-                            Code.addCode(CodeType.LOD, te.get_Level(), te.get_Addr());
+                        if (tableEntry.get_Obj().equals(Obj.CONST_OBJ)) {
+                            int y = tableEntry.get_Addr();
+                            Code.addCode(CodeType.LDC, y);
+                        }
+                        else {
+                            int x = tableEntry.get_Level();
+                            int y = tableEntry.get_Addr();
+                            Code.addCode(CodeType.LOD, x,y);
+                        }
                     }
                 }
             }
         }
-    }
-
-    public static LVal analyse(IdentifySymbol identifySymbol) {   // LVal --> Ident { '[' Exp ']' }
-        Symbol sym;
-        boolean judge = true;
-        LVal lVal = new LVal();
-        MyString identName = new MyString();
-        TableEntry tmpEntry;
-        int dims = 0;
-
-        lVal.setIdent(Ident.analyse(identifySymbol, identName));
-        // ERROR: check name undefined -- type c
-        Error.checkNameUndefined(false, identifySymbol.get_PreSym());
-        // checking RParams type
-        tmpEntry = SymTable.get_SymByNameInAllTable(false, identName.string);
-        if (judge) {
-            while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
-                inDims++;
-                dims++;
-                identifySymbol.getASymbol();
-                lVal.addExp(Exp.analyse(identifySymbol));
-
-                // ERROR -- k: ']' needed
-                if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
-                    Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
-                else identifySymbol.getASymbol();
-                inDims--;
-            }
-        }
-
-        // checking RParams type
-        if (FuncRParams.TypeCheck) {
-            FuncRParams.tbEntryModel.add(SymTable.createTableEntryModel(tmpEntry, dims));
-            if (LVal.inDims == 0)
-                FuncRParams.TypeCheck = false;
-        }
-        if (judge) {
-            identifySymbol.addStr(name);
-        }
-        return lVal;
-    }
-
-    public static boolean isMyFirst(Symbol sym) {
-        if (sym.getRegKey() == RegKey.INTCON) {
-            return true;
-        }
-        return false;
     }
 }
