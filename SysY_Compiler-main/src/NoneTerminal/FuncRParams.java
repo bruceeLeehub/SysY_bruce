@@ -29,7 +29,7 @@ public class FuncRParams {
         }
         int paramSeq = 1;
         Exp exp = Exp.analyse(identifySymbol);
-        unaryExp.addFuncRParam(exp);
+        unaryExp.add_FuncRParam(exp);
         // e: rparams do not match
         int size = tbEntryModel.size();
         TableEntry actualTE = tbEntryModel.get(size - 1);
@@ -41,7 +41,7 @@ public class FuncRParams {
             TypeCheck = true;
             identifySymbol.getASymbol();
             Exp exp1 = Exp.analyse(identifySymbol);
-            unaryExp.addFuncRParam(exp1);
+            unaryExp.add_FuncRParam(exp1);
             // e: rparams do not match
             size = tbEntryModel.size();
             actualTE = tbEntryModel.get(size - 1);

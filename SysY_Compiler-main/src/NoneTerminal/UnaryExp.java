@@ -1,153 +1,154 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.My_Int;
-import Tables.Code;
+import ParcelType.*;
 import Tables.CodeType;
+import Tables.Table;
+import Tables.Code;
 import Table.SymTable;
 import Table.TableEntry;
-import Tables.Table;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class UnaryExp {
-    public static String name = "<UnaryExp>";
+    public UnaryOp unaryOp = null;
+    public UnaryExp unaryExp = null;
+    public static String name_unaryExp = "<UnaryExp>";
 
-    // choose one from three
-    private PrimaryExp primaryExp;
-    private Ident ident;
-    private ArrayList<Exp> funcRParamList;
-    private UnaryOp unaryOp;
-    private UnaryExp unaryExp;
+    // three conditions
+    public PrimaryExp primaryExp = null;
+    public ArrayList<Exp> funcRParamList = new ArrayList<>();
+    public Ident ident = null;
 
-    public UnaryExp() {
-        this.primaryExp = null;
-
-        this.ident = null;
-        this.funcRParamList = new ArrayList<>();
-
-        this.unaryOp = null;
-        this.unaryExp = null;
-    }
-
-    public void setPrimaryExp(PrimaryExp primaryExp) {
-        this.primaryExp = primaryExp;
-    }
-
-    public void setIdent(Ident ident) {
-        this.ident = ident;
-    }
-
-    public void setUnaryOp(UnaryOp unaryOp) {
-        this.unaryOp = unaryOp;
-    }
-
-    public void setUnaryExp(UnaryExp unaryExp) {
-        this.unaryExp = unaryExp;
-    }
-
-    public void addFuncRParam(Exp exp) {
-        this.funcRParamList.add(exp);
-    }
-
-    public void genCode(My_Int value) {
-        if (value != null) {      // is const, you need to calculate it right now
-            if (primaryExp != null)
-                primaryExp.genCode(value);
-            /* there will not be func call when there is a constExp
-            else if (ident != null)
-                value.myInt = SymTable.getValueOfIdent(ident);
-             */
-            else if (unaryOp != null) {
-                unaryExp.genCode(value);
-                if (unaryOp.getOp().equals(RegKey.MINU))
-                    value.my_Int = -value.my_Int;
-            }
-        } else {          // not a const you need to get it when running program
-            if (primaryExp != null)
-                primaryExp.genCode(null);
-            else if (ident != null) {    // func call
-                Code.addCode(CodeType.MKS, Table.getFuncTableEntry(ident.getId_Name()).get_Ref());
-                for (Exp exp : funcRParamList) {
-                    exp.genCode(null);
-                }
-                Code.addCode(CodeType.CAL);
-            } else {
-                unaryExp.genCode(null);
-                if (unaryOp.getOp().equals(RegKey.MINU))
-                    Code.addCode(CodeType.MUS);
-                else if (unaryOp.getOp().equals(RegKey.NOT))
-                    Code.addCode(CodeType.NOT);
-            }
-        }
+    public static boolean isMyFirst(Symbol sym) {
+        RegKey regKey = sym.getRegKey();
+        boolean isINTCON  = regKey == RegKey.INTCON;
+        boolean UnaryOp_isMyFirst = UnaryOp.isMyFirst(sym);
+        boolean PrimaryExp_isMyFirst = PrimaryExp.isMyFirst(sym);
+        return isINTCON || UnaryOp_isMyFirst || PrimaryExp_isMyFirst;
     }
 
     public static UnaryExp analyse(IdentifySymbol identifySymbol) {
         boolean judge = true;
         UnaryExp unaryExp = new UnaryExp(); // ast Tree node
         Symbol sym = identifySymbol.get_CurrentSym();
-        if (sym.getRegKey() == RegKey.LPARENT) {    // '(' Exp ')'
-            unaryExp.setPrimaryExp(PrimaryExp.analyse(identifySymbol));
-        } else if (sym.getRegKey() == RegKey.PLUS ||
-                sym.getRegKey() == RegKey.MINU ||
-                sym.getRegKey() == RegKey.NOT) {
-
-            unaryExp.setUnaryOp(UnaryOp.analyse(identifySymbol));
-            unaryExp.setUnaryExp(UnaryExp.analyse(identifySymbol));
-        } else if (sym.getRegKey() == RegKey.IDENFR) {
-            Symbol identSym = sym;
-            TableEntry tmpEntry;
+        RegKey regKey = sym.getRegKey();
+        boolean isLPARENT = regKey == RegKey.LPARENT;
+        boolean isIDENFR = regKey == RegKey.IDENFR;
+        boolean isPLUS_MINU_NOT = (regKey == RegKey.PLUS || regKey == RegKey.MINU || regKey == RegKey.NOT);
+        boolean isINTCON = regKey == RegKey.INTCON;
+        if (isLPARENT) {
+            // -> '(' Exp ')'
+            unaryExp.primaryExp = (PrimaryExp.analyse(identifySymbol));
+        } else if (isPLUS_MINU_NOT) {
+            unaryExp.unaryOp = (UnaryOp.analyse(identifySymbol));
+            unaryExp.unaryExp = (UnaryExp.analyse(identifySymbol));
+        } else if (isIDENFR) {
+            TableEntry tempEntry;
+            Symbol ident_Sym = sym;
             sym = identifySymbol.getASymbol();
+            regKey = sym.getRegKey();
+            if (regKey == RegKey.LPARENT) {
+                // -> Ident '(' [ FuncRParams ] ')'函数调用
+                String name = ident_Sym.get_IdentName();
+                unaryExp.ident = (new Ident(name));
 
-            if (sym.getRegKey() == RegKey.LPARENT) { // Ident '(' [ FuncRParams ] ')'
-                unaryExp.setIdent(new Ident(identSym.get_IdentName()));
-                My_Int numOfParamsActually = new My_Int();
-                // ERROR: check name undefined -- type c
-                Error.checkNameUndefined(true, identSym);
-                // checking RParams type
-                tmpEntry = SymTable.get_SymByNameInAllTable(true, identSym.get_IdentName());
+                My_Int actualParamCount = new My_Int();
+                // c : check name undefined
+                Error.checkNameUndefined(true, ident_Sym);
+                // check RParams type
+                tempEntry = SymTable.get_SymByNameInAllTable(true, name);
                 if (FuncRParams.TypeCheck) {
-                    FuncRParams.tbEntryModel.add(SymTable.createTableEntryModel(tmpEntry, 0));
-                    if (LVal.in_Dims == 0)
+                    FuncRParams.tbEntryModel.add(SymTable.createTableEntryModel(tempEntry, 0));
+                    if (LVal.in_Dims == 0) {
                         FuncRParams.TypeCheck = false;
+                    }
                 }
-                if (identifySymbol.getASymbol().getRegKey() != RegKey.RPARENT) {
-                    judge &= FuncRParams.analyse(identifySymbol, numOfParamsActually, unaryExp);
+                Symbol symbol = identifySymbol.getASymbol();
+                regKey = symbol.getRegKey();
+                if (regKey != RegKey.RPARENT) {
+                    judge = FuncRParams.analyse(identifySymbol, actualParamCount, unaryExp);
                     if (judge) {
-                        // ERROR -- j: ')' needed
-                        if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
-                            Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
-                        else identifySymbol.getASymbol();
+                        // j: ')' needed
+                        Symbol curSymbol = identifySymbol.get_CurrentSym();
+                        regKey = curSymbol.getRegKey();
+                        if (regKey == RegKey.RPARENT) {
+                            identifySymbol.getASymbol();
+                        }
+                        else {
+                            Symbol preSymbol = identifySymbol.get_PreSym();
+                            int rowidx = preSymbol.getRow_Idx();
+                            Error.addErrorOutPut(rowidx + " j");
+                        }
                     }
                 } else {
                     identifySymbol.getASymbol();
                 }
-                // ERROR: check is number of param matches
-                Error.checkParamNumMatched(identSym, numOfParamsActually.my_Int);
-            } else {        // PrimaryExp
+                //  check is number of param
+                Error.checkParamNumMatched(ident_Sym, actualParamCount.my_Int);
+            } else {
+                // PrimaryExp
+                //回退一格
                 identifySymbol.spitSym(1);
-                unaryExp.setPrimaryExp(PrimaryExp.analyse(identifySymbol));
+                unaryExp.primaryExp = (PrimaryExp.analyse(identifySymbol));
             }
 
-        } else if (sym.getRegKey() == RegKey.INTCON) {
-            unaryExp.setPrimaryExp(PrimaryExp.analyse(identifySymbol));
+        } else if (isINTCON) {
+            unaryExp.primaryExp = (PrimaryExp.analyse(identifySymbol));
         }
 
         if (judge) {
-            identifySymbol.addStr(name);
+            identifySymbol.addStr(name_unaryExp);
         }
 
         return unaryExp;
     }
 
-    public static boolean isMyFirst(Symbol sym) {
-        if (sym.getRegKey() == RegKey.INTCON ||
-                UnaryOp.isMyFirst(sym) || PrimaryExp.isMyFirst(sym)) {
-            return true;
+    public UnaryExp() {
+    }
+
+    public void add_FuncRParam(Exp exp) {
+        this.funcRParamList.add(exp);
+    }
+
+    public void genCode(My_Int value) {
+        if (value != null) {
+            // calculate it now ,is const
+            if (primaryExp != null) {
+                primaryExp.genCode(value);
+            }
+            else if (unaryOp != null) {
+                unaryExp.genCode(value);
+                RegKey regKey = unaryOp.getOp();
+                if (regKey.equals(RegKey.MINU)) {
+                    value.my_Int = value.my_Int * -1;
+                }
+            }
+        } else {
+            // get it when running program, not a const
+            if (primaryExp != null) {
+                primaryExp.genCode(null);
+            }
+            else if (ident != null) {
+                // func call
+                String name = ident.getId_Name();
+                int y = Table.getFuncTableEntry(name).get_Ref();
+                Code.addCode(CodeType.MKS,y);
+                for (Exp exp : this.funcRParamList) {
+                    exp.genCode(null);
+                }
+                Code.addCode(CodeType.CAL);
+            } else {
+                unaryExp.genCode(null);
+                RegKey regKey = unaryOp.getOp();
+                if (regKey.equals(RegKey.NOT)) {
+                    Code.addCode(CodeType.NOT);
+                }
+                else if (regKey.equals(RegKey.MINU)) {
+                    Code.addCode(CodeType.MUS);
+                }
+            }
         }
-        return false;
     }
 }
