@@ -1,45 +1,41 @@
 package NoneTerminal;
 
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 public class UnaryOp {
-    public static String name = "<UnaryOp>";
+    public RegKey unaryOp;
+    public static String name_unaryop = "<UnaryOp>";
 
-    private RegKey op;
 
-    public UnaryOp(RegKey op) {
-        this.op = op;
-    }
-
-    public RegKey getOp(){
-        return this.op;
+    public static boolean isMyFirst(Symbol sym) {
+        RegKey regKey = sym.getRegKey();
+        boolean isPLUS = regKey == RegKey.PLUS;
+        boolean isMINU = regKey == RegKey.MINU;
+        boolean isNOT = regKey == RegKey.NOT;
+        return isPLUS || isMINU || isNOT;
     }
 
     public static UnaryOp analyse(IdentifySymbol identifySymbol) {
-        boolean judge = true;
         Symbol sym = identifySymbol.get_CurrentSym();
-        if (sym.getRegKey() != RegKey.PLUS &&
-                sym.getRegKey() != RegKey.MINU &&
-                sym.getRegKey() != RegKey.NOT) {
+        RegKey regKey = sym.getRegKey();
+        boolean isPLUS = regKey == RegKey.PLUS;
+        boolean isMINU = regKey == RegKey.MINU;
+        boolean isNOT = regKey == RegKey.NOT;
+        if (!isPLUS && !isMINU && !isNOT) {
             return null;
         }
         UnaryOp unaryOp = new UnaryOp(sym.getRegKey());
         identifySymbol.getASymbol();
 
-        if (judge) {
-            identifySymbol.addStr(name);
-        }
+        identifySymbol.addStr(name_unaryop);
         return unaryOp;
     }
 
-    public static boolean isMyFirst(Symbol sym) {
-        if(sym.getRegKey() == RegKey.PLUS ||
-        sym.getRegKey() == RegKey.MINU ||
-        sym.getRegKey() == RegKey.NOT){
-            return true;
-        }
-        return false;
+    public RegKey getUnaryOp(){
+        return unaryOp;
+    }
+
+    public UnaryOp(RegKey unaryOp) {
+        this.unaryOp = unaryOp;
     }
 }

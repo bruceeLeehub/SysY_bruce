@@ -120,7 +120,7 @@ public class UnaryExp {
             }
             else if (unaryOp != null) {
                 unaryExp.genCode(value);
-                RegKey regKey = unaryOp.getOp();
+                RegKey regKey = unaryOp.getUnaryOp();
                 if (regKey.equals(RegKey.MINU)) {
                     value.my_Int = value.my_Int * -1;
                 }
@@ -141,7 +141,7 @@ public class UnaryExp {
                 Code.addCode(CodeType.CAL);
             } else {
                 unaryExp.genCode(null);
-                RegKey regKey = unaryOp.getOp();
+                RegKey regKey = unaryOp.getUnaryOp();
                 if (regKey.equals(RegKey.NOT)) {
                     Code.addCode(CodeType.NOT);
                 }
