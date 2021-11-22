@@ -1,77 +1,73 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.My_Int;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import ParcelType.*;
+import WordAnalyse.*;
 
 public class PrimaryExp {
-    public static String name = "<PrimaryExp>";
+    public LVal lVal = null;
+    public Number number = null;
+    public Exp exp = null;
+    //three conditions
+    public static String name_primaryExp = "<PrimaryExp>";
 
-    // choose one from three
-    private Exp exp;
-    private LVal lVal;
-    private Number number;
-
-    private PrimaryExp() {
-        this.exp = null;
-        this.lVal = null;
-        this.number = null;
-    }
-
-    public void setExp(Exp exp) {
-        this.exp = exp;
-    }
-
-    public void setlVal(LVal lVal) {
-        this.lVal = lVal;
-    }
-
-    public void setNumber(Number number) {
-        this.number = number;
-    }
-
-    public static boolean isMyFirst(Symbol sym) {
-        if (sym.getRegKey() == RegKey.LPARENT ||
-                sym.getRegKey() == RegKey.INTCON) {
-            return true;
-        }
-        return false;
-    }
-
-    public void genCode(My_Int value) {
-        if (exp != null)
-            exp.genCode(value);
-        else if (lVal != null)
-            lVal.genCode(value, false);
-        else
-            number.genCode(value);
+    public static boolean isMyFirst(Symbol symbol) {
+        RegKey regKey = symbol.getRegKey();
+        boolean isLPARENT = regKey == RegKey.LPARENT;
+        boolean isINTCON = regKey == RegKey.INTCON;
+        return isLPARENT || isINTCON;
     }
 
     public static PrimaryExp analyse(IdentifySymbol identifySymbol) {
-        Symbol sym;
-        boolean judge = true;
-        PrimaryExp primaryExp = new PrimaryExp();
+        Symbol curSymbol = identifySymbol.get_CurrentSym();
+        RegKey regKey = curSymbol.getRegKey();
+        boolean isLPARENT = (regKey == RegKey.LPARENT);
 
-        if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.LPARENT) {   // '(' Exp ')'
+        PrimaryExp primaryExp = new PrimaryExp();
+        if (isLPARENT) {   // '(' Exp ')'
             identifySymbol.getASymbol();
-            primaryExp.setExp(Exp.analyse(identifySymbol));
-            if (judge) {
-                if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
-                    Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
-                else
-                    identifySymbol.getASymbol();
+            Exp exp = Exp.analyse(identifySymbol);
+            primaryExp.exp = exp;
+
+            curSymbol = identifySymbol.get_CurrentSym();
+            regKey = curSymbol.getRegKey();
+            boolean isRPARENT = regKey == RegKey.RPARENT;
+            if (isRPARENT) {
+                identifySymbol.getASymbol();
+            }
+            else {
+                Symbol preSymbol = identifySymbol.get_PreSym();
+                int rowidx = preSymbol.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " j");
             }
         } else {
-            if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.IDENFR) {  // LVal --> Ident { '[' Exp ']' }
-                primaryExp.setlVal(LVal.analyse(identifySymbol));
-            } else {  // Number
-                primaryExp.setNumber(Number.analyse(identifySymbol));
+            curSymbol = identifySymbol.get_CurrentSym();
+            regKey = curSymbol.getRegKey();
+            boolean isIDENFR = regKey == RegKey.IDENFR;
+            if (!isIDENFR) {
+                // number
+                primaryExp.number = (Number.analyse(identifySymbol));
+            } else {  //Ident { '[' Exp ']' }
+                primaryExp.lVal = (LVal.analyse(identifySymbol));
             }
         }
-        if (judge)
-            identifySymbol.addStr(name);
+        identifySymbol.addStr(name_primaryExp);
         return primaryExp;
     }
+
+    public void genCode(My_Int value) {
+        if (lVal != null) {
+            lVal.genCode(value, false);
+        }
+        else if (exp != null) {
+            exp.genCode(value);
+        }
+        else {
+            number.genCode(value);
+        }
+    }
+
+    private PrimaryExp() {
+    }
+
 }
