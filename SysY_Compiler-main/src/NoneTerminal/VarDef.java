@@ -1,121 +1,129 @@
 package NoneTerminal;
 
 import MyError.Error;
-import ParcelType.My_Int;
-import ParcelType.MyString;
+import ParcelType.*;
 import Table.*;
 import Tables.*;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class VarDef {
-    public static String name = "<VarDef>";
+    public Ident ident = null;
+    public InitVal initVal = null;
+    public static String name_varDef = "<VarDef>";
+    public ArrayList<ConstExp> constExp_List = new ArrayList<>();
 
-    private Ident ident;
-    private ArrayList<ConstExp> constExpList;
-    private InitVal initVal;
+    public static VarDef analyse(IdentifySymbol identifySymbol) {
+        VarDef varDef = new VarDef();
+        MyString identName = new MyString();
+        int dims = 0;
+        Ident ident = Ident.analyse(identifySymbol,identName);
+        varDef.ident = ident;
+        // b: Duplicated name define
+        Symbol preSymbol = identifySymbol.get_PreSym();
+        Error.checkIfDupDef(false, preSymbol);
 
-    public VarDef() {
-        this.ident = null;
-        this.constExpList = new ArrayList<>();
-        this.initVal = null;
-    }
+        while (identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
+            identifySymbol.getASymbol();
+            dims = dims + 1;
+            ConstExp constExp = ConstExp.analyse(identifySymbol);
+            varDef.constExp_List.add(constExp);
+            // k: ']' missing
+            Symbol symbol = identifySymbol.get_CurrentSym();
+            RegKey regKey = symbol.getRegKey();
+            if (regKey == RegKey.RBRACK) {
+                identifySymbol.getASymbol();
+            }
+            else {
+                Symbol sym = identifySymbol.get_PreSym();
+                int rowidx = sym.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " k");
+            }
 
-    public void setIdent(Ident ident) {
-        this.ident = ident;
-    }
+        }
+        // CREATE const_var
+        if (CompUnit.isNameDuplicateDef) {
+            CompUnit.isNameDuplicateDef = false;
+        }
+        else {
+            SymTable.insertTabEntryIntoCurTab(false, identName.string, false, DataType.INT_DATA, dims);
+        }
 
-    public void addConstExp(ConstExp constExp) {
-        this.constExpList.add(constExp);
-    }
+        Symbol curSymbol = identifySymbol.get_CurrentSym();
+        RegKey regKey = curSymbol.getRegKey();
+        boolean isASSIGN = regKey == RegKey.ASSIGN;
+        if (isASSIGN) {
+            identifySymbol.getASymbol();
+            varDef.initVal = (InitVal.analyse(identifySymbol, null));
+        }
 
-    public void setInitVal(InitVal initVal) {
-        this.initVal = initVal;
+        identifySymbol.addStr(name_varDef);
+        return varDef;
     }
 
     public void buildDefaultIniValue(ArrayList<Integer> dimList, ArrayList<Integer> iniValue) {
         int totalNum = 1;
-        if (dimList.size() != 0) {    // this is an array
-            for (int i : dimList)
-                totalNum *= i;
-            for (int i = 0; i < totalNum; i++)
-                iniValue.add(0);
-        } else {
+        if (dimList.size() == 0) {
             iniValue.add(0);
+        } else {
+            // this is an array
+            for (int i : dimList) {
+                totalNum = i * totalNum;
+            }
+            for (int i = 0; i < totalNum; i++) {
+                iniValue.add(0);
+            }
         }
+    }
+
+    public VarDef() {
     }
 
     public void genCode() {
-        My_Int value = new My_Int();
-        ArrayList<Integer> dimList = new ArrayList<>();
-        ArrayList<Integer> iniValue = new ArrayList<>();
         int sizeOfArray = 1;
-        for (ConstExp constExp : constExpList) {
+        ArrayList<Integer> dim_List = new ArrayList<>();
+        ArrayList<Integer> initValue = new ArrayList<>();
+        My_Int value = new My_Int();
+        for (ConstExp constExp : this.constExp_List) {
             constExp.genCode(value);
-            dimList.add(value.my_Int);
-            sizeOfArray *= value.my_Int;
+            sizeOfArray = sizeOfArray * value.my_Int;
+            dim_List.add(value.my_Int);
         }
 
-        if (this.initVal != null)
+        if (this.initVal == null) {
+            buildDefaultIniValue(dim_List, initValue);
+        }
+        else {
             this.initVal.genCode();
-        else
-            buildDefaultIniValue(dimList, iniValue);
+        }
 
-        if (dimList.size() != 0) {    // this is an array
-            Table.addTeToCurrentTable(ident.getId_Name(), Obj.VAR_OBJ, Typ.INT_TYP,
-                    dimList.size(), ArrTable.createAnEntry(dimList), Table.getCurLayer(), sizeOfArray);
-            if(this.initVal == null){
-                for(int k : iniValue)
-                    Code.addCode(CodeType.LDC, 0);  // initial value with 0
-            }   // else if iniValue.size != 0, it says that this initial procdure has been done
-        } else {
-            Table.addTeToCurrentTable(ident.getId_Name(), Obj.VAR_OBJ, Typ.INT_TYP,
-                    dimList.size(), 0, Table.getCurLayer(), 1);
-            if(this.initVal == null)
+        if (dim_List.size() == 0) {
+            String name = ident.getId_Name();
+            Obj obj_var = Obj.VAR_OBJ;
+            Typ type = Typ.INT_TYP;
+            int dims = dim_List.size();
+            int ref = 0;
+            int level = Table.getCurLayer();
+            int addr = 1;
+            Table.addTeToCurrentTable(name, obj_var, type, dims, ref, level, addr);
+            if(this.initVal == null) {
                 Code.addCode(CodeType.LDC, 0);
-        }
-    }
-
-
-    public static VarDef analyse(IdentifySymbol identifySymbol) {
-        Symbol sym;
-        boolean judge = true;
-        int dims = 0;
-        MyString identName = new MyString();
-        VarDef varDef = new VarDef();
-
-        varDef.setIdent(Ident.analyse(identifySymbol, identName));
-        // ERROR: name Duplicated define -- type b
-        Error.checkIfDupDef(false, identifySymbol.get_PreSym());
-
-        while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
-            dims++;
-            identifySymbol.getASymbol();
-            varDef.addConstExp(ConstExp.analyse(identifySymbol));
-            // ERROR -- k: ']' needed
-            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACK)
-                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " k");
-            else identifySymbol.getASymbol();
-
-        }
-        if (judge) {
-            // create a const var
-            if (CompUnit.isNameDuplicateDef == false)
-                SymTable.insertTabEntryIntoCurTab(false, identName.string, false, DataType.INT_DATA, dims);
-            else CompUnit.isNameDuplicateDef = false;
-
-            if (identifySymbol.get_CurrentSym().getRegKey() == RegKey.ASSIGN) {
-                identifySymbol.getASymbol();
-                varDef.setInitVal(InitVal.analyse(identifySymbol, null));
+            }
+        } else {    // this is an array
+            String name = ident.getId_Name();
+            Obj obj_var = Obj.VAR_OBJ;
+            Typ type = Typ.INT_TYP;
+            int dims = dim_List.size();
+            int ref = ArrTable.createAnEntry(dim_List);
+            int level = Table.getCurLayer();
+            int addr = sizeOfArray;
+            Table.addTeToCurrentTable(name, obj_var, type, dims, ref, level, addr);
+            if(this.initVal == null){
+                for(int i : initValue) {
+                    Code.addCode(CodeType.LDC, 0);
+                }  // 0 initial value
             }
         }
-
-        if (judge) {
-            identifySymbol.addStr(name);
-        }
-        return varDef;
     }
 }

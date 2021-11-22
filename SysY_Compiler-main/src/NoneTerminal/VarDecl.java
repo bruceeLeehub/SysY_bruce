@@ -15,11 +15,12 @@ public class VarDecl extends Decl {
         VarDecl varDecl = new VarDecl();
 
         varDecl.bType = (BType.analyse(identifySymbol));
-        varDecl.varDef_List.add(VarDef.analyse(identifySymbol));
+        VarDef varDef = VarDef.analyse(identifySymbol);
+        varDecl.varDef_List.add(varDef);
         while (identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
             identifySymbol.getASymbol();
-            VarDef varDef = VarDef.analyse(identifySymbol);
-            varDecl.varDef_List.add(varDef);
+            VarDef varDef1 = VarDef.analyse(identifySymbol);
+            varDecl.varDef_List.add(varDef1);
         }
         Symbol curSymbol = identifySymbol.get_CurrentSym();
         RegKey regKey = curSymbol.getRegKey();
@@ -32,7 +33,6 @@ public class VarDecl extends Decl {
             int rowidx = preSymbol.getRow_Idx();
             Error.addErrorOutPut(rowidx + " i");
         } //i: ';' needed
-
 
         identifySymbol.addStr(name_varDecl);
         return varDecl;
