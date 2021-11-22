@@ -23,8 +23,8 @@ public class WhileStmt extends Stmt {
 
 
         blocksOverBreak.add(0);
-        BreakStmt.breakStmtList.add(new ArrayList<>());
-        ContinueStmt.continueStmtList.add(new ArrayList<>());
+        BreakStmt.breakStmt_List.add(new ArrayList<>());
+        ContinueStmt.continueStmt_List.add(new ArrayList<>());
         whileStmt.genCode();
         blocksOverBreak.remove(blocksOverBreak.size() - 1);
 
@@ -36,8 +36,8 @@ public class WhileStmt extends Stmt {
         BreakStmt.modifyAllBreakY(whileEndAdr);
         ContinueStmt.modifyAllBreakY(whileBeginAdr);
 
-        BreakStmt.breakStmtList.remove(BreakStmt.breakStmtList.size() - 1);
-        ContinueStmt.continueStmtList.remove(ContinueStmt.continueStmtList.size() - 1);
+        BreakStmt.breakStmt_List.remove(BreakStmt.breakStmt_List.size() - 1);
+        ContinueStmt.continueStmt_List.remove(ContinueStmt.continueStmt_List.size() - 1);
     }
 
     public WhileStmt(Cond cond, Stmt whileStmt) {

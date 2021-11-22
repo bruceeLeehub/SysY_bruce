@@ -1,24 +1,22 @@
 package NoneTerminal.StmtPack;
 
-import NoneTerminal.Exp;
-import NoneTerminal.LVal;
-import NoneTerminal.Stmt;
-import Tables.Code;
-import Tables.CodeType;
+import NoneTerminal.*;
+import Tables.*;
 
 public class AssignStmt extends Stmt {
-    private LVal lVal;
-    private Exp exp;
+    public Exp exp_rhs;
+    public LVal lVal_lhs;
+
+    public AssignStmt(LVal lVal_lhs, Exp exp_rhs) {
+        this.lVal_lhs = lVal_lhs;
+        this.exp_rhs = exp_rhs;
+    }
 
     @Override
     public void genCode(){
-        lVal.genCode(null, true);   // need to be assigned (left value)
-        exp.genCode(null);
+        boolean isLeftValue = true;
+        lVal_lhs.genCode(null, isLeftValue);   // need assignment
+        exp_rhs.genCode(null);
         Code.addCode(CodeType.STO);
-    }
-
-    public AssignStmt(LVal lVal, Exp exp) {
-        this.lVal = lVal;
-        this.exp = exp;
     }
 }

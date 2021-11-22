@@ -1,6 +1,5 @@
 package NoneTerminal.StmtPack;
 
-import NoneTerminal.Block;
 import NoneTerminal.Exp;
 import NoneTerminal.Stmt;
 import Tables.Code;
@@ -17,9 +16,9 @@ public class ReturnExp extends Stmt {
     public void genCode() {
         if (exp != null) {
             exp.genCode(null);
-            Code.addCode(CodeType.VRE, BlockStmt.blockLayers);
+            Code.addCode(CodeType.VRE, BlockStmt.block_Layers);
         } else {
-            Code.addCode(CodeType.RET, BlockStmt.blockLayers);
+            Code.addCode(CodeType.RET, BlockStmt.block_Layers);
         }
     }
 }

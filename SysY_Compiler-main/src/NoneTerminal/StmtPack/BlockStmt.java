@@ -1,27 +1,31 @@
 package NoneTerminal.StmtPack;
 
-import NoneTerminal.Block;
-import NoneTerminal.Stmt;
+import NoneTerminal.*;
+import Tables.TableEntry;
 
 public class BlockStmt extends Stmt {
-    private Block block;
-    public static int blockLayers = 0;
-
-    public BlockStmt(Block block){
-        this.block = block;
-    }
+    public static int block_Layers = 0;
+    public Block block;
 
     @Override
     public void genCode() {
-        int blockOverBreadSize = WhileStmt.blocksOverBreak.size();
-        for(int i = 0; i < blockOverBreadSize; i++){
-            WhileStmt.blocksOverBreak.set(i, WhileStmt.blocksOverBreak.get(i) + 1);
+        int blockOverBreak_Size = WhileStmt.blocksOverBreak.size();
+        for(int i = 0; i < blockOverBreak_Size; i++){
+            int element = WhileStmt.blocksOverBreak.get(i) + 1;
+            WhileStmt.blocksOverBreak.set(i, element);
         }
-        blockLayers++;
-        block.genCode(null, null);
-        blockLayers--;
-        for(int i = 0; i < blockOverBreadSize; i++){
-            WhileStmt.blocksOverBreak.set(i, WhileStmt.blocksOverBreak.get(i) - 1);
+        block_Layers = block_Layers + 1;
+        TableEntry tableEntry = null;
+        String name = null;
+        block.genCode(name, tableEntry);
+        block_Layers = block_Layers - 1;
+        for(int i = 0; i < blockOverBreak_Size; i++){
+            int element = WhileStmt.blocksOverBreak.get(i) - 1;
+            WhileStmt.blocksOverBreak.set(i,element);
         }
+    }
+
+    public BlockStmt(Block block){
+        this.block = block;
     }
 }
