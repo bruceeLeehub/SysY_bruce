@@ -9,11 +9,13 @@ public class ContinueStmt extends Stmt {
     public static ArrayList<ArrayList<Integer>> continueStmt_List = new ArrayList<>();
 
     public static void modifyAllBreakY(int beginPc) {
-        if (continueStmt_List.size() != 0) {
-            ArrayList<Integer> thisBreakList = continueStmt_List.get(continueStmt_List.size() - 1);
+        int size = continueStmt_List.size();
+        if (size != 0) {
+            int back =continueStmt_List.size() - 1;
+            ArrayList<Integer> thisBreakList = continueStmt_List.get(back);
             if (thisBreakList != null) {
-                for (int adr : thisBreakList) {
-                    Code.modify_Y(adr, beginPc);
+                for (int addr : thisBreakList) {
+                    Code.modify_Y(addr, beginPc);
                 }
             }
             // continueStmtList.remove(continueStmtList.size() - 1);
@@ -22,9 +24,17 @@ public class ContinueStmt extends Stmt {
 
     @Override
     public void genCode() {
-        if (continueStmt_List.size() == 0 || continueStmt_List.get(continueStmt_List.size() - 1) == null)
-            continueStmt_List.add(new ArrayList<>());
-        continueStmt_List.get(continueStmt_List.size() - 1).add(Code.addCode(CodeType.BRK,
-                WhileStmt.blocksOverBreak.get(WhileStmt.blocksOverBreak.size() - 1), -1));
+        int back = continueStmt_List.size() - 1;
+        int size = continueStmt_List.size();
+        boolean b1 = (size == 0 || continueStmt_List.get(back) == null);
+        if (b1) {
+            ArrayList<Integer> arrayList = new ArrayList<>();
+            continueStmt_List.add(arrayList);
+        }
+        back = continueStmt_List.size() - 1;
+        int x =  WhileStmt.blocksOverBreak.get(WhileStmt.blocksOverBreak.size() - 1);
+        int y = -1;
+        int code = Code.addCode(CodeType.BRK,x,y);
+        continueStmt_List.get(back).add(code);
     }
 }
