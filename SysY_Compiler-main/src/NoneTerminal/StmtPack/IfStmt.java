@@ -1,9 +1,7 @@
 package NoneTerminal.StmtPack;
 
-import NoneTerminal.Cond;
-import NoneTerminal.Stmt;
-import Tables.Code;
-import Tables.CodeType;
+import NoneTerminal.*;
+import Tables.*;
 
 public class IfStmt extends Stmt {
     private Cond cond;
