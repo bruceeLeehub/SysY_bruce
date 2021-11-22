@@ -9,43 +9,80 @@ public enum RegKey {
     ASSIGN, SEMICN, COMMA, LPARENT, RPARENT;
 
     public static RegKey getRegKey(String str){
-        return switch (str) {
-            case "main" -> MAINTK;
-            case "const" -> CONSTTK;
-            case "int" -> INTTK;
-            case "break" -> BREAKTK;
-            case "continue" -> CONTINUETK;
-            case "if" -> IFTK;
-            case "else" -> ELSETK;
-            case "while" -> WHILETK;
-            case "getint" -> GETINTTK;
-            case "printf" -> PRINTFTK;
-            case "return" -> RETURNTK;
-            case "void" -> VOIDTK;
-            case "!" -> NOT;
-            case "&&" -> AND;
-            case "||" -> OR;
-            case "+" -> PLUS;
-            case "-" -> MINU;
-            case "*" -> MULT;
-            case "/" -> DIV;
-            case "%" -> MOD;
-            case "<" -> LSS;
-            case "<=" -> LEQ;
-            case ">" -> GRE;
-            case ">=" -> GEQ;
-            case "==" -> EQL;
-            case "!=" -> NEQ;
-            case "=" -> ASSIGN;
-            case ";" -> SEMICN;
-            case "," -> COMMA;
-            case "(" -> LPARENT;
-            case ")" -> RPARENT;
-            case "[" -> LBRACK;
-            case "]" -> RBRACK;
-            case "{" -> LBRACE;
-            case "}" -> RBRACE;
-            default -> IDENFR;
-        };
+        RegKey r = null;
+        if (str.equals("main")){
+            r = MAINTK;
+        }else if(str.equals("const")){
+            r = CONSTTK;
+        }else if(str.equals("int")){
+            r = INTTK;
+        }else if(str.equals("break")){
+            r = BREAKTK;
+        }else if(str.equals("continue")){
+            r = CONTINUETK;
+        }else if(str.equals("if")){
+            r = IFTK;
+        }else if(str.equals("else")){
+            r = ELSETK;
+        }else if(str.equals("while")){
+            r = WHILETK;
+        }else if(str.equals("getint")){
+            r = GETINTTK;
+        }else if(str.equals("printf")){
+            r = PRINTFTK;
+        }else if(str.equals("return")){
+            r = RETURNTK;
+        }else if(str.equals("void")){
+            r = VOIDTK;
+        }else if(str.equals("!")){
+            r = NOT;
+        }else if(str.equals("&&")){
+            r = AND;
+        }else if(str.equals("||")){
+            r = OR;
+        }else if(str.equals("+")){
+            r = PLUS;
+        }else if(str.equals("-")){
+            r = MINU;
+        }else if(str.equals("*")){
+            r = MULT;
+        }else if(str.equals("/")){
+            r = DIV;
+        }else if(str.equals("%")){
+            r = MOD;
+        }else if(str.equals("<")){
+            r = LSS;
+        }else if(str.equals("<=")){
+            r = LEQ;
+        }else if(str.equals(">")){
+            r = GRE;
+        }else if(str.equals(">=")){
+            r = GEQ;
+        }else if(str.equals("==")){
+            r = EQL;
+        }else if(str.equals("!=")){
+            r = NEQ;
+        }else if(str.equals("=")){
+            r = ASSIGN;
+        }else if(str.equals(";")){
+            r = SEMICN;
+        }else if(str.equals(",")){
+            r = COMMA;
+        }else if(str.equals("(")){
+            r = LPARENT;
+        }else if(str.equals(")")){
+            r = RPARENT;
+        }else if(str.equals("[")){
+            r = LBRACK;
+        }else if(str.equals("]")){
+            r = RBRACK;
+        }else if(str.equals("{")){
+            r = LBRACE;
+        }else if(str.equals("}")){
+            r = RBRACE;
+        }else{
+            r = IDENFR;
+        }
+        return r;
     }
 }

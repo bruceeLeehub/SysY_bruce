@@ -33,7 +33,7 @@ public class ConstInitVal {
             Symbol curSymbol = identSymbol.get_CurrentSym();
             RegKey curRegKey = curSymbol.getRegKey();
             boolean isRBRACE = (curRegKey == RegKey.RBRACE);
-            if (isRBRACE) {
+            if (!isRBRACE) {
                 ConstInitVal.analyse(identSymbol, constInitVal);
                 while (identSymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
                     identSymbol.getASymbol();

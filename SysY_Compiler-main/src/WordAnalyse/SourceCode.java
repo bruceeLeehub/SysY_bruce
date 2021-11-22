@@ -64,6 +64,7 @@ public class SourceCode {
         this.ptr = 0;
         this.rowIdx = 1;
         String code = readToString(testfilename);
+//        System.out.print(code);
         this.sourceCode = new ArrayList<>();
         for(int i = 0; i < code.length(); i++){
             this.sourceCode.add(code.charAt(i));

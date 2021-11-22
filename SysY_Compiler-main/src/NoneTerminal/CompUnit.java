@@ -28,10 +28,10 @@ public class CompUnit {
     public static CompUnit analyse(IdentifySymbol identSymbol) {
         boolean isDecl;
         boolean isFuncDef;
-        Symbol sym = identSymbol.get_CurrentSym();
-        SymTable.create_NewTable();
         CompUnit compUnit = new CompUnit();
+        SymTable.create_NewTable();
 
+        Symbol sym = identSymbol.get_CurrentSym();
         while (identSymbol.get_CurrentSym().getRegKey() == RegKey.CONSTTK
                 || identSymbol.get_CurrentSym().getRegKey() == RegKey.INTTK) { // Decl
             Symbol symbol = identSymbol.get_CurrentSym();
