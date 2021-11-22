@@ -1,63 +1,66 @@
 package NoneTerminal;
 
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class InitVal {
-    public static String name = "<InitVal>";
+    public final ArrayList<Exp> expList = new ArrayList<>();
+    public static String name_initVal = "<InitVal>";
 
-    private ArrayList<Exp> expList;
-
-    public InitVal(){
-        this.expList = new ArrayList<>();
-    }
-
-    public void addExp(Exp exp){
-        this.expList.add(exp);
-    }
-
-    public void genCode(){
-        for(Exp exp : expList){
-            exp.genCode(null);
-        }
+    public static boolean isMyFirst(Symbol sym){
+        RegKey regKey = sym.getRegKey();
+        boolean isLBRACE = regKey == RegKey.LBRACE;
+        boolean exp_isMyFirst = Exp.isMyFirst(sym);
+        return isLBRACE || exp_isMyFirst;
     }
 
     public static InitVal analyse(IdentifySymbol identifySymbol, InitVal initVal) {
-        Symbol sym;
-        boolean judge = true;
-        if(initVal == null)
+        if(initVal == null) {
             initVal = new InitVal();
-
-        sym = identifySymbol.get_CurrentSym();
-        if (sym.getRegKey() == RegKey.LBRACE) {
+        }
+        Symbol symbol = identifySymbol.get_CurrentSym();
+        RegKey regKey = symbol.getRegKey();
+        boolean isLBRACE = (regKey == RegKey.LBRACE);
+        boolean judge = true;
+        if (isLBRACE) {
             identifySymbol.getASymbol();
-            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RBRACE) {
+            Symbol curSymbol = identifySymbol.get_CurrentSym();
+            regKey = curSymbol.getRegKey();
+            boolean isRBRACE = regKey == RegKey.RBRACE;
+            if (!isRBRACE) {
                 InitVal.analyse(identifySymbol, initVal);
-                while (judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
+                while (identifySymbol.get_CurrentSym().getRegKey() == RegKey.COMMA) {
                     identifySymbol.getASymbol();
                     InitVal.analyse(identifySymbol, initVal);
                 }
             }
-            if(judge && identifySymbol.get_CurrentSym().getRegKey() == RegKey.RBRACE){
-                judge = true;
-                identifySymbol.getASymbol();
-            }else{
+            curSymbol = identifySymbol.get_CurrentSym();
+            regKey = curSymbol.getRegKey();
+            isRBRACE = (regKey == RegKey.RBRACE);
+            if(!isRBRACE){
                 judge = false;
+            }else{
+                identifySymbol.getASymbol();
+                judge = true;
             }
         }else{
-            initVal.addExp(Exp.analyse(identifySymbol));
+            Exp exp = Exp.analyse(identifySymbol);
+            initVal.expList.add(exp);
         }
 
         if(judge){
-            identifySymbol.addStr(name);
+            identifySymbol.addStr(name_initVal);
         }
         return initVal;
     }
 
-    public static boolean isMyFirst(Symbol sym){
-        return sym.getRegKey() == RegKey.LBRACE || Exp.isMyFirst(sym);
+    public InitVal(){
+    }
+
+    public void genCode(){
+        for(Exp exp : this.expList){
+            exp.genCode(null);
+        }
     }
 }

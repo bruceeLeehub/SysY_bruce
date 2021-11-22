@@ -1,40 +1,34 @@
 package NoneTerminal;
 
-import ParcelType.MyString;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import ParcelType.*;
+import WordAnalyse.*;
 
 public class Ident {
-    public static String name = "<Ident>";
+    private String id_Name = null;
+    public static String name_ident = "<---Ident--->";
 
-    private String identName;
-
-    public Ident(){
-        this.identName = null;
-    }
-    public Ident(String identName){
-        this.identName = identName;
-    }
-
-    public void setIdentName(String identName){
-        this.identName = identName;
-    }
-
-    public String getIdentName(){
-        return this.identName;
+    public Ident(String id_Name){
+        this.id_Name = id_Name;
     }
 
     public static Ident analyse(IdentifySymbol identifySymbol, MyString name){
-        Symbol sym = identifySymbol.get_CurrentSym();
-        Ident ident = new Ident();
-        if(sym.getRegKey() == RegKey.IDENFR){
-            name.string = sym.get_IdentName();
-            ident.setIdentName(name.string);
+        Symbol symbol = identifySymbol.get_CurrentSym();
+        RegKey regKey = symbol.getRegKey();
+        boolean isIdent = (regKey == RegKey.IDENFR);
+        if(isIdent){
+            Ident ident = new Ident();
+            name.string = symbol.get_IdentName();
+            ident.id_Name = (name.string);
             identifySymbol.getASymbol();
             return ident;
         }else{
             return null;
         }
+    }
+    public Ident(){
+    }
+
+    public String getId_Name(){
+        return id_Name;
     }
 }

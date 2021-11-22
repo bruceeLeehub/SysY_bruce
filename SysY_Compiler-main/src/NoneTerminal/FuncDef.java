@@ -146,7 +146,7 @@ public class FuncDef {
     }
 
     public void genCode() {
-        String name = ident.getIdentName();
+        String name = ident.getId_Name();
         int paraSize = funcFParamList.size();
         int funcRef = ProgTable.insertProg_Entry(name,paraSize);
         Typ typ;
@@ -159,7 +159,7 @@ public class FuncDef {
             typ = Typ.INT_TYP;
         }
 
-        name = ident.getIdentName();
+        name = ident.getId_Name();
         Obj objFunc = Obj.FUNC_OBJ;
         Typ type = typ;
         int dims = 0;
@@ -171,7 +171,7 @@ public class FuncDef {
         for (FuncFParam parameter : this.funcFParamList) {
             parameter.genCode();
         }
-        Tables.TableEntry tableEntry = Table.getFuncTableEntry(ident.getIdentName());
-        this.funcBlock.genCode(ident.getIdentName(),tableEntry);
+        Tables.TableEntry tableEntry = Table.getFuncTableEntry(ident.getId_Name());
+        this.funcBlock.genCode(ident.getId_Name(),tableEntry);
     }
 }

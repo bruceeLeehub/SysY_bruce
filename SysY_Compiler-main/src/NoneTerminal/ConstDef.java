@@ -89,7 +89,7 @@ public class ConstDef {
             dimList.add(value.my_Int);
         }
         if(constExp_List.isEmpty()){      // A NORMAL CONST VAR
-            String name = ident.getIdentName();
+            String name = ident.getId_Name();
             Obj obj_const = Obj.CONST_OBJ;
             Typ type = Typ.INT_TYP;
             int dimSize = 0;
@@ -98,7 +98,7 @@ public class ConstDef {
             int addr = constIniValueList.get(0);
             Table.addTeToCurrentTable(name, obj_const, type, dimSize, ref, level, addr);
         }else{       // AN ARRAY
-            String name = ident.getIdentName();
+            String name = ident.getId_Name();
             Obj obj_const = Obj.CONST_OBJ;
             Typ type = Typ.INT_TYP;
             int dimSize = dimList.size();

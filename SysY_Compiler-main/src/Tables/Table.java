@@ -21,7 +21,7 @@ public class Table {
     }
 
     public static int get_ConstArrayValue(Ident ident, ArrayList<Integer> dim_Value) {
-        String name = ident.getIdentName();
+        String name = ident.getId_Name();
         TableEntry tableEntry = getAttrTableEntry(name);
         ArrayList<ArrTableEntry> arrayTable = ArrTable.getArrTable();
         int ref = tableEntry.get_Ref();
@@ -39,14 +39,14 @@ public class Table {
     }
 
     public static int get_AttrLev(Ident ident) {
-        String name = ident.getIdentName();
+        String name = ident.getId_Name();
         TableEntry tableEntry = getAttrTableEntry(name);
         int level = tableEntry.get_Level();
         return level;
     }
 
     public static ArrayList<Integer> get_ArrayDims(Ident ident) {
-        String name = ident.getIdentName();
+        String name = ident.getId_Name();
         TableEntry tableEntry = getAttrTableEntry(name);
         int ref = tableEntry.get_Ref();
         ArrayList<ArrTableEntry> arrTable = ArrTable.getArrTable();
@@ -113,14 +113,14 @@ public class Table {
     }
 
     public static int get_ConstIdentValue(Ident ident) {
-        String name = ident.getIdentName();
+        String name = ident.getId_Name();
         TableEntry tableEntry = getAttrTableEntry(name);
         int identValue = tableEntry.get_Addr();
         return identValue;
     }
 
     public static int get_ArrayAdr(Ident ident) {
-        String name = ident.getIdentName();
+        String name = ident.getId_Name();
         TableEntry tableEntry = getAttrTableEntry(name);
         int adr = tableEntry.get_Addr();
         return adr;

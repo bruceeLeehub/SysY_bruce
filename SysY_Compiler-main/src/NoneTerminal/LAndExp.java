@@ -1,17 +1,14 @@
 package NoneTerminal;
 
-import Tables.Code;
-import Tables.CodeType;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import Tables.*;
+import WordAnalyse.*;
 
 import java.util.ArrayList;
 
 public class LAndExp {
-    public static String name = "<LAndExp>";
+    public static String name_LAndExp = "<LAndExp>";
 
-    private ArrayList<EqExp> eqExpList;
+    private final ArrayList<EqExp> eqExpList;
 
     public LAndExp() {
         this.eqExpList = new ArrayList<>();
@@ -36,19 +33,18 @@ public class LAndExp {
 
     public static LAndExp analyse(IdentifySymbol identifySymbol){
         Symbol sym;
-        boolean judge = true;
         LAndExp lAndExp = new LAndExp();
 
         lAndExp.addEqExp(EqExp.analyse(identifySymbol));
         sym = identifySymbol.get_CurrentSym();
-        while (judge && sym.getRegKey() == RegKey.AND) {
-            if (judge) identifySymbol.addStr(name);
+        while (sym.getRegKey() == RegKey.AND) {
+            identifySymbol.addStr(name_LAndExp);
             identifySymbol.getASymbol();
             lAndExp.addEqExp(EqExp.analyse(identifySymbol));
             sym = identifySymbol.get_CurrentSym();
         }
 
-        if (judge) identifySymbol.addStr(name);
+        identifySymbol.addStr(name_LAndExp);
         return lAndExp;
     }
 }

@@ -20,7 +20,7 @@ public class FuncFParam {
 
     public void genCode() {
         if (constExp_List == null) {       // var param
-            String name = ident.getIdentName();
+            String name = ident.getId_Name();
             Obj obj_var = Obj.VAR_OBJ;
             Typ type = Typ.INT_TYP;
             int dims = 0;
@@ -39,7 +39,7 @@ public class FuncFParam {
             }
 
             // array param ref need to be done until running time
-            String name = ident.getIdentName();
+            String name = ident.getId_Name();
             Obj obj_var = Obj.VAR_OBJ;
             Typ type = Typ.INT_TYP;
             int dims = dimList.size();
