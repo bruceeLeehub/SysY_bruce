@@ -1,67 +1,67 @@
 package NoneTerminal;
 
-import Tables.Code;
-import Tables.CodeType;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
-
+import Tables.*;
+import WordAnalyse.*;
 import java.util.ArrayList;
 
 public class RelExp {
-    public static String name = "<RelExp>";
+    public ArrayList<AddExp> addExp_List = new ArrayList<>();
+    public ArrayList<RegKey> op_List = new ArrayList<>();
+    public static String name_RelExp = "<RelExp>";
 
-    private ArrayList<AddExp> addExpList;
-    private ArrayList<RegKey> opList;
+    public static RelExp analyse(IdentifySymbol identifySymbol) {
+        RelExp relExp = new RelExp();
+        AddExp addExp = AddExp.analyse(identifySymbol);
+        relExp.addExp_List.add(addExp);
 
-    public RelExp() {
-        this.addExpList = new ArrayList<>();
-        this.opList = new ArrayList<>();
-    }
+        Symbol symbol = identifySymbol.get_CurrentSym();
+        while (symbol.getRegKey() == RegKey.LSS ||
+                symbol.getRegKey() == RegKey.LEQ ||
+                symbol.getRegKey() == RegKey.GRE ||
+                symbol.getRegKey() == RegKey.GEQ) {
+            identifySymbol.addStr(name_RelExp);
 
-    public void addAddExp(AddExp addExp) {
-        this.addExpList.add(addExp);
-    }
+            RegKey regKey = symbol.getRegKey();
+            relExp.op_List.add(regKey);
 
-    public void addOp(RegKey regKey) {
-        this.opList.add(regKey);
+            identifySymbol.getASymbol();
+
+            AddExp addExp1 = AddExp.analyse(identifySymbol);
+            relExp.addExp_List.add(addExp1);
+
+            symbol = identifySymbol.get_CurrentSym();
+        }
+        identifySymbol.addStr(name_RelExp);
+        return relExp;
     }
 
     public void genCode() {
-        addExpList.get(0).genCode(null);
-        for (int i = 1; i < addExpList.size(); i++) {
-            addExpList.get(i).genCode(null);
-            if (opList.get(i - 1).equals(RegKey.LSS))
+        AddExp addExp = addExp_List.get(0);
+        addExp.genCode(null);
+
+        for (int i = 1; i < addExp_List.size(); i++) {
+            addExp = addExp_List.get(i);
+            addExp.genCode(null);
+
+            RegKey regKey = op_List.get(i - 1);
+            boolean isLSS = (regKey.equals(RegKey.LSS));
+            boolean isLEQ = (regKey.equals(RegKey.LEQ));
+            boolean isGRE = (regKey.equals(RegKey.GRE));
+            if (isLSS) {
                 Code.addCode(CodeType.LSS);
-            else if (opList.get(i - 1).equals(RegKey.LEQ))
+            }
+            else if (isLEQ) {
                 Code.addCode(CodeType.LEQ);
-            else if (opList.get(i - 1).equals(RegKey.GRE))
+            }
+            else if (isGRE) {
                 Code.addCode(CodeType.GRT);
-            else
+            }
+            else {
                 Code.addCode(CodeType.GEQ);
+            }
         }
     }
 
-    public static RelExp analyse(IdentifySymbol identifySymbol) {
-        Symbol sym;
-        boolean judge = true;
-        RelExp relExp = new RelExp();
-
-        relExp.addAddExp(AddExp.analyse(identifySymbol));
-        sym = identifySymbol.get_CurrentSym();
-        while (judge && (sym.getRegKey() == RegKey.LSS ||
-                sym.getRegKey() == RegKey.LEQ ||
-                sym.getRegKey() == RegKey.GRE ||
-                sym.getRegKey() == RegKey.GEQ)) {
-            if (judge) identifySymbol.addStr(name);
-            relExp.addOp(sym.getRegKey());
-            identifySymbol.getASymbol();
-            relExp.addAddExp(AddExp.analyse(identifySymbol));
-            sym = identifySymbol.get_CurrentSym();
-        }
-
-        if (judge) identifySymbol.addStr(name);
-
-        return relExp;
+    public RelExp() {
     }
 }
