@@ -1,43 +1,50 @@
 package NoneTerminal;
 
-import ParcelType.My_Int;
+import ParcelType.*;
 import Table.*;
 import Tables.Code;
 import Tables.CodeType;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
+import WordAnalyse.*;
 
 public class Number {
-    public static String name = "<Number>";
+    public int number;
+    public static String name_number = "<Number>";
 
-    private int number;
+    public static Number analyse(IdentifySymbol identifySymbol) {
+        Symbol symbol = identifySymbol.get_CurrentSym();
+        String int_string = symbol.get_IdentName();
+        int intValue  = Integer.parseInt(int_string);
+        Number number = new Number(intValue);
 
-    public Number(int number) {
-        this.number = number;
+        symbol = identifySymbol.get_CurrentSym();
+        RegKey regKey = symbol.getRegKey();
+
+
+        if (regKey == RegKey.INTCON) {
+            identifySymbol.getASymbol();
+            identifySymbol.addStr(name_number);
+        }
+        // check rparams type
+        if (FuncRParams.TypeCheck) {
+            TableEntry tableEntry = new TableEntry(true,DataType.INT_DATA,0);
+            FuncRParams.tbEntryModel.add(tableEntry);
+            if (LVal.in_Dims == 0) {
+                FuncRParams.TypeCheck = false;
+            }
+        }
+        return number;
     }
 
     public void genCode(My_Int value) {
-        if (value != null)
-            value.my_Int = number;
-        else
-            Code.addCode(CodeType.LDC, number);
+        if (value == null) {
+            Code.addCode(CodeType.LDC, this.number);
+        }
+        else {
+            value.my_Int = this.number;
+        }
     }
 
-    public static Number analyse(IdentifySymbol identifySymbol) {
-        boolean judge = true;
-        Number number = new Number(Integer.valueOf(identifySymbol.get_CurrentSym().get_IdentName()));
-        judge &= identifySymbol.get_CurrentSym().getRegKey() == RegKey.INTCON;
-
-        if (judge) {
-            identifySymbol.getASymbol();
-            identifySymbol.addStr(name);
-        }
-        // checking RParams type
-        if (FuncRParams.TypeCheck) {
-            FuncRParams.tbEntryModel.add(new TableEntry(true, DataType.INT_DATA, 0));
-            if (LVal.in_Dims == 0)
-                FuncRParams.TypeCheck = false;
-        }
-        return number;
+    public Number(int number) {
+        this.number = number;
     }
 }
