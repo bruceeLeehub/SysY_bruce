@@ -1,9 +1,7 @@
 package NoneTerminal.StmtPack;
 
-import NoneTerminal.Exp;
-import NoneTerminal.Stmt;
-import Tables.Code;
-import Tables.CodeType;
+import NoneTerminal.*;
+import Tables.*;
 
 import java.util.ArrayList;
 
@@ -13,8 +11,9 @@ public class PrintStmt extends Stmt {
 
     @Override
     public void genCode(){
-        for(Exp exp : expList)
+        for(Exp exp : expList) {
             exp.genCode(null);
+        }
         Code.addCode(CodeType.WRF, fsAdr);
     }
 
