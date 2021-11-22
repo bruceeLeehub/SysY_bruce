@@ -1,62 +1,62 @@
 package NoneTerminal;
 
 import MyError.Error;
-import WordAnalyse.IdentifySymbol;
-import WordAnalyse.RegKey;
-import WordAnalyse.Symbol;
+import WordAnalyse.*;
 
 public class MainFuncDef {
-    public static String name = "<MainFuncDef>";
-    public static boolean mainIsChecking = false;
-
-    private Block block;
-
-    public MainFuncDef(){
-        this.block =  null;
-    }
-
-    public void setBlock(Block block){
-        this.block = block;
-    }
-
-    public void genCode(){
-        block.genCode("main", null);
-    }
+    public static String name_mainFuncDef = "<MainFuncDef>";
+    public Block block = null;
+    public static boolean CheckingMain = false;
 
     public static MainFuncDef analyse(IdentifySymbol identifySymbol){
-        Symbol sym;
-        boolean judge = true;
         MainFuncDef mainFuncDef = new MainFuncDef();
 
-        sym = identifySymbol.get_CurrentSym();
-        judge &= sym.getRegKey() == RegKey.INTTK;
-        if(judge){
-            sym = identifySymbol.getASymbol();
-            judge &= sym.getRegKey() == RegKey.MAINTK;
+        Symbol symbol = identifySymbol.get_CurrentSym();
+        RegKey regKey = symbol.getRegKey();
+        boolean checkToken = regKey == RegKey.INTTK;
+        if(checkToken){
+            symbol = identifySymbol.getASymbol();
+            regKey = symbol.getRegKey();
+            checkToken = regKey == RegKey.MAINTK;
         }
-        if(judge){
-            sym = identifySymbol.getASymbol();
-            judge &= sym.getRegKey() == RegKey.LPARENT;
+        if(checkToken){
+            symbol = identifySymbol.getASymbol();
+            regKey = symbol.getRegKey();
+            checkToken = regKey == RegKey.LPARENT;
         }
-        if(judge){
-            sym = identifySymbol.getASymbol();
-            // ERROR -- j: ')' needed
-            if (identifySymbol.get_CurrentSym().getRegKey() != RegKey.RPARENT)
-                Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
-            else
+        if(checkToken){
+            symbol = identifySymbol.getASymbol();
+            //j: ')' needed
+            symbol = identifySymbol.get_CurrentSym();
+            regKey = symbol.getRegKey();
+            if (regKey != RegKey.RPARENT) {
+                Symbol preSymbol = identifySymbol.get_PreSym();
+                int rowIdx = preSymbol.getRow_Idx();
+                Error.addErrorOutPut(rowIdx + " j");
+            }
+            else {
                 identifySymbol.getASymbol();
+            }
         }
-        if(judge){
-            mainIsChecking = true;
-            mainFuncDef.setBlock(Block.analyse(identifySymbol));
-            // ERROR -- g: func have return value don't have return stmt in the end
-            if (Block.hasReturnStmt == false)
-                Error.addErrorOutPut(identifySymbol.get_CurrentSym().getRow_Idx() + " g");
-        }
+        if(checkToken){
+            CheckingMain = true;
+            mainFuncDef.block = (Block.analyse(identifySymbol));
+            // g: no return stmt in the end
+            if (!Block.hasReturnStmt) {
+                symbol = identifySymbol.get_CurrentSym();
+                int rowidx = symbol.getRow_Idx();
+                Error.addErrorOutPut(rowidx + " g");
+            }
 
-        if(judge){
-            identifySymbol.addStr(name);
+
+            identifySymbol.addStr(name_mainFuncDef);
         }
         return mainFuncDef;
+    }
+    public void genCode(){
+        String name = "main";
+        block.genCode(name, null);
+    }
+    public MainFuncDef(){
     }
 }

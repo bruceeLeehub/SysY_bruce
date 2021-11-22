@@ -44,7 +44,7 @@ public class Block {
         }
 
         if (judge) {
-            b1 = MainFuncDef.mainIsChecking;
+            b1 = MainFuncDef.CheckingMain;
             b1 = b1 && identifySymbol.isEndLine();
             if (b1) {
                 identifySymbol.add_Times(1);
