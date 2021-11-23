@@ -6,19 +6,19 @@ import Tables.*;
 import java.util.ArrayList;
 
 public class PrintStmt extends Stmt {
-    private int fsAdr;
-    private ArrayList<Exp> expList;
+    private int fs_Adr;
+    private ArrayList<Exp> exp_List;
+
+    public PrintStmt(int fs_Adr, ArrayList<Exp> exp_List) {
+        this.fs_Adr = fs_Adr;
+        this.exp_List = exp_List;
+    }
 
     @Override
     public void genCode(){
-        for(Exp exp : expList) {
+        for(Exp exp : exp_List) {
             exp.genCode(null);
         }
-        Code.addCode(CodeType.WRF, fsAdr);
-    }
-
-    public PrintStmt(int fsAdr, ArrayList<Exp> expList) {
-        this.fsAdr = fsAdr;
-        this.expList = expList;
+        Code.addCode(CodeType.WRF, fs_Adr);
     }
 }

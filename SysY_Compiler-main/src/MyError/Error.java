@@ -1,6 +1,6 @@
 package MyError;
 
-import NoneTerminal.CompUnit;
+import NoneTerminal.*;
 import ParcelType.My_Int;
 import Table.SymTable;
 import Table.TableEntry;
