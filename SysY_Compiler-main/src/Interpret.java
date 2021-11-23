@@ -15,11 +15,11 @@ public class Interpret {
     public static ArrayList<String> pcodeOutput = new ArrayList<>();
 
     public static void runInterpreter() {
-        System.out.println("gonna run code");
-        System.out.println("==================");
+//        System.out.println("gonna run code");
+//        System.out.println("==================");
         while (pc < Code.codeSize() && pc >= 0) {
             runCode(Code.get_CodeType(pc), Code.get_X(pc), Code.get_Y(pc));
-            System.out.println(pc + "has runned");
+//            System.out.println(pc + "has runned");
         }
     }
 
