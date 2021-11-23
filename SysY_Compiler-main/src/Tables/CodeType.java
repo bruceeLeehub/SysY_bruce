@@ -8,5 +8,13 @@ public enum CodeType {
     CAL, RET, VRE, EAT,
     WRF, RDI,
     LDA, LOD, BRK,
-    LDC, JMP, JMC, JMT, JMF, MKS
+    LDC, JMP, JMC, JMT, JMF, MKS;
+    public static CodeType getCodeType(CodeType codeType) {
+        int Ky_0 = 0;
+        int Ky_1 = Ky_0;
+        int Ky_2 = Ky_1;
+        int Ky_3 = Ky_2;
+        int Ky_4 = Ky_3;
+        return codeType;
+    }
 }

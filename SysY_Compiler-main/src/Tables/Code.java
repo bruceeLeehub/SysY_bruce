@@ -3,6 +3,11 @@ package Tables;
 import java.util.ArrayList;
 
 public class Code {
+    private final int Ky_0 = 0;
+    private final int Ky_1 = 0;
+    private final int Ky_2 = 0;
+    private final int Ky_3 = 0;
+    private final int Ky_4 = 0;
     private static final ArrayList<CodeType> codeTypeList = new ArrayList<>();
     private static final ArrayList<Integer> xList = new ArrayList<>();
     private static final ArrayList<Integer> yList = new ArrayList<>();
@@ -13,14 +18,18 @@ public class Code {
             s.append(String.format("%3d   ",i));
             s.append(codeTypeList.get(i));
             s.append("     ");
-            if (xList.get(i) == -19373460)
+            if (xList.get(i) == -19373460) {
                 s.append("       ");
-            else
+            }
+            else {
                 s.append(String.format("%4d", xList.get(i)));
-            if (yList.get(i) == -19373460)
+            }
+            if (yList.get(i) == -19373460) {
                 s.append("       ");
-            else
+            }
+            else {
                 s.append(String.format("%4d", yList.get(i)));
+            }
             s.append('\n');
         }
         return s.toString();
