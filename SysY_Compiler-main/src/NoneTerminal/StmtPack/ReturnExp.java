@@ -1,24 +1,22 @@
 package NoneTerminal.StmtPack;
 
-import NoneTerminal.Exp;
-import NoneTerminal.Stmt;
-import Tables.Code;
-import Tables.CodeType;
+import NoneTerminal.*;
+import Tables.*;
 
 public class ReturnExp extends Stmt {
-    private Exp exp;
-
-    public ReturnExp(Exp exp) {
-        this.exp = exp;
-    }
+    public Exp exp;
 
     @Override
     public void genCode() {
-        if (exp != null) {
+        if (exp == null) {
+            Code.addCode(CodeType.RET, BlockStmt.block_Layers);
+        } else {
             exp.genCode(null);
             Code.addCode(CodeType.VRE, BlockStmt.block_Layers);
-        } else {
-            Code.addCode(CodeType.RET, BlockStmt.block_Layers);
         }
+    }
+
+    public ReturnExp(Exp exp) {
+        this.exp = exp;
     }
 }

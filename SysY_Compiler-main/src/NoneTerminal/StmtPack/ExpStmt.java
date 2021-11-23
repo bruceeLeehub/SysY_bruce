@@ -1,8 +1,6 @@
 package NoneTerminal.StmtPack;
 
 import NoneTerminal.*;
-import Tables.Code;
-import Tables.CodeType;
 
 public class ExpStmt extends Stmt {
     public Exp exp;

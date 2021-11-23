@@ -1,22 +1,20 @@
 package NoneTerminal.StmtPack;
 
-import NoneTerminal.LVal;
-import NoneTerminal.Stmt;
-import Tables.Code;
-import Tables.CodeType;
+import NoneTerminal.*;
+import Tables.*;
 
 public class ReadStmt extends Stmt {
     private LVal lVal;
-    private int readInt;
-
-    public ReadStmt(LVal lVal) {
-        this.lVal = lVal;
-        this.readInt = 0;
-    }
+    private int read_Int;
 
     @Override
     public void genCode() {
-        lVal.genCode(null, true);   // need to be written, so left value
+        lVal.genCode(null, true);   // to be written
         Code.addCode(CodeType.RDI);
+    }
+
+    public ReadStmt(LVal lVal) {
+        this.lVal = lVal;
+        this.read_Int = 0;
     }
 }

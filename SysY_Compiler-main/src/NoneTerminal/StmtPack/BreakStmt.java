@@ -9,7 +9,8 @@ public class BreakStmt extends Stmt {
     public static ArrayList<ArrayList<Integer>> breakStmt_List = new ArrayList<>();
 
     public static void modifyAllBreakY(int endPC) {
-        if (breakStmt_List.size() != 0) {
+        int size = breakStmt_List.size();
+        if (size != 0) {
             int back = breakStmt_List.size() - 1;
             ArrayList<Integer> thisBreakList = breakStmt_List.get(back);
             if (thisBreakList != null) {
@@ -23,7 +24,8 @@ public class BreakStmt extends Stmt {
 
     @Override
     public void genCode() {
-        if (breakStmt_List.size() == 0 || breakStmt_List.get(breakStmt_List.size() - 1) == null) {
+        int size = breakStmt_List.size();
+        if (size == 0 || breakStmt_List.get(size - 1) == null) {
             ArrayList<Integer> arrayList = new ArrayList<>();
             breakStmt_List.add(arrayList);
         }
