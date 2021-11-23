@@ -31,7 +31,7 @@ public class VarDecl extends Decl {
         else {
             Symbol preSymbol = identifySymbol.get_PreSym();
             int rowidx = preSymbol.getRow_Idx();
-            Error.addErrorOutPut(rowidx + " i");
+            Error.add_ErrorOutPut(rowidx + " i");
         } //i: ';' needed
 
         identifySymbol.addStr(name_varDecl);

@@ -45,7 +45,7 @@ public class LVal {
             }
             else {
                 int rowinx = identifySymbol.get_PreSym().getRow_Idx();
-                Error.addErrorOutPut(rowinx + " k");
+                Error.add_ErrorOutPut(rowinx + " k");
             }
             in_Dims = in_Dims - 1;
         }

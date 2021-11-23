@@ -73,7 +73,7 @@ public class FuncDef {
                     if (regKey1 != RegKey.RPARENT) {
                         Symbol Symbol2 = identifySymbol.get_PreSym();
                         int rowIdx = Symbol2.getRow_Idx();
-                        Error.addErrorOutPut(rowIdx + " j");
+                        Error.add_ErrorOutPut(rowIdx + " j");
                     }
                 }
                 else if (isRPARENT){
@@ -97,7 +97,7 @@ public class FuncDef {
                 if (noReturnError) {
                     Symbol symbol_pre = identifySymbol.get_PreSym();
                     int rowidx = symbol_pre.getRow_Idx();
-                    Error.addErrorOutPut(rowidx + " g");
+                    Error.add_ErrorOutPut(rowidx + " g");
                 }
             } else {
                 judge = FuncFParams.analyse(identifySymbol, paramList, funcDef);
@@ -109,7 +109,7 @@ public class FuncDef {
                     identifySymbol.getASymbol();
                 }
                 else {
-                    Error.addErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
+                    Error.add_ErrorOutPut(identifySymbol.get_PreSym().getRow_Idx() + " j");
                 }
                 // insert funcDef into previous stmTable
                 if (CompUnit.isNameDuplicateDef) {
@@ -128,7 +128,7 @@ public class FuncDef {
                 if (noReturnError) {
                     Symbol pre_Symbol = identifySymbol.get_PreSym();
                     int rowidx = pre_Symbol.getRow_Idx();
-                    Error.addErrorOutPut(rowidx + " g");
+                    Error.add_ErrorOutPut(rowidx + " g");
                 }
             }
         }

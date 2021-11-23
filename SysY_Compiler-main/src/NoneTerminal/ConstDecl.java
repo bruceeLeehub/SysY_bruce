@@ -36,7 +36,7 @@ public class ConstDecl extends Decl{
         if (isSemicn) {
             identSymbol.getASymbol();
         } else {
-            Error.addErrorOutPut(identSymbol.get_PreSym().getRow_Idx() + " i"); // ERROR -- i: ';' needed
+            Error.add_ErrorOutPut(identSymbol.get_PreSym().getRow_Idx() + " i"); // ERROR -- i: ';' needed
         }
         if (isConst) {
             identSymbol.addStr(name_constDecl);

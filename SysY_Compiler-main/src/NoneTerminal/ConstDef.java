@@ -47,7 +47,7 @@ public class ConstDef {
             else {
                 Symbol symbol2 = identSymbol.get_PreSym();
                 int index = symbol2.getRow_Idx();
-                Error.addErrorOutPut(index + " k");
+                Error.add_ErrorOutPut(index + " k");
             }
         }
 

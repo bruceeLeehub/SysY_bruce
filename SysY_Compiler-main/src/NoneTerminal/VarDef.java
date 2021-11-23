@@ -38,7 +38,7 @@ public class VarDef {
             else {
                 Symbol sym = identifySymbol.get_PreSym();
                 int rowidx = sym.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " k");
+                Error.add_ErrorOutPut(rowidx + " k");
             }
 
         }

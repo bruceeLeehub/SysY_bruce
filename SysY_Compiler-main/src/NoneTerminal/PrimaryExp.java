@@ -38,7 +38,7 @@ public class PrimaryExp {
             else {
                 Symbol preSymbol = identifySymbol.get_PreSym();
                 int rowidx = preSymbol.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " j");
+                Error.add_ErrorOutPut(rowidx + " j");
             }
         } else {
             curSymbol = identifySymbol.get_CurrentSym();

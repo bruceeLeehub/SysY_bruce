@@ -32,7 +32,7 @@ public class MainFuncDef {
             if (regKey != RegKey.RPARENT) {
                 Symbol preSymbol = identifySymbol.get_PreSym();
                 int rowIdx = preSymbol.getRow_Idx();
-                Error.addErrorOutPut(rowIdx + " j");
+                Error.add_ErrorOutPut(rowIdx + " j");
             }
             else {
                 identifySymbol.getASymbol();
@@ -45,7 +45,7 @@ public class MainFuncDef {
             if (!Block.hasReturnStmt) {
                 symbol = identifySymbol.get_CurrentSym();
                 int rowidx = symbol.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " g");
+                Error.add_ErrorOutPut(rowidx + " g");
             }
 
 

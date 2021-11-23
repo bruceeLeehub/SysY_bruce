@@ -111,7 +111,7 @@ public class Stmt implements BlockItemInter {
                         else {
                             Symbol preSymbol = identifySymbol.get_PreSym();
                             int rowidx = preSymbol.getRow_Idx();
-                            Error.addErrorOutPut(rowidx + " j");
+                            Error.add_ErrorOutPut(rowidx + " j");
                         }
 
                         // i: ';' needed
@@ -123,7 +123,7 @@ public class Stmt implements BlockItemInter {
                         else {
                             Symbol preSymbol = identifySymbol.get_PreSym();
                             int rowidx = preSymbol.getRow_Idx();
-                            Error.addErrorOutPut(rowidx + " i");
+                            Error.add_ErrorOutPut(rowidx + " i");
                         }
                     } else {
                         Exp exp = Exp.analyse(identifySymbol);
@@ -135,7 +135,7 @@ public class Stmt implements BlockItemInter {
                         if (!isSEMICN) {
                             Symbol preSymbol = identifySymbol.get_PreSym();
                             int rowidx = preSymbol.getRow_Idx();
-                            Error.addErrorOutPut(rowidx + " i");
+                            Error.add_ErrorOutPut(rowidx + " i");
                         }
                         else {
                             identifySymbol.getASymbol();
@@ -156,7 +156,7 @@ public class Stmt implements BlockItemInter {
                 else {
                     Symbol preSymbol = identifySymbol.get_PreSym();
                     int rowidx = preSymbol.getRow_Idx();
-                    Error.addErrorOutPut(rowidx + " i");
+                    Error.add_ErrorOutPut(rowidx + " i");
                 }
             }
         } else if (isLBRACE) {
@@ -186,7 +186,7 @@ public class Stmt implements BlockItemInter {
             else {
                 Symbol preSymbol = identifySymbol.get_PreSym();
                 int rowidx = preSymbol.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " j");
+                Error.add_ErrorOutPut(rowidx + " j");
             }
             ifStatement = Stmt.analyse(identifySymbol);
 
@@ -220,7 +220,7 @@ public class Stmt implements BlockItemInter {
             else {
                 Symbol preSymbol = identifySymbol.get_PreSym();
                 int rowidx = preSymbol.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " j");
+                Error.add_ErrorOutPut(rowidx + " j");
             }
             Stmt whileStmt = Stmt.analyse(identifySymbol);
             whileStmtCount = whileStmtCount - 1;
@@ -241,7 +241,7 @@ public class Stmt implements BlockItemInter {
             if (Stmt.whileStmtCount == 0 &&
                     (regKey == RegKey.BREAKTK || regKey == RegKey.CONTINUETK)) {
                 int rowidx = symbol.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " m");
+                Error.add_ErrorOutPut(rowidx + " m");
             }
             symbol = identifySymbol.getASymbol();
             regKey = symbol.getRegKey();
@@ -252,7 +252,7 @@ public class Stmt implements BlockItemInter {
             else {
                 Symbol preSymbol = identifySymbol.get_PreSym();
                 int rowidx = preSymbol.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " i");
+                Error.add_ErrorOutPut(rowidx + " i");
             }
         } else if (isRETURNTK) {
             // --> 'return' [Exp] ';'
@@ -274,14 +274,14 @@ public class Stmt implements BlockItemInter {
                 if (regKey != RegKey.SEMICN) {
                     Symbol preSymbol = identifySymbol.get_PreSym();
                     int rowidx = preSymbol.getRow_Idx();
-                    Error.addErrorOutPut(rowidx + " i");
+                    Error.add_ErrorOutPut(rowidx + " i");
                 }
             } else if (symbol.getRegKey() != RegKey.SEMICN) {
                 exp = Exp.analyse(identifySymbol);
                 // -> f:  void func have  return value
                 if (FuncDef.InFuncDef && !FuncDef.haveReturnValue) {
                     int rowidx = retSym.getRow_Idx();
-                    Error.addErrorOutPut(rowidx + " f");
+                    Error.add_ErrorOutPut(rowidx + " f");
                 }
                 // i: ';' needed
                 Symbol curSymbol = identifySymbol.get_CurrentSym();
@@ -289,7 +289,7 @@ public class Stmt implements BlockItemInter {
                 if (regKey != RegKey.SEMICN) {
                     Symbol preSymbol = identifySymbol.get_PreSym();
                     int rowidx = preSymbol.getRow_Idx();
-                    Error.addErrorOutPut(rowidx + " i");
+                    Error.add_ErrorOutPut(rowidx + " i");
                 }
                 else {
                     identifySymbol.getASymbol();
@@ -330,7 +330,7 @@ public class Stmt implements BlockItemInter {
                 // l: rightExpCount != actualExpCount
                 if (actualExpCount != rightExpCount.my_Int) {
                     int row_idx = error_Sym.getRow_Idx();
-                    Error.addErrorOutPut(row_idx + " l");
+                    Error.add_ErrorOutPut(row_idx + " l");
                 }
             }
 
@@ -345,14 +345,14 @@ public class Stmt implements BlockItemInter {
             else {
                 Symbol preSymbol = identifySymbol.get_PreSym();
                 int rowidx = preSymbol.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " j");
+                Error.add_ErrorOutPut(rowidx + " j");
             }
             // i: ';' missing
             regKey = symbol.getRegKey();
             if (regKey != RegKey.SEMICN) {
                 Symbol preSymbol = identifySymbol.get_PreSym();
                 int rowidx = preSymbol.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " i");
+                Error.add_ErrorOutPut(rowidx + " i");
             }
             else {
                 identifySymbol.getASymbol();
@@ -369,7 +369,7 @@ public class Stmt implements BlockItemInter {
             if (regKey != RegKey.SEMICN) {
                 Symbol preSymbol = identifySymbol.get_PreSym();
                 int rowidx = preSymbol.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " i");
+                Error.add_ErrorOutPut(rowidx + " i");
             }
             else {
                 identifySymbol.getASymbol();

@@ -84,7 +84,7 @@ public class FuncFParam {
             else {
                 Symbol pre_Symbol = identifySymbol.get_PreSym();
                 int rowidx = pre_Symbol.getRow_Idx();
-                Error.addErrorOutPut(rowidx + " k");
+                Error.add_ErrorOutPut(rowidx + " k");
             }
             while (identifySymbol.get_CurrentSym().getRegKey() == RegKey.LBRACK) {
                 identifySymbol.getASymbol();
@@ -103,7 +103,7 @@ public class FuncFParam {
                 else {
                     Symbol pre_Symbol = identifySymbol.get_PreSym();
                     int rowidx = pre_Symbol.getRow_Idx();
-                    Error.addErrorOutPut(rowidx + " k");
+                    Error.add_ErrorOutPut(rowidx + " k");
                 }
             }
         }
